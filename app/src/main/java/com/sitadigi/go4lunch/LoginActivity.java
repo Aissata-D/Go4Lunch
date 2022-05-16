@@ -97,7 +97,7 @@ public class LoginActivity extends AppCompatActivity {
             // SUCCESS
             if (resultCode == RESULT_OK) {
                 //Object userManager;
-                //userManager.createUser();
+                mUserViewModel.createUser();
                 showSnackBar(getString(R.string.connection_succeed));
             } else {
                 // ERRORS

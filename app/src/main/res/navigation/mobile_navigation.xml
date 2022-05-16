@@ -22,4 +22,21 @@
         android:name="com.sitadigi.go4lunch.ui.slideshow.SlideshowFragment"
         android:label="@string/menu_logout"
         tools:layout="@layout/fragment_slideshow" />
+    <fragment
+        android:id="@+id/menu_map_view"
+        android:name="com.sitadigi.go4lunch.ui.mapView.MapViewFragment"
+        android:label="@string/bottom_navigation_menu_map_view"
+        tools:layout="@layout/fragment_map_view" />
+
+    <fragment
+        android:id="@+id/menu_list_view"
+        android:name="com.sitadigi.go4lunch.ui.listView.ListViewFragment"
+        android:label="@string/bottom_navigation_menu_list_view"
+        tools:layout="@layout/fragment_list_view" />
+
+    <fragment
+        android:id="@+id/menu_workmates"
+        android:name="com.sitadigi.go4lunch.ui.workmaters.WorkmatersFragment"
+        android:label="@string/bottom_navigation_menu_workmates"
+        tools:layout="@layout/fragment_workmaters" />
 </navigation>

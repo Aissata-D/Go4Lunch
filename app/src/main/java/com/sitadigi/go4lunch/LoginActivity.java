@@ -26,30 +26,17 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        loginButton = findViewById(R.id.login_google);
-        setupListeners();
 
-    }
-
-    @Override
-    protected void onPostResume() {
-        super.onPostResume();
         setupListeners();
     }
 
     private void setupListeners(){
-        // Login Button
-       //loginButton.setOnClickListener(view -> {
-          
+          // Check if user is loggin
            if(mUserViewModel.isCurrentUserLogged()){
                startProfileActivity();
            }else{
                startSignInActivity();
            }
-      //  });
-       
-        
-       
     }
 
     private void startProfileActivity() {
@@ -99,6 +86,7 @@ public class LoginActivity extends AppCompatActivity {
                 //Object userManager;
                 mUserViewModel.createUser();
                 showSnackBar(getString(R.string.connection_succeed));
+                startProfileActivity();
             } else {
                 // ERRORS
                 if (response == null) {
@@ -112,5 +100,11 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        setupListeners();
     }
 }

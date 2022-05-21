@@ -2,6 +2,8 @@ package com.sitadigi.go4lunch.repository;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -21,7 +23,7 @@ public final class UserRepository {
     //----FIRESTORE FIELD-------------
     private static final String COLLECTION_NAME = "users";
     private static final String USERNAME_FIELD = "username";
-    private static final String EMAIL_USER_FIELD = "email";
+
     private UserRepository() { }
 
     public static UserRepository getInstance() {
@@ -38,17 +40,20 @@ public final class UserRepository {
     }
 
     @Nullable
-    public FirebaseUser getCurrentUser(){
-        return FirebaseAuth.getInstance().getCurrentUser();
+    public FirebaseAuth getCurrentInstance() {
+        return FirebaseAuth.getInstance();
     }
+
+
+        @Nullable
+    public FirebaseUser getCurrentUser(){ return FirebaseAuth.getInstance().getCurrentUser();
+    }
+
     public Task<Void> signOut(Context context){
         return AuthUI.getInstance().signOut(context);
     }
 
-    public Task<Void> deleteUser(Context context){
-
-        return AuthUI.getInstance().delete(context);
-    }
+    public Task<Void> deleteUser(Context context){ return AuthUI.getInstance().delete(context);}
 
 
 //----------------------FIRESTORE---------------------------------
@@ -68,32 +73,16 @@ public final class UserRepository {
 
             User userToCreate = new User(uid, username,useremail, urlPicture);
 
-            Task<DocumentSnapshot> userData = getUserData();
-            // If the user already exist in Firestore, we get his data (isMentor)
-            userData.addOnSuccessListener(documentSnapshot -> {
-               /* if (documentSnapshot.contains(IS_MENTOR_FIELD)){
-                    userToCreate.setIsMentor((Boolean) documentSnapshot.get(IS_MENTOR_FIELD));
-                }*/
-                this.getUsersCollection().document(uid).set(userToCreate);
-            });
-        }
+            this.getUsersCollection().document(uid).set(userToCreate);
+
+        }// Gerer les cas d'erreur
+        else{ }
     }
     // Get UID of current user
     private String getCurrentUserUID() {
         FirebaseUser user = getCurrentUser();
         return (user != null)? user.getUid():null;
     }
-    // Get User Data from Firestore
-    public Task<DocumentSnapshot> getUserData(){
-        String uid = this.getCurrentUserUID();
-        if(uid != null){
-            return this.getUsersCollection().document(uid).get();
-        }else{
-            return null;
-        }
-    }
-
-
 
     // Update User Username
     public Task<Void> updateUsername(String username) {
@@ -104,15 +93,6 @@ public final class UserRepository {
             return null;
         }
     }
-
-    // Update User isMentor
-  /*  public void updateIsMentor(Boolean isMentor) {
-        String uid = this.getCurrentUserUID();
-        if(uid != null){
-            this.getUsersCollection().document(uid).update(IS_MENTOR_FIELD, isMentor);
-        }
-    }*/
-
     // Delete the User from Firestore
     public void deleteUserFromFirestore() {
         String uid = this.getCurrentUserUID();
@@ -120,6 +100,16 @@ public final class UserRepository {
             this.getUsersCollection().document(uid).delete();
         }
     }
+
+    // Get User Data from Firestore// Return the document  of user
+   /* public Task<DocumentSnapshot> getUserData(){
+        String uid = this.getCurrentUserUID();
+        if(uid != null){
+            return this.getUsersCollection().document(uid).get();
+        }else{
+            return null;
+        }
+    }*/
 
 }
 

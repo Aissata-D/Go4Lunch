@@ -1,48 +1,39 @@
 package com.sitadigi.go4lunch;
 
-import static androidx.core.app.ActivityCompat.startActivityForResult;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
-import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.navigation.NavigationView;
 import com.sitadigi.go4lunch.databinding.ActivityMainBinding;
 import com.sitadigi.go4lunch.utils.DialogClass;
 import com.sitadigi.go4lunch.viewModel.UserViewModel;
 
-import java.util.Arrays;
-import java.util.List;
-
 public class MainActivity extends AppCompatActivity {
 
-    private final UserViewModel mUserViewModel = UserViewModel.getInstance();
     TextView userName;
     TextView userEmail;
     ImageView userPhoto;
-    UserViewModel mMyViewModel;
-
+    DialogClass mDialogClass;
+    private UserViewModel mUserViewModel;
     private AppBarConfiguration mAppBarConfiguration;
 
     @Override
@@ -53,13 +44,17 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         setSupportActionBar(binding.appBarMain.toolbar);
 
+        mUserViewModel = UserViewModel.getInstance();
+        mDialogClass = new DialogClass();
+        //  mMyViewModel = new ViewModelProvider(MainActivity.this).get(UserViewModel.class);
+
         binding.appBarMain.fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mUserViewModel.signOut(MainActivity.this);
             }
         });
-
+        // Manage Navigation menus
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
         BottomNavigationView bottomNavigation = binding.bottomNavigation;
@@ -86,21 +81,17 @@ public class MainActivity extends AppCompatActivity {
         } else {
             header = navigationView.inflateHeaderView(R.layout.nav_header_main);
         }
-        userName = (TextView) header.findViewById(R.id.name_user);
-        userEmail = (TextView) header.findViewById(R.id.email_user);
-        userPhoto = (ImageView) header.findViewById(R.id.img_user);
-        mUserViewModel.updateUIWithUserData(this, userName, userEmail, userPhoto);
-        int sinOut = R.id.nav_slideshow;
-
 
         navigationView.getMenu().findItem(R.id.nav_slideshow).setOnMenuItemClickListener(menuItem -> {
-           // AppUtils.showLongToast("this works", getApplicationContext());
             showAlertDialogSinOut(this);
             return true;
         });
 
-      //  mMyViewModel = new ViewModelProvider(MainActivity.this).get(UserViewModel.class);
-
+        //Instanciate views
+        userName = (TextView) header.findViewById(R.id.name_user);
+        userEmail = (TextView) header.findViewById(R.id.email_user);
+        userPhoto = (ImageView) header.findViewById(R.id.img_user);
+        mUserViewModel.updateUIWithUserData(this, userName, userEmail, userPhoto);
     }
 
 
@@ -112,32 +103,27 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+
     private void showAlertDialogSinOut(Context context) {
 
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
-
-
         alertDialog.setTitle("SIGN OUT")
                 .setMessage("Are you sure you want to sign out ?")
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    private static final int RC_SIGN_IN = 123;
-
                     public void onClick(DialogInterface dialog, int which) {
-                        //  sign out
-                        mUserViewModel.signOut(context);
-                        //Start SigninActivity
-
-                    //    mMyViewModel.getUsers().observe(this, users -> {
-                            // update UI
-                      //  });
-                        if(!mUserViewModel.isCurrentUserLogged()){
-                            DialogClass dialogClass =new DialogClass();
-                            dialogClass.startSignInActivity(MainActivity.this);
-
-                        }
-
-
+                        mUserViewModel.signOut(MainActivity.this)
+                                // after sign out is executed we are redirecting on LoginActivity
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            public void onComplete(@NonNull Task<Void> task) {
+                                // below method is used after logout from device.
+                                Toast.makeText(MainActivity.this, "User Signed Out", Toast.LENGTH_SHORT).show();
+                                // Return to LoginActivity via an intent.
+                                Intent i = new Intent(MainActivity.this, LoginActivity.class);
+                                startActivity(i);
+                            }
+                        });
                     }
+
                 })
                 .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
@@ -149,6 +135,7 @@ public class MainActivity extends AppCompatActivity {
         alert.setCanceledOnTouchOutside(false);
         alert.show();
     }
+
     @Override
     public boolean onSupportNavigateUp() {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);

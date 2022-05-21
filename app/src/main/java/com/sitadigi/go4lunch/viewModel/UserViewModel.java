@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -13,6 +14,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.sitadigi.go4lunch.R;
 import com.sitadigi.go4lunch.models.User;
@@ -41,20 +43,15 @@ public class UserViewModel extends ViewModel {
         }
     }
 
+
+    public FirebaseAuth getCurrentInstance(){
+        return userRepository.getCurrentInstance();
+    }
+
     public FirebaseUser getCurrentUser(){
         return userRepository.getCurrentUser();
     }
-//////////////////////////////:::::::/
-  /*  private MutableLiveData<List<User>> users;
-    public LiveData<List<User>> getUsers() {
-        if (users == null) {
-            users = new MutableLiveData<List<User>>();
-            loadUsers();
-        }
-        return users;
-    }
-*/
-/////////////////////////////////////////////////////////////
+
     public Boolean isCurrentUserLogged(){
         return (this.getCurrentUser() != null);
     }
@@ -76,10 +73,6 @@ public class UserViewModel extends ViewModel {
         userRepository.createUser();
     }
 
-    public Task<User> getUserData(){
-        // Get the user from Firestore and cast it to a User model Object
-        return userRepository.getUserData().continueWith(task -> task.getResult().toObject(User.class)) ;
-    }
 
     public Task<Void> updateUsername(String username){
         return userRepository.updateUsername(username);
@@ -106,22 +99,4 @@ public class UserViewModel extends ViewModel {
             userEmail.setText(email);
         }
     }
-
-  /*  private void setProfilePicture(Uri profilePictureUrl, Context context) {
-        Glide.with(context)
-                .load(profilePictureUrl)
-                .apply(RequestOptions.circleCropTransform())
-                .into(userPhoto);
-    }
-
-
-    private void setUserNameAndEmail(FirebaseUser user,Context context){
-
-        //Get email & username from User
-        String email = TextUtils.isEmpty(user.getEmail()) ? context.getString(R.string.info_no_email_found) : user.getEmail();
-        String username = TextUtils.isEmpty(user.getDisplayName()) ? context.getString(R.string.info_no_username_found) : user.getDisplayName();
-        //Update views with data
-        userName.setText(username);
-        userEmail.setText(email);
-    }*/
 }

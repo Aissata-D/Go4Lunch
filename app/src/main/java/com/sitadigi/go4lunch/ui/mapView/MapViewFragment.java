@@ -125,7 +125,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
 
         // Get the current location of the device and set the position of the map.
         getDeviceLocation();
-        executeHttpRequestWithRetrofit();
+
 
         int c = resultList.size();
 
@@ -140,7 +140,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
     // 4 - Execute HTTP request and update UI
     private void executeHttpRequestWithRetrofit(){
         this.updateUIWhenStartingHTTPRequest();
-        GoogleMapApiCalls.fetchResultFollowing(this, /*location*/"45.771944,4.8901709",1500,
+        GoogleMapApiCalls.fetchResultFollowing(this, location,1500,
                 "restaurant","AIzaSyDsQUD7ukIhqdJYZIQxj535IvrDRrkrH08");
         //"45.771944%2C4.8901709"
     }
@@ -289,6 +289,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
                                 googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                         new LatLng(lastKnownLocation.getLatitude(),
                                                 lastKnownLocation.getLongitude()), DEFAULT_ZOOM));
+                                executeHttpRequestWithRetrofit();
                             }
                         } else {
                             Log.d("TAG", "Current location is null. Using defaults.");

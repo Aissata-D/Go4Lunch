@@ -2,6 +2,11 @@ plugins {
     id 'com.android.application'
     // Add this line
     id 'com.google.gms.google-services'
+    //GOOGLE MAP
+    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
+
+
+
 
 }
 
@@ -37,7 +42,7 @@ dependencies {
 
     implementation 'androidx.appcompat:appcompat:1.4.1'
     implementation 'com.google.android.material:material:1.6.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.4.1'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1'
     implementation 'androidx.navigation:navigation-fragment:2.4.2'
@@ -64,6 +69,21 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore'
     //BOTTOM NAVIGATION
     //implementation 'com.android.support:design:28.0.0'
+    //GOOGLE MAP
+    implementation 'com.google.android.gms:play-services-maps:18.0.2'
+    // GOOGLE PLACE
+    implementation 'com.google.android.libraries.places:places:2.6.0'
+    //LOCATION GOOGLE
+    implementation "com.google.android.gms:play-services-location:19.0.1"
+
+    //OKHTTP
+   // implementation 'com.squareup.okio:okio:1.17.5'
+    //GSON
+    implementation 'com.google.code.gson:gson:2.8.9'
+    //RETROFIT
+    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
+
 
 
 

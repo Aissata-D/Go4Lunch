@@ -112,7 +112,7 @@ public class GoogleClass1 {
 }
 //-----------------------------------com.example.Northeast.java-----------------------------------
 
- class Northeast {
+ public class Northeast {
 
     @SerializedName("lat")
     @Expose
@@ -140,7 +140,7 @@ public class GoogleClass1 {
 }
 //-----------------------------------com.example.OpeningHours.java-----------------------------------
 
- class OpeningHours {
+ public class OpeningHours {
 
     @SerializedName("open_now")
     @Expose
@@ -157,7 +157,7 @@ public class GoogleClass1 {
 }
 //-----------------------------------com.example.Photo.java-----------------------------------
 
-class Photo {
+public class Photo {
 
     @SerializedName("height")
     @Expose
@@ -207,7 +207,7 @@ class Photo {
 }
 //-----------------------------------com.example.PlusCode.java-----------------------------------
 
- class PlusCode {
+    public class PlusCode {
 
     @SerializedName("compound_code")
     @Expose
@@ -416,7 +416,7 @@ class Photo {
 
 }
 //-----------------------------------com.example.Southwest.java-----------------------------------
- class Southwest {
+public class Southwest {
 
     @SerializedName("lat")
     @Expose
@@ -443,7 +443,7 @@ class Photo {
 
 }
 //-----------------------------------com.example.Viewport.java-----------------------------------
- class Viewport {
+public class Viewport {
 
     @SerializedName("northeast")
     @Expose

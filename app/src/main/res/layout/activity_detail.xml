@@ -16,11 +16,51 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="165dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/resto_img">
+
+        <TextView
+            android:id="@+id/neigbourg_details_name_text_phone"
+            android:layout_width="wrap_content"
+            android:layout_height="28dp"
+            android:drawableTop="@drawable/ic_baseline_local_phone_24"
+            android:drawablePadding="4dp"
+            android:text="PHONE"
+            tools:layout_editor_absoluteY="52dp" />
+
+        <TextView
+            android:id="@+id/neigbourg_details_name_text_social_media"
+            android:layout_width="wrap_content"
+            android:layout_height="28dp"
+            android:drawableTop="@drawable/ic_baseline_sports_soccer_24"
+            android:drawablePadding="4dp"
+            android:text="WEB SITE"
+            tools:layout_editor_absoluteX="256dp"
+            tools:layout_editor_absoluteY="88dp" />
+
+        <TextView
+
+            android:id="@+id/neigbourg_details_name_text_adresse"
+            android:layout_width="wrap_content"
+            android:layout_height="28dp"
+            android:drawableTop="@drawable/ic_baseline_star_rate_24"
+            android:drawablePadding="4dp"
+            android:text="START"
+
+            tools:layout_editor_absoluteY="16dp" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <TextView
         android:id="@+id/resto_name1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="252dp"
         android:text="RESTO NAME"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
@@ -31,10 +71,23 @@
         android:id="@+id/resto_id"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="88dp"
+        android:layout_marginTop="192dp"
         android:text="RESTO ID"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/resto_name1" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_choice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_marginEnd="16dp"
+        app:backgroundTint="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="@+id/resto_img"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/resto_img"
+        app:srcCompat="@drawable/ic_baseline_check_circle_24_green"
+        app:tint="@color/fab_gray" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

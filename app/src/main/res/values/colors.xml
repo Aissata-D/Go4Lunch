@@ -9,4 +9,8 @@
     <color name="white">#FFFFFFFF</color>
     <color name="orange">#FF4901</color>
     <color name="red_bottom_menu">#FF0000</color>
+    <color name="fab_green">#63A83B</color>
+    <color name="fab_gray">#7F7F7F</color>
+
+
 </resources>

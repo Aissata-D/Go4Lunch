@@ -6,7 +6,6 @@ import com.sitadigi.go4lunch.models.GoogleClass1;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.ref.WeakReference;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -29,7 +28,7 @@ public class GoogleMapApiCalls {
         GoogleMapApiService googleMapApiService = GoogleMapApiService.retrofit.create(GoogleMapApiService.class);
 
         // 2.3 - Create the call on Github API
-        Call<GoogleClass1> call = googleMapApiService.getFollowing(location,radius,type,key);
+        Call<GoogleClass1> call = googleMapApiService.getRestaurent(location,radius,type,key);
         // 2.4 - Start the call
         call.enqueue(new Callback<GoogleClass1>() {
 

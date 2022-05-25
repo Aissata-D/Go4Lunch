@@ -1,5 +1,9 @@
 package com.sitadigi.go4lunch.ui.mapView;
 
+import static com.sitadigi.go4lunch.DetailActivity.RESTO_ID;
+import static com.sitadigi.go4lunch.DetailActivity.RESTO_NAME;
+import static com.sitadigi.go4lunch.DetailActivity.RESTO_PHOTO_URL;
+
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -40,6 +44,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.sitadigi.go4lunch.databinding.FragmentMapViewBinding;
 import com.sitadigi.go4lunch.models.GoogleClass1;
+import com.sitadigi.go4lunch.models.googleMapApi.Result;
 import com.sitadigi.go4lunch.utils.GoogleMapApiCalls;
 
 import org.jetbrains.annotations.Nullable;
@@ -59,7 +64,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
     GoogleMapOptions mGoogleMapOptions;
     public static Location mLocation;
     boolean locationPermissionGranted;
-    String restoName;
+
     String restoId;
     @NonNull
    GoogleMap googleMap;
@@ -71,6 +76,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
     LatLng defaultLocation = new LatLng(5,8);
     private String markerId;
     private String markerName;
+    private LatLng markerPosition;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -152,14 +158,17 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         // 2.1 - When getting response, we update UI
         if (results != null) {
             this.updateUIWithListOfUsers(results);
-            for(int i = 0; i < results.getResults().size(); i++) {
-                resultList.add(results.getResults().get(i));
+            for(GoogleClass1.Result restaurant : results.getResults()) {
 
+                resultList.add(restaurant);
+                LatLng restoPosition = new LatLng(restaurant.getGeometry().getLocation().getLat()
+                        ,restaurant.getGeometry().getLocation().getLng());
+                String restoNameForMarker = restaurant.getName();
                 googleMap.addMarker(new MarkerOptions()
-                        .position(new LatLng(results.getResults().get(i).getGeometry().getLocation().getLat()
-                                ,results.getResults().get(i).getGeometry().getLocation().getLng()))
+                        .position(restoPosition)
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-                        .title("Marker in Villeurbanne"));
+                        .title(restoNameForMarker));
+
             }
             int a = resultList.size();
            // LatLng villeurbanne = new LatLng(45.771944, 4.8901709);
@@ -311,13 +320,37 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
     public boolean onMarkerClick(@NonNull Marker marker) {
         markerId = marker.getId();
         markerName = marker.getTitle();
-        Log.e("TAG", "onMarkerClick: restoid: "+restoId +"resto name "+restoName );
-        Toast.makeText(this.getActivity().getApplicationContext(), "resto Name : "+restoName, Toast.LENGTH_SHORT).show();
+        markerPosition = marker.getPosition();
+        LatLng restoPosition;
 
-        Intent intentDetail = new Intent(this.getActivity(), DetailActivity.class);
-        intentDetail.putExtra("RESTO_ID",markerId);
-        intentDetail.putExtra("RESTO_NAME",markerName);
-        startActivity(intentDetail);
+        for(GoogleClass1.Result restaurant : resultList){
+            restoPosition = new LatLng(restaurant.getGeometry().getLocation().getLat(),
+                    restaurant.getGeometry().getLocation().getLng());
+            String restoName = restaurant.getName();
+            if((restoName.equals(markerName)) && (restoPosition.equals( markerPosition))){
+                Intent intentDetail = new Intent(this.getActivity(), DetailActivity.class);
+                intentDetail.putExtra(RESTO_ID,restaurant.getPlaceId());
+                intentDetail.putExtra(RESTO_NAME,restoName);
+                if(restaurant.getPhotos() != null/*  .size() >= 1*/) {
+                    if (restaurant.getPhotos().get(0).getPhotoReference() != null) {
+                        intentDetail.putExtra(RESTO_PHOTO_URL, restaurant.getPhotos().get(0).getPhotoReference());
+                    }
+                }
+                startActivity(intentDetail);
+
+                Log.e("TAG", "onMarkerClick:" +
+                        " restoid: "+restaurant.getPlaceId() +"resto name "+restaurant.getName());
+                Toast.makeText(this.getActivity().getApplicationContext(),
+                        "resto Name : "+restoName +
+                                "  resto Id : "+restaurant.getPlaceId(), Toast.LENGTH_SHORT).show();
+
+            }
+
+
+        }
+        //TODO Boucler sur resultList et si : marker.getTitle == resultList.getName &&
+       //TODO  marker.getLat == resultList.getLat && marker.getLng == resultList.getLng
+
 
         return true;
     }

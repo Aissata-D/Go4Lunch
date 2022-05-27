@@ -17,6 +17,7 @@ import com.sitadigi.go4lunch.utils.GoogleMapApiCalls;
 import com.sitadigi.go4lunch.utils.GooglePlacePhotoApiCalls;
 
 import java.net.URL;
+import java.util.Objects;
 
 import retrofit2.http.Url;
 
@@ -39,6 +40,7 @@ public class DetailActivity extends AppCompatActivity implements GooglePlacePhot
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+        Objects.requireNonNull(this.getSupportActionBar()).hide();
 
         restoId = getIntent().getStringExtra(RESTO_ID);
         restoName= getIntent().getStringExtra(RESTO_NAME);
@@ -47,8 +49,8 @@ public class DetailActivity extends AppCompatActivity implements GooglePlacePhot
 
 
         mImageViewResto = (ImageView) findViewById(R.id.resto_img);
-        tvRestoId = (TextView) findViewById(R.id.resto_id);
-        tvRestoName = (TextView) findViewById(R.id.resto_name1);
+        //tvRestoId = (TextView) findViewById(R.id.resto_id);
+        tvRestoName = (TextView) findViewById(R.id.resto_name_detail_activity);
 
         String urlPart1 = "https://maps.googleapis.com/maps/api/place/photo?maxheigth=500&maxwidth=800&photo_reference=";
         String urlPart2 = restoPhotoUrl;
@@ -63,12 +65,13 @@ public class DetailActivity extends AppCompatActivity implements GooglePlacePhot
 
     public void configureDetailView(){
         tvRestoName.setText(restoName);
-        tvRestoId.setText(restoId);
+       // tvRestoId.setText(restoId);
 
         //GLIDE TO SHOW PHOTO
         Glide.with(this)
                 .load(getUrl(urlConcat))
                 .apply(RequestOptions.noTransformation())
+                .centerCrop()
                 .into(mImageViewResto);
 
     }

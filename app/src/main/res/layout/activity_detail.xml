@@ -4,78 +4,98 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".DetailActivity">
+    tools:context=".DetailActivity"
+    >
 
     <ImageView
         android:id="@+id/resto_img"
-        android:layout_width="408dp"
-        android:layout_height="179dp"
-        android:layout_marginTop="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="244dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="165dp"
+        android:id="@+id/constraintLayout"
+        android:layout_width="416dp"
+        android:layout_height="91dp"
+        android:background="@color/red_bottom_menu"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/resto_img">
 
+
+        <TextView
+            android:id="@+id/resto_name_detail_activity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="24dp"
+            android:text="NAME RESTO"
+            android:drawableEnd="@drawable/ic_baseline_star_24_gray"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Type resto - adresse resto"
+            app:layout_constraintStart_toStartOf="@+id/resto_name_detail_activity"
+            app:layout_constraintTop_toBottomOf="@+id/resto_name_detail_activity" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="90dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
+
         <TextView
             android:id="@+id/neigbourg_details_name_text_phone"
             android:layout_width="wrap_content"
-            android:layout_height="28dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="16dp"
             android:drawableTop="@drawable/ic_baseline_local_phone_24"
             android:drawablePadding="4dp"
             android:text="PHONE"
-            tools:layout_editor_absoluteY="52dp" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/neigbourg_details_name_text_social_media"
             android:layout_width="wrap_content"
-            android:layout_height="28dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="32dp"
             android:drawableTop="@drawable/ic_baseline_sports_soccer_24"
             android:drawablePadding="4dp"
             android:text="WEB SITE"
-            tools:layout_editor_absoluteX="256dp"
-            tools:layout_editor_absoluteY="88dp" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
 
             android:id="@+id/neigbourg_details_name_text_adresse"
             android:layout_width="wrap_content"
-            android:layout_height="28dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+
             android:drawableTop="@drawable/ic_baseline_star_rate_24"
             android:drawablePadding="4dp"
             android:text="START"
-
-            tools:layout_editor_absoluteY="16dp" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <TextView
-        android:id="@+id/resto_name1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="252dp"
-        android:text="RESTO NAME"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/resto_img" />
-
-    <TextView
-        android:id="@+id/resto_id"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="192dp"
-        android:text="RESTO ID"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/resto_name1" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_choice"
@@ -89,5 +109,16 @@
         app:layout_constraintTop_toBottomOf="@+id/resto_img"
         app:srcCompat="@drawable/ic_baseline_check_circle_24_green"
         app:tint="@color/fab_gray" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerview_list_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout2"
+        tools:itemCount="10"
+        tools:listitem="@layout/item_detail_restaurent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

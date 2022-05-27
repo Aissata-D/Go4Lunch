@@ -39,21 +39,17 @@ public class ListViewFragment extends Fragment {
         binding = FragmentListViewBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
         mRecyclerView = binding.recyclerviewListView;
-
+        String location = "45.7714678,4.8901636";
         //listViewViewModel= new ViewModelProvider(ListViewFragment.this).get(ListViewViewModel.class);
-        listViewViewModel.loadRestaurentData();
+        listViewViewModel.loadRestaurentData(location);
         listViewViewModel.getRestaurent().observe(getViewLifecycleOwner(), RestaurentResponse -> {
             List<GoogleClass1.Result> mItems = RestaurentResponse;
-
-            //listOfRestaurent = RestaurentResponse;
             listOfRestaurent.clear();
             listOfRestaurent.addAll(mItems);
             //mAdapter.notifyDataSetChanged();
             initRecyclerView();
 
         });
-
-        //Initialise Recyclerview
 
         Log.e("TAG", "onCreateView: "+listOfRestaurent );
 

@@ -32,13 +32,12 @@ public class ListViewViewModel extends ViewModel implements GoogleMapApiCalls.Ca
 
     public MutableLiveData<List<GoogleClass1.Result>> getRestaurent() {
 
-
         Log.e("TAG", "getRestaurent: " +listOfRestaurent );
         return listOfRestaurent;
     }
-    public  /* MutableLiveData<List<GoogleClass1.Result>>*/void loadRestaurentData() {
+    public void loadRestaurentData(String location) {
 
-        listOfRestaurent = mGoogleMapApiCalls.fetchResultFollowing(this, "45.771944,4.8901709",1500,
+        listOfRestaurent = mGoogleMapApiCalls.fetchResultFollowing(this, location,1500,
                 "restaurant","AIzaSyDsQUD7ukIhqdJYZIQxj535IvrDRrkrH08");
 
     }

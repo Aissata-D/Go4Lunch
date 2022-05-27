@@ -40,6 +40,7 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.maps.SupportMapFragment;
@@ -78,17 +79,20 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
     private String markerId;
     private String markerName;
     private LatLng markerPosition;
+    //List<GoogleClass1.Result> listOfRestaurent = new ArrayList<>();
+    List<GoogleClass1.Result> listOfRestaurent = new ArrayList<>();
+    MapViewViewModel mapViewViewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        MapViewViewModel mapViewViewModel =
-                new ViewModelProvider(this).get(MapViewViewModel.class);
+         mapViewViewModel = new ViewModelProvider(this).get(MapViewViewModel.class);
 
         binding = FragmentMapViewBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textMapView;
-        mapViewViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+
+        //final TextView textView = binding.textMapView;
+       // mapViewViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
 
         resultList = new ArrayList<>();
@@ -116,16 +120,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         this.googleMap = googleMap;
         getLocationPermission();
 
-/*
-      //  googleMap.setMinZoomPreference(6.0f);
-        //googleMap.setMaxZoomPreference(14.0f);
-        CameraPosition cameraPosition = new CameraPosition.Builder().
-                target(villeurbanne).
-                zoom(15).
-                bearing(0).
-                build();
-        googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));*/
-       // googleMap.setMyLocationEnabled(true);
 
 // Turn on the My Location layer and the related control on the map.
         updateLocationUI();
@@ -133,9 +127,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         // Get the current location of the device and set the position of the map.
         getDeviceLocation();
 
-
-        int c = resultList.size();
-
+        googleMap.setOnMarkerClickListener(this);
 
     }
 
@@ -158,7 +150,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
     public void onResponse(@Nullable GoogleClass1 results) {
         // 2.1 - When getting response, we update UI
         if (results != null) {
-            this.updateUIWithListOfUsers(results);
+            //this.updateUIWithListOfUsers(results);
             for(GoogleClass1.Result restaurant : results.getResults()) {
 
                 resultList.add(restaurant);
@@ -199,14 +191,14 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
 
 
     // 3 - Update UI showing only name of users
-    private void updateUIWithListOfUsers(GoogleClass1 results){
+    private void updateUIWithListOfUsers(){
         StringBuilder stringBuilder = new StringBuilder();
         //GoogleClass1 result;
         // stringBuilder.append("-"+ results.getResults().get(0).getName() +"\n");
         //  for (GoogleClass1 result : results.getResults()){
-        for(int i = 0; i < results.getResults().size(); i++) {
+        for(int i = 0; i < listOfRestaurent.size(); i++) {
         // resultList.add(results.getResults().get(i));
-            stringBuilder.append("-" + results.getResults().get(i).getName() + "\n"
+            stringBuilder.append("-" + listOfRestaurent.get(i).getName() + "\n"
                     +"45.771944,4.8901709"+"\n"
                     /*+ "currentLocation; " +currentLocation +"\n"*/);
         }
@@ -299,7 +291,39 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
                                 googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                         new LatLng(lastKnownLocation.getLatitude(),
                                                 lastKnownLocation.getLongitude()), DEFAULT_ZOOM));
-                                executeHttpRequestWithRetrofit();
+                               // executeHttpRequestWithRetrofit();
+                                //Call of viewModel
+                                mapViewViewModel.loadRestaurentData(location);
+                                mapViewViewModel.getRestaurent().observe(getViewLifecycleOwner(), RestaurentResponse -> {
+                                    //listOfRestaurent.clear();
+                                    listOfRestaurent.addAll(RestaurentResponse);
+
+                                // 2.1 - When getting response, we update UI
+                                if (listOfRestaurent!= null) {
+                                    // this.updateUIWithListOfUsers(listOfRestaurent);
+                                    for(GoogleClass1.Result restaurant : listOfRestaurent) {
+
+                                        resultList.add(restaurant);
+                                        LatLng restoPosition = new LatLng(restaurant.getGeometry().getLocation().getLat()
+                                                ,restaurant.getGeometry().getLocation().getLng());
+                                        String restoNameForMarker = restaurant.getName();
+                                        googleMap.addMarker(new MarkerOptions()
+                                                .position(restoPosition)
+                                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                                                .title(restoNameForMarker));
+
+                                    }
+
+                                    int a = resultList.size();
+                                    // LatLng villeurbanne = new LatLng(45.771944, 4.8901709);
+                                    Log.e("TAG", "onResponse: " );
+
+                                }
+                                });
+
+                                int b = resultList.size();
+
+
                             }
                         } else {
                             Log.d("TAG", "Current location is null. Using defaults.");

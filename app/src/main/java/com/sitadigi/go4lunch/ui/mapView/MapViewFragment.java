@@ -2,6 +2,7 @@ package com.sitadigi.go4lunch.ui.mapView;
 
 import static com.sitadigi.go4lunch.DetailActivity.RESTO_ID;
 import static com.sitadigi.go4lunch.DetailActivity.RESTO_NAME;
+import static com.sitadigi.go4lunch.DetailActivity.RESTO_OPENINGHOURS;
 import static com.sitadigi.go4lunch.DetailActivity.RESTO_PHOTO_URL;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -331,6 +332,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
                 Intent intentDetail = new Intent(this.getActivity(), DetailActivity.class);
                 intentDetail.putExtra(RESTO_ID,restaurant.getPlaceId());
                 intentDetail.putExtra(RESTO_NAME,restoName);
+                intentDetail.putExtra(RESTO_OPENINGHOURS, restaurant.getOpeningHours().getOpenNow());
                 if(restaurant.getPhotos() != null/*  .size() >= 1*/) {
                     if (restaurant.getPhotos().get(0).getPhotoReference() != null) {
                         intentDetail.putExtra(RESTO_PHOTO_URL, restaurant.getPhotos().get(0).getPhotoReference());

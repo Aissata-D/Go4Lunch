@@ -51,7 +51,8 @@ public class MainActivity extends AppCompatActivity {
         binding.appBarMain.fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mUserViewModel.signOut(MainActivity.this);
+               // mUserViewModel.getAllUser();
+
             }
         });
         // Manage Navigation menus

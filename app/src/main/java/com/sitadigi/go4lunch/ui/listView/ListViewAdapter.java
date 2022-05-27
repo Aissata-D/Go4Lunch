@@ -1,8 +1,12 @@
 package com.sitadigi.go4lunch.ui.listView;
 
+import static com.sitadigi.go4lunch.DetailActivity.RESTO_ID;
+import static com.sitadigi.go4lunch.DetailActivity.RESTO_NAME;
+import static com.sitadigi.go4lunch.DetailActivity.RESTO_OPENINGHOURS;
 import static com.sitadigi.go4lunch.DetailActivity.RESTO_PHOTO_URL;
+import static com.sitadigi.go4lunch.DetailActivity.RESTO_TYPE_ADRESSES;
 
-import android.content.res.ColorStateList;
+import android.content.Intent;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,16 +15,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.AppCompatImageView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.sitadigi.go4lunch.DetailActivity;
 import com.sitadigi.go4lunch.models.GoogleClass1;
-import com.sitadigi.go4lunch.models.Restaurent;
+
 
 import java.util.List;
 import com.sitadigi.go4lunch.R;
+
 
 public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListViewHolder> {
 
@@ -33,8 +38,8 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
      * The list of restaurent adapter
      */
     @NonNull
-    private List<GoogleClass1.Result> mRestaurents ; //Type mutable
-
+    private final List<GoogleClass1.Result> mRestaurents ;
+    public int mPosition;
 
 
     /**
@@ -42,7 +47,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
      *
      * @param restaurents the list of tasks the adapter deals with to set
      */
-    ListViewAdapter(@NonNull final List<GoogleClass1.Result> restaurents) {
+    public ListViewAdapter(@NonNull final List<GoogleClass1.Result> restaurents) {
         this.mRestaurents = restaurents;
 
     }
@@ -69,13 +74,39 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
 
 
         listViewHolder.bind(mRestaurents.get(position));
+
+// Open DetailsActivity of restaurant clicked
+        listViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPosition = listViewHolder.getAdapterPosition();
+                GoogleClass1.Result restaurant = mRestaurents.get(mPosition);
+                Intent intentDetail = new Intent(v.getContext(), DetailActivity.class);
+                intentDetail.putExtra(RESTO_ID, restaurant.getName());
+                intentDetail.putExtra(RESTO_NAME, restaurant.getName());
+                String restoAdressesAndTypeForDetailActivity = restaurant.getTypes().get(0) +" - "
+                        +restaurant.getVicinity();
+
+                intentDetail.putExtra(RESTO_TYPE_ADRESSES, restoAdressesAndTypeForDetailActivity);
+
+                if(restaurant.getOpeningHours() != null && restaurant.getOpeningHours().getOpenNow() != null) {
+                    intentDetail.putExtra(RESTO_OPENINGHOURS, restaurant.getOpeningHours().getOpenNow());
+                }
+
+                if (restaurant.getPhotos() != null) {
+                    if (mRestaurents.get(mPosition).getPhotos().get(0).getPhotoReference() != null) {
+                        intentDetail.putExtra(RESTO_PHOTO_URL, restaurant.getPhotos().get(0).getPhotoReference());
+                    }
+                }
+                v.getContext().startActivity(intentDetail);
+            }
+    }
+    );
     }
 
     @Override
     public int getItemCount() {
-        if(mRestaurents == null){return 0;}
-        else{
-            return mRestaurents.size();}
+        return mRestaurents.size();
     }
 
 
@@ -116,11 +147,6 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
             restoImageView = itemView.findViewById(R.id.resto_imageview_item_listview);
 
 
-
-
-
-
-
         }
 
         /**
@@ -140,13 +166,23 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
             urlPart3 = "&key=AIzaSyDsQUD7ukIhqdJYZIQxj535IvrDRrkrH08";
             urlConcat = urlPart1 + urlPart2 + urlPart3;
 
-            restoName.setText(restaurant.getName());
+
             //GLIDE TO SHOW PHOTO
             Glide.with(restoImageView.getContext())
                     .load(getUrl(urlConcat))
                     .apply(RequestOptions.noTransformation())
                     .centerCrop()
                     .into(restoImageView);
+
+            restoName.setText(restaurant.getName());
+            String restoAdressesAndType = restaurant.getTypes().get(0) +" - "
+                    +restaurant.getVicinity();
+            restoTypeAdresse.setText(restoAdressesAndType);
+            if(restaurant.getOpeningHours() != null && restaurant.getOpeningHours().getOpenNow() != null){
+                if(restaurant.getOpeningHours().getOpenNow()){
+                    restoOpeningHour.setText(R.string.resto_open_now);
+                }else {restoOpeningHour.setText(R.string.resto_close);}
+            }else {restoOpeningHour.setText(R.string.restoopening_hour_unknow);}
         }
     }
 
@@ -159,3 +195,13 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
         return uri;
     }
 }
+/*
+         Intent intentDetail = new Intent(this.getActivity(), DetailActivity.class);
+                intentDetail.putExtra(RESTO_ID,restaurant.getPlaceId());
+                intentDetail.putExtra(RESTO_NAME,restoName);*/
+               // if(restaurant.getPhotos() != null/*  .size() >= 1*/) {
+            /*if (restaurant.getPhotos().get(0).getPhotoReference() != null) {
+                intentDetail.putExtra(RESTO_PHOTO_URL, restaurant.getPhotos().get(0).getPhotoReference());
+            }
+        }
+        startActivity(intentDetail); */

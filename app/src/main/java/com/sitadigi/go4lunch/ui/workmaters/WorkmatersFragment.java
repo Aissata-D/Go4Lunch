@@ -9,30 +9,37 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.location.LocationListener;
 import com.sitadigi.go4lunch.databinding.FragmentWorkmatersBinding;
 
 
 import com.sitadigi.go4lunch.models.GoogleClass1;
+import com.sitadigi.go4lunch.models.User;
+import com.sitadigi.go4lunch.ui.listView.ListViewAdapter;
 import com.sitadigi.go4lunch.utils.GoogleMapApiCalls;
 
 
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class WorkmatersFragment extends Fragment implements GoogleMapApiCalls.Callbacks{
+public class WorkmatersFragment extends Fragment  {
 
     private FragmentWorkmatersBinding binding;
     TextView textView;
-    String currentLocation;
-    private LocationManager locationManager;
+    private RecyclerView mRecyclerView;
+    List<User> users = new ArrayList<>();
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -43,84 +50,33 @@ public class WorkmatersFragment extends Fragment implements GoogleMapApiCalls.Ca
         View root = binding.getRoot();
 
 
-         textView = binding.workmatersText;
-        //locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        //locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2 * 1000, 1, locationListener);
+        mRecyclerView = binding.recyclerviewWorkmaters;
 
-        this.executeHttpRequestWithRetrofit();
-       // workmatersViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        // workmatersViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+         workmatersViewModel.getAllUser().observe(getViewLifecycleOwner(), usersLiveData -> {
+         List<User> mItems = usersLiveData;
+         users.clear();
+         users.addAll(mItems);
+         initRecyclerView();
+
+         });
+
         return root;
     }
+    public void initRecyclerView() {
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this.getActivity());
+        mRecyclerView.setLayoutManager(linearLayoutManager);
 
-    @Override
+        WorkmatersAdapter workmatersAdapter = new WorkmatersAdapter(users);
+        mRecyclerView.setAdapter(workmatersAdapter);
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
+
+    }
+
+        @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
     }
-
-    // ------------------------------
-    //  HTTP REQUEST (Retrofit Way)
-    // ------------------------------
-
-    // 4 - Execute HTTP request and update UI
-    private void executeHttpRequestWithRetrofit(){
-        this.updateUIWhenStartingHTTPRequest();
-        GoogleMapApiCalls.fetchResultFollowing(this, "45.771944,4.8901709",1500,
-                "restaurant","AIzaSyDsQUD7ukIhqdJYZIQxj535IvrDRrkrH08");
-        //"45.771944%2C4.8901709"
-    }
-
-    // 2 - Override callback methods
-
-    @Override
-    public void onResponse(@Nullable GoogleClass1 results) {
-        // 2.1 - When getting response, we update UI
-        if (results != null) this.updateUIWithListOfUsers(results);
-    }
-
-    @Override
-    public void onFailure() {
-
-
-        // 2.2 - When getting error, we update UI
-        this.updateUIWhenStopingHTTPRequest("An error happened !");
-    }
-
-
-
-            // ------------------
-            //  UPDATE UI
-            // ------------------
-
-
-
-    // 3 - Update UI showing only name of users
-    private void updateUIWithListOfUsers(GoogleClass1 results){
-        StringBuilder stringBuilder = new StringBuilder();
-        //GoogleClass1 result;
-       // stringBuilder.append("-"+ results.getResults().get(0).getName() +"\n");
-      //  for (GoogleClass1 result : results.getResults()){
-            for(int i = 0; i < results.getResults().size(); i++) {
-                stringBuilder.append("-" + results.getResults().get(i).getName() + "\n"
-                       +"45.771944,4.8901709"+"\n"+
-                "currentLocation; " +currentLocation +"\n");
-            }
-        //}
-        updateUIWhenStopingHTTPRequest(stringBuilder.toString());
-    }
-    private void updateUIWhenStartingHTTPRequest(){
-        this.textView.setText("Downloading...");
-    }
-
-    private void updateUIWhenStopingHTTPRequest(String response){
-        this.textView.setText(response);
-    }
-
-    LocationListener locationListener = new LocationListener() {
-        @Override
-        public void onLocationChanged(@NonNull Location location) {
-             currentLocation = location.getLatitude() + "," + location.getLongitude();
-        }
-    };
 
 }

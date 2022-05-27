@@ -21,6 +21,7 @@ import com.sitadigi.go4lunch.models.User;
 import com.sitadigi.go4lunch.repository.UserRepository;
 
 import java.text.BreakIterator;
+import java.util.List;
 
 public class UserViewModel extends ViewModel {
     private static volatile UserViewModel instance;
@@ -99,4 +100,5 @@ public class UserViewModel extends ViewModel {
             userEmail.setText(email);
         }
     }
+
 }

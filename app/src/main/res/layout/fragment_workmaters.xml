@@ -5,11 +5,12 @@
     android:layout_height="match_parent"
     tools:context=".ui.workmaters.WorkmatersFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:id="@+id/workmaters_text"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerview_workmaters"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:itemCount="30"
+            tools:listitem="@layout/item_workmaters" />
+
 
 </FrameLayout>

@@ -30,6 +30,7 @@
         <entry key="app/src/main/res/layout/fragment_workmaters.xml" value="0.15625" />
         <entry key="app/src/main/res/layout/item_detail_restaurent.xml" value="0.25" />
         <entry key="app/src/main/res/layout/item_listview.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/item_workmaters.xml" value="0.25" />
         <entry key="app/src/main/res/layout/map_view_fragment.xml" value="0.15625" />
         <entry key="app/src/main/res/layout/nav_header_main.xml" value="0.22" />
         <entry key="app/src/main/res/menu/activity_main_drawer.xml" value="0.109375" />

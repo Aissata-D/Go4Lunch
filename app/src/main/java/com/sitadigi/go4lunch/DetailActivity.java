@@ -25,13 +25,22 @@ public class DetailActivity extends AppCompatActivity implements GooglePlacePhot
     ImageView mImageViewResto;
     TextView tvRestoId;
     TextView tvRestoName;
+    TextView tvRestoTypeAndAdresses;
+    TextView tvRestoOpeningHours;
     public static final String RESTO_NAME = "RESTO_NAME";
     public static final String RESTO_ID = "RESTO_ID";
     public static final String RESTO_PHOTO_URL = "RESTO_PHOTO_URL";
+    public static final String RESTO_OPENINGHOURS = "RESTO_OPENINGHOURS";
+    public static final String RESTO_TYPE_ADRESSES = "RESTO_TYPE";
+    public static final String RESTO_ADRESSES = "RESTO_ADRESSES";
+
 
     String restoId;
     String restoName;
     String restoPhotoUrl;
+    String restoTypeAndAdresses;
+    Boolean isRestoOpeningHours;
+
     StringBuilder stringBuilderURL;
     URL mURL;
     String urlConcat;
@@ -45,18 +54,19 @@ public class DetailActivity extends AppCompatActivity implements GooglePlacePhot
         restoId = getIntent().getStringExtra(RESTO_ID);
         restoName= getIntent().getStringExtra(RESTO_NAME);
         restoPhotoUrl = getIntent().getStringExtra(RESTO_PHOTO_URL);
+        restoTypeAndAdresses = getIntent().getStringExtra(RESTO_TYPE_ADRESSES);
+        //isRestoOpeningHours = getIntent().getBooleanExtra(RESTO_OPENINGHOURS,false);
 
 
 
         mImageViewResto = (ImageView) findViewById(R.id.resto_img);
         //tvRestoId = (TextView) findViewById(R.id.resto_id);
         tvRestoName = (TextView) findViewById(R.id.resto_name_detail_activity);
-
+        tvRestoTypeAndAdresses = (TextView) findViewById(R.id.resto_type_detail_detail_activity);
         String urlPart1 = "https://maps.googleapis.com/maps/api/place/photo?maxheigth=500&maxwidth=800&photo_reference=";
         String urlPart2 = restoPhotoUrl;
         String urlPart3 = "&key=AIzaSyDsQUD7ukIhqdJYZIQxj535IvrDRrkrH08";
         urlConcat = urlPart1 + urlPart2 + urlPart3;
-
 
         configureDetailView();
         executeHttpRequestWithRetrofit();
@@ -66,6 +76,7 @@ public class DetailActivity extends AppCompatActivity implements GooglePlacePhot
     public void configureDetailView(){
         tvRestoName.setText(restoName);
        // tvRestoId.setText(restoId);
+        tvRestoTypeAndAdresses.setText(restoTypeAndAdresses);
 
         //GLIDE TO SHOW PHOTO
         Glide.with(this)

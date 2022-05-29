@@ -1,15 +1,10 @@
 package com.sitadigi.go4lunch.ui.workmaters;
 
-import static android.content.Context.LOCATION_SERVICE;
 
-
-import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -19,17 +14,11 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.location.LocationListener;
 import com.sitadigi.go4lunch.databinding.FragmentWorkmatersBinding;
 
 
-import com.sitadigi.go4lunch.models.GoogleClass1;
 import com.sitadigi.go4lunch.models.User;
-import com.sitadigi.go4lunch.ui.listView.ListViewAdapter;
-import com.sitadigi.go4lunch.utils.GoogleMapApiCalls;
 
-
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;

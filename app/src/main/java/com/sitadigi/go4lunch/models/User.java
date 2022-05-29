@@ -9,9 +9,10 @@ public class User {
     private String email;
     @Nullable
     private String urlPicture;
+    String userRestoId;
 
-    public User() {
-    }
+   // public User() {
+    //}
 
     public User(String uid, String username, String email,
                 @Nullable String urlPicture) {
@@ -19,9 +20,18 @@ public class User {
         this.username = username;
         this.email = email;
         this.urlPicture = urlPicture;
+        this.userRestoId = "restoIDdNULL";
     }
 
-    //-------------------GETTER----------------------------------------
+    public User(String uid, String username, String email, @Nullable String urlPicture,
+                String userRestoId) {
+        this.uid = uid;
+        this.username = username;
+        this.email = email;
+        this.urlPicture = urlPicture;
+        this.userRestoId = userRestoId;
+    }
+//-------------------GETTER----------------------------------------
 
     public String getUid() {
         return uid;
@@ -40,7 +50,10 @@ public class User {
         return urlPicture;
     }
 
-    //------------------SETTER----------------------------------------
+    public String getUserRestoId() {
+        return userRestoId;
+    }
+//------------------SETTER----------------------------------------
 
     public void setUid(String uid) {
         this.uid = uid;
@@ -57,4 +70,9 @@ public class User {
     public void setUrlPicture(@Nullable String urlPicture) {
         this.urlPicture = urlPicture;
     }
+
+    public void setUserRestoId(String userRestoId) {
+        this.userRestoId = userRestoId;
+    }
+
 }

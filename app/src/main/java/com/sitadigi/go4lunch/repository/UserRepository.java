@@ -33,6 +33,7 @@ import io.grpc.internal.LogExceptionRunnable;
 public final class UserRepository {
 
     private static volatile UserRepository instance;
+    String userRestoId = "restoIDdNULL";
 
     //----FIRESTORE FIELD-------------
     private static final String COLLECTION_NAME = "users";
@@ -72,12 +73,13 @@ public final class UserRepository {
 
 //----------------------FIRESTORE---------------------------------
 // Get the Collection Reference
-    private CollectionReference getUsersCollection(){
+    public CollectionReference getUsersCollection(){
     return FirebaseFirestore.getInstance().collection(COLLECTION_NAME);
 }
 
     // Create User in Firestore
     public void createUser() {
+       // String userRestoId = null;
         FirebaseUser user = getCurrentUser();
         if(user != null){
             String urlPicture = (user.getPhotoUrl() != null) ? user.getPhotoUrl().toString() : null;
@@ -85,7 +87,25 @@ public final class UserRepository {
             String useremail = user.getEmail();
             String uid = user.getUid();
 
-            User userToCreate = new User(uid, username,useremail, urlPicture);
+            DocumentReference userDocumentRef = getUsersCollection().document(uid);
+            userDocumentRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document != null) {
+                            userRestoId = document.getString("userRestoId");
+
+                        }// else {
+                           // userRestoId = null;
+                        //}
+                    } else {
+                        Log.d("LOGGER", "get failed with ", task.getException());
+                    }
+                }
+            });
+
+            User userToCreate = new User(uid, username,useremail, urlPicture,userRestoId);
 
             this.getUsersCollection().document(uid).set(userToCreate);
 
@@ -146,7 +166,9 @@ public final class UserRepository {
                                         String email = document.getString("email");
                                         String urlPicture = document.getString("urlPicture");
                                         String uid = document.getId();
-                                        User userToGet = new User(uid, username, email, urlPicture);
+                                        String restoId = document.getString("userRestoId");
+
+                                        User userToGet = new User(uid, username, email, urlPicture,restoId);
                                         if (!usersUsingApp.contains(userToGet)) {
                                             usersUsingApp.add(userToGet);
                                         }

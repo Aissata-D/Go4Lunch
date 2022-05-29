@@ -84,11 +84,11 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
                 Intent intentDetail = new Intent(v.getContext(), DetailActivity.class);
                 intentDetail.putExtra(RESTO_ID, restaurant.getName());
                 intentDetail.putExtra(RESTO_NAME, restaurant.getName());
-                String restoAdressesAndTypeForDetailActivity = restaurant.getTypes().get(0) +" - "
-                        +restaurant.getVicinity();
-
-                intentDetail.putExtra(RESTO_TYPE_ADRESSES, restoAdressesAndTypeForDetailActivity);
-
+                if((restaurant.getTypes()) != null && (restaurant.getTypes().get(0))!=null) {
+                    String restoAdressesAndTypeForDetailActivity = restaurant.getTypes().get(0) + " - "
+                            + restaurant.getVicinity();
+                    intentDetail.putExtra(RESTO_TYPE_ADRESSES, restoAdressesAndTypeForDetailActivity);
+                }
                 if(restaurant.getOpeningHours() != null && restaurant.getOpeningHours().getOpenNow() != null) {
                     intentDetail.putExtra(RESTO_OPENINGHOURS, restaurant.getOpeningHours().getOpenNow());
                 }

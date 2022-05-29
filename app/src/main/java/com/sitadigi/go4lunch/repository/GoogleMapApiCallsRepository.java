@@ -1,9 +1,10 @@
-package com.sitadigi.go4lunch.utils;
+package com.sitadigi.go4lunch.repository;
 
 
 import androidx.lifecycle.MutableLiveData;
 
 import com.sitadigi.go4lunch.models.GoogleClass1;
+import com.sitadigi.go4lunch.utils.GoogleMapApiService;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -14,19 +15,19 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class GoogleMapApiCalls {
+public class GoogleMapApiCallsRepository {
 int i;
     // 1 - Creating a callback
     public interface Callbacks {
         void onResponse(@Nullable GoogleClass1 results);
         void onFailure();
     }
-    public static GoogleMapApiCalls newsGoogleMapApiCalls;
-    public static GoogleMapApiCalls getInstance(){
-        if (newsGoogleMapApiCalls == null){
-            newsGoogleMapApiCalls = new GoogleMapApiCalls();
+    public static GoogleMapApiCallsRepository sNewsGoogleMapApiCallsRepository;
+    public static GoogleMapApiCallsRepository getInstance(){
+        if (sNewsGoogleMapApiCallsRepository == null){
+            sNewsGoogleMapApiCallsRepository = new GoogleMapApiCallsRepository();
         }
-        return newsGoogleMapApiCalls;
+        return sNewsGoogleMapApiCallsRepository;
     }
 
     // 2 - Public method to start fetching users following by Jake Wharton

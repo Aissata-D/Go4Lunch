@@ -1,34 +1,36 @@
 package com.sitadigi.go4lunch.viewModel;
 
 import android.content.Context;
-import android.net.Uri;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.sitadigi.go4lunch.R;
-import com.sitadigi.go4lunch.models.User;
+import com.sitadigi.go4lunch.models.GoogleClass1;
 import com.sitadigi.go4lunch.repository.UserRepository;
 
-import java.text.BreakIterator;
 import java.util.List;
 
 public class UserViewModel extends ViewModel {
     private static volatile UserViewModel instance;
     private final UserRepository userRepository;
+    private MutableLiveData<List<GoogleClass1.Result>> listOfRestaurent;
+    //private final GoogleMapApiCallsRepository mGoogleMapApiCalls;
 
-    private UserViewModel() {
+    public UserViewModel() {
         userRepository = UserRepository.getInstance();
+      // mGoogleMapApiCalls = GoogleMapApiCallsRepository.getInstance();
+
     }
 
     public static UserViewModel getInstance() {
@@ -44,7 +46,10 @@ public class UserViewModel extends ViewModel {
         }
     }
 
+    public CollectionReference getUsersCollection(){
+       return userRepository.getUsersCollection();
 
+    }
     public FirebaseAuth getCurrentInstance(){
         return userRepository.getCurrentInstance();
     }
@@ -100,5 +105,30 @@ public class UserViewModel extends ViewModel {
             userEmail.setText(email);
         }
     }
+    public MutableLiveData<List<GoogleClass1.Result>> getRestaurent() {
+
+        Log.e("TAG", "getRestaurent: " +listOfRestaurent );
+        return listOfRestaurent;
+    }
+   /* public void loadRestaurentData(String location) {
+
+        listOfRestaurent = mGoogleMapApiCalls.fetchResultFollowing(this, location,1500,
+                "restaurant","AIzaSyDsQUD7ukIhqdJYZIQxj535IvrDRrkrH08");
+
+    }
+
+    @Override
+    public void onResponse(@Nullable GoogleClass1 results) {
+        listOfRestaurent.setValue(results.getResults());
+        Log.e("TAG", "onResponse: listeresto recupere"+listOfRestaurent.getValue() );
+        //listOfRestaurent.setValue(results.getResults());
+
+    }
+
+    @Override
+    public void onFailure() {
+        Log.e("TAG", "onFailure: ");
+
+    }*/
 
 }

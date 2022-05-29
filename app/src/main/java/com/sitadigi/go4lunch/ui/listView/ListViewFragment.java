@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.sitadigi.go4lunch.databinding.FragmentListViewBinding;
 import com.sitadigi.go4lunch.databinding.FragmentSlideshowBinding;
 import com.sitadigi.go4lunch.models.GoogleClass1;
+import com.sitadigi.go4lunch.ui.mapView.MapViewViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,16 +34,19 @@ public class ListViewFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        ListViewViewModel listViewViewModel =
-                new ViewModelProvider(this).get(ListViewViewModel.class);
+      //  ListViewViewModel listViewViewModel =
+        //        new ViewModelProvider(this).get(ListViewViewModel.class);
+        MapViewViewModel mapViewViewModel =
+                     new ViewModelProvider(requireActivity()).get(MapViewViewModel.class);
+
 
         binding = FragmentListViewBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
         mRecyclerView = binding.recyclerviewListView;
         String location = "45.7714678,4.8901636";
         //listViewViewModel= new ViewModelProvider(ListViewFragment.this).get(ListViewViewModel.class);
-        listViewViewModel.loadRestaurentData(location);
-        listViewViewModel.getRestaurent().observe(getViewLifecycleOwner(), RestaurentResponse -> {
+       // listViewViewModel.loadRestaurentData(location);
+        mapViewViewModel.getRestaurent().observe(getViewLifecycleOwner(), RestaurentResponse -> {
             List<GoogleClass1.Result> mItems = RestaurentResponse;
             listOfRestaurent.clear();
             listOfRestaurent.addAll(mItems);
@@ -53,22 +57,14 @@ public class ListViewFragment extends Fragment {
 
         Log.e("TAG", "onCreateView: "+listOfRestaurent );
 
-
-        //initRecyclerView();
-       // final TextView textView = binding.listView;
-      //  listViewViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
     public void initRecyclerView() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this.getActivity());
         mRecyclerView.setLayoutManager(linearLayoutManager);
-
         ListViewAdapter listViewAdapter = new ListViewAdapter( listOfRestaurent);
         mRecyclerView.setAdapter(listViewAdapter);
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
-
-
-
     }
 
     @Override

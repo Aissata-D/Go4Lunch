@@ -1,10 +1,14 @@
 package com.sitadigi.go4lunch;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ImageView;
@@ -13,21 +17,36 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.sitadigi.go4lunch.databinding.ActivityMainBinding;
+import com.sitadigi.go4lunch.models.GoogleClass1;
+import com.sitadigi.go4lunch.ui.mapView.MapViewViewModel;
 import com.sitadigi.go4lunch.utils.DialogClass;
+import com.sitadigi.go4lunch.utils.MapViewUtils;
 import com.sitadigi.go4lunch.viewModel.UserViewModel;
 
 public class MainActivity extends AppCompatActivity {
+
 
     TextView userName;
     TextView userEmail;
@@ -35,6 +54,13 @@ public class MainActivity extends AppCompatActivity {
     DialogClass mDialogClass;
     private UserViewModel mUserViewModel;
     private AppBarConfiguration mAppBarConfiguration;
+    private MapViewViewModel mapViewViewModel;
+    MapViewUtils mMapViewUtils;
+    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1234;
+    private boolean locationPermissionGranted;
+    Location lastKnownLocation;
+    FusedLocationProviderClient fusedLocationProviderClient;
+    String location;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,15 +70,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         setSupportActionBar(binding.appBarMain.toolbar);
 
-        mUserViewModel = UserViewModel.getInstance();
+         mUserViewModel = UserViewModel.getInstance();
         mDialogClass = new DialogClass();
-        //  mMyViewModel = new ViewModelProvider(MainActivity.this).get(UserViewModel.class);
-
+        initViewModel();
         binding.appBarMain.fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               // mUserViewModel.getAllUser();
-
             }
         });
         // Manage Navigation menus
@@ -143,5 +166,77 @@ public class MainActivity extends AppCompatActivity {
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
     }
+
+    private  void initViewModel(){
+        mapViewViewModel = new ViewModelProvider(this).get(MapViewViewModel.class);
+        mMapViewUtils = new MapViewUtils(this.mapViewViewModel, getApplicationContext(),
+                this.locationPermissionGranted, MainActivity.this);
+        mapViewViewModel.loadLocationMutableLiveData(getApplicationContext(),MainActivity.this,mapViewViewModel);
+        mapViewViewModel.getLocationMutableLiveData();
+        // getLocationPermission();
+        //getDeviceLocation();
+
+    }
+
+  /*  public void getLocationPermission() {
+        /*
+         * Request location permission, so that we can get the location of the
+         * device. The result of the permission request is handled by a callback,
+         * onRequestPermissionsResult.
+         */
+      /*  if (ContextCompat.checkSelfPermission(getApplicationContext(),
+                android.Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            locationPermissionGranted = true;
+        } else {
+            ActivityCompat.requestPermissions(MainActivity.this,
+                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+        }
+    }
+    public  void getDeviceLocation() {
+        /*
+         * Get the best and most recent location of the device, which may be null in rare
+         * cases when a location is not available.
+         */
+
+    /*    try {
+
+            if (locationPermissionGranted) {
+                if(ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED
+                        && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED){
+                    return;
+                }
+                fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(MainActivity.this);
+
+                Task<Location> locationResult = fusedLocationProviderClient.getLastLocation();
+                locationResult.addOnCompleteListener(MainActivity.this, new OnCompleteListener<Location>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Location> task) {
+                        if (task.isSuccessful()) {
+                            // Set the map's camera position to the current location of the device.
+                            lastKnownLocation = task.getResult();
+                            location = lastKnownLocation.getLatitude() + "," + lastKnownLocation.getLongitude();
+                            //moveCamera();
+                            mapViewViewModel.loadRestaurentData(location);
+                            mapViewViewModel.getRestaurent();
+                            Log.e("TAG", "onComplete: MainActivity" );
+                        } else {
+                            Log.e("TAG", "Exception: %s MainActivity", task.getException());
+
+                        }
+
+                    }
+                });
+            }
+        } catch (SecurityException e)  {
+            Log.e("Exception: %s", e.getMessage(), e);
+        }
+
+    }*/
+
+
 
 }

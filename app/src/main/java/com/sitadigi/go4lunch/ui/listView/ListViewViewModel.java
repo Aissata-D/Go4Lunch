@@ -8,19 +8,19 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.sitadigi.go4lunch.models.GoogleClass1;
-import com.sitadigi.go4lunch.utils.GoogleMapApiCalls;
+import com.sitadigi.go4lunch.repository.GoogleMapApiCallsRepository;
 
 import java.util.List;
 
-public class ListViewViewModel extends ViewModel implements GoogleMapApiCalls.Callbacks{
-    private final GoogleMapApiCalls mGoogleMapApiCalls;
+public class ListViewViewModel extends ViewModel implements GoogleMapApiCallsRepository.Callbacks{
+    private final GoogleMapApiCallsRepository mGoogleMapApiCallsRepository;
     @SuppressWarnings({"FieldCanBeLocal"})
     private MutableLiveData<List<GoogleClass1.Result>> listOfRestaurent; // = new MutableLiveData<>();
 
     private final MutableLiveData<String> mText;
 
     public ListViewViewModel() {
-        mGoogleMapApiCalls = GoogleMapApiCalls.getInstance();
+        mGoogleMapApiCallsRepository = GoogleMapApiCallsRepository.getInstance();
         mText = new MutableLiveData<>();
         mText.setValue("This is listView fragment");
     }
@@ -37,7 +37,7 @@ public class ListViewViewModel extends ViewModel implements GoogleMapApiCalls.Ca
     }
     public void loadRestaurentData(String location) {
 
-        listOfRestaurent = mGoogleMapApiCalls.fetchResultFollowing(this, location,1500,
+        listOfRestaurent = mGoogleMapApiCallsRepository.fetchResultFollowing(this, location,1500,
                 "restaurant","AIzaSyDsQUD7ukIhqdJYZIQxj535IvrDRrkrH08");
 
     }

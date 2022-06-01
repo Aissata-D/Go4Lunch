@@ -4,6 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.res.ColorStateList;
 import android.net.Uri;
@@ -23,11 +26,14 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.sitadigi.go4lunch.models.GoogleClass1;
 import com.sitadigi.go4lunch.models.User;
+import com.sitadigi.go4lunch.ui.workmaters.WorkmatersAdapter;
 import com.sitadigi.go4lunch.ui.workmaters.WorkmatersViewModel;
 import com.sitadigi.go4lunch.utils.GooglePlacePhotoApiCalls;
 import com.sitadigi.go4lunch.viewModel.UserViewModel;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class DetailActivity extends AppCompatActivity implements GooglePlacePhotoApiCalls.Callbacks{
@@ -46,7 +52,7 @@ public class DetailActivity extends AppCompatActivity implements GooglePlacePhot
     public static final String RESTO_ID = null;
 
 
-    String userLastRestoId;
+    String userLastRestoId ="";
     String restoId;
     String restoName;
     String restoPhotoUrl;
@@ -57,14 +63,20 @@ public class DetailActivity extends AppCompatActivity implements GooglePlacePhot
     URL mURL;
     String urlConcat;
     UserViewModel mUserViewModel;
+    RecyclerView mRecyclerView;
+    WorkmatersViewModel workmatersViewModel;
+    List<User> users = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
         Objects.requireNonNull(this.getSupportActionBar()).hide();
+        workmatersViewModel = new ViewModelProvider(this).get(WorkmatersViewModel.class);
 
-       // mUserViewModel  = new ViewModelProvider(this).get(UserViewModel.class);
+
+        // mUserViewModel  = new ViewModelProvider(this).get(UserViewModel.class);
+
         mUserViewModel = new UserViewModel();
         restoId = getIntent().getStringExtra(RESTO_ID);
         restoName= getIntent().getStringExtra(RESTO_NAME);
@@ -73,7 +85,7 @@ public class DetailActivity extends AppCompatActivity implements GooglePlacePhot
         //isRestoOpeningHours = getIntent().getBooleanExtra(RESTO_OPENINGHOURS,false);
 
 
-
+        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_detail_activity);
         mImageViewResto = (ImageView) findViewById(R.id.resto_img);
         //tvRestoId = (TextView) findViewById(R.id.resto_id);
         tvRestoName = (TextView) findViewById(R.id.resto_name_detail_activity);
@@ -82,14 +94,14 @@ public class DetailActivity extends AppCompatActivity implements GooglePlacePhot
         String urlPart2 = restoPhotoUrl;
         String urlPart3 = "&key=AIzaSyDsQUD7ukIhqdJYZIQxj535IvrDRrkrH08";
         urlConcat = urlPart1 + urlPart2 + urlPart3;
-
+        setfabColor();
         fbaRestoChoice = (FloatingActionButton) findViewById(R.id.fab_choice_resto);
         fbaRestoChoice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 FirebaseUser firebaseUser = mUserViewModel.getCurrentUser();
                 // Get uid of user on logged
-                String userUid = mUserViewModel.getUsersCollection().document().getId();
+                String userUid =  mUserViewModel.getCurrentUser().getUid();
                 // Get userRestoId on firebaseFirestore
                 DocumentReference userDocumentRef = mUserViewModel.getUsersCollection().document(userUid);
                 userDocumentRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -98,49 +110,96 @@ public class DetailActivity extends AppCompatActivity implements GooglePlacePhot
                         if (task.isSuccessful()) {
                             DocumentSnapshot document = task.getResult();
                             if (document != null) {
+                                //String test = document.getString("username");
                                 userLastRestoId = document.getString("userRestoId");
 
-                            } else {
-                                userLastRestoId = "restoIDdNULL";
+
+                                if(userLastRestoId == null){
+                                    //Set fab icon color green
+                                    fbaRestoChoice.setImageTintList(ColorStateList.valueOf(getApplicationContext()
+                                            .getResources().getColor(R.color.fab_green))); //setImageDrawable(
+                                    //  getResources().getDrawable(R.drawable.ic_baseline_check_circle_24_green));
+                                    //Ajouter user.setRestoId(restoId)
+                                    //Set restoId with actual restoIdChoice
+                                    userDocumentRef.update("userRestoId",restoId);
+                                    initRecyclerView();
+                                }else{//restoId != null
+                                    if(userLastRestoId.equals(restoId))// C'est le meme resto)
+                                    {
+                                        //Set fab icon color gray
+                                        fbaRestoChoice.setImageTintList(ColorStateList.valueOf(getApplicationContext()
+                                                .getResources().getColor(R.color.fab_gray)));
+                                        users.remove(firebaseUser);
+                                        //user.setRestoId(null)
+                                        userDocumentRef.update("userRestoId","NoRestoChoice");
+                                        initRecyclerView();
+                                    }else{//c'est pas le meme resto
+                                        //Set fab icon color green
+                                        fbaRestoChoice.setImageTintList(ColorStateList.valueOf(getApplicationContext()
+                                                .getResources().getColor(R.color.fab_green)));
+                                        //user.setRestoId (restoId)
+                                        userDocumentRef.update("userRestoId",restoId);
+                                        initRecyclerView();
+
+
+                                    }
+                                }
                             }
+
                         } else {
                             Log.d("LOGGER", "get failed with ", task.getException());
                         }
                     }
                 });
 
-                if(userLastRestoId == null){
-                    //Set fab icon color green
-                    fbaRestoChoice.setImageTintList(ColorStateList.valueOf(getApplicationContext()
-                            .getResources().getColor(R.color.fab_green))); //setImageDrawable(
-                          //  getResources().getDrawable(R.drawable.ic_baseline_check_circle_24_green));
-                    //Ajouter user.setRestoId(restoId)
-                    //Set restoId with actual restoIdChoice
-                    userDocumentRef.update("userRestoId",restoId);
-                }else{//restoId != null
-                    if(userLastRestoId == restoId)// C'est le meme resto)
-                     {
-                        //Set fab icon color gray
-                         fbaRestoChoice.setImageTintList(ColorStateList.valueOf(getApplicationContext()
-                                 .getResources().getColor(R.color.fab_gray)));
-                        //user.setRestoId(null)
-                         userDocumentRef.update("userRestoId","restoIDdNULL");
-                    }else{//c'est pas le meme resto
-                         //Set fab icon color green
-                         fbaRestoChoice.setImageTintList(ColorStateList.valueOf(getApplicationContext()
-                                 .getResources().getColor(R.color.fab_green)));
-                        //user.setRestoId (restoId)
-                         userDocumentRef.update("userRestoId",restoId);
+
+            }
+        });
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(DetailActivity.this);
+        mRecyclerView.setLayoutManager(linearLayoutManager);
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.VERTICAL));
 
 
+        configureDetailView();
+        executeHttpRequestWithRetrofit();
+        initRecyclerView();
 
-                    }
+    }
+    public void setfabColor(){
+        // Get uid of user on logged
+        String userUid =  mUserViewModel.getCurrentUser().getUid();
+        // Get userRestoId on firebaseFirestore
+        DocumentReference userDocumentRef = mUserViewModel.getUsersCollection().document(userUid);
+        userDocumentRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document != null) {
+                        //String test = document.getString("username");
+                        userLastRestoId = document.getString("userRestoId");
+
+                            if(userLastRestoId.equals(restoId))// C'est le meme resto)
+                                 {
+                                //Set fab icon color gray
+                                fbaRestoChoice.setImageTintList(ColorStateList.valueOf(getApplicationContext()
+                                        .getResources().getColor(R.color.fab_green)));
+                                //user.setRestoId(null)
+                              //  userDocumentRef.update("userRestoId",/*"restoIDdNULL"*/restoId);
+                            }else{//c'est pas le meme resto
+                                //Set fab icon color green
+                                fbaRestoChoice.setImageTintList(ColorStateList.valueOf(getApplicationContext()
+                                        .getResources().getColor(R.color.fab_gray)));
+
+                            }
+                        }
+
+
+                } else {
+                    Log.d("LOGGER", "get failed with ", task.getException());
                 }
             }
         });
-        configureDetailView();
-        executeHttpRequestWithRetrofit();
-
     }
 
     public void configureDetailView(){
@@ -187,4 +246,35 @@ public class DetailActivity extends AppCompatActivity implements GooglePlacePhot
     public void onFailure() {
 
     }
+
+    public void initRecyclerView() {
+
+        workmatersViewModel.getAllUser().observe(this, usersLiveData -> {
+            List<User> mItems = usersLiveData;
+            users.clear();
+            List<User> userInter = new ArrayList<>();
+            for(User user : mItems){
+                if(user.getUserRestoId().equals(restoId)  ){
+                    if(!users.contains(user)){
+                        users.add(user);
+                    }
+                }else{
+                    users.remove(user);
+                }
+            }
+            // users.addAll(userInter);
+            //users.addAll(mItems);
+           // initRecyclerView();
+
+            DetailActivityAdapter detailActivityAdapter = new DetailActivityAdapter(users);
+            mRecyclerView.setAdapter(detailActivityAdapter);
+
+
+        });
+
+        // workmatersViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+
+
+    }
+
 }

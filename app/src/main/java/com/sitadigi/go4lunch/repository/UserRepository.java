@@ -33,7 +33,8 @@ import io.grpc.internal.LogExceptionRunnable;
 public final class UserRepository {
 
     private static volatile UserRepository instance;
-    String userRestoId = "restoIDdNULL";
+    String userRestoId = "restoIdCreated";
+    User userToCreate;
 
     //----FIRESTORE FIELD-------------
     private static final String COLLECTION_NAME = "users";
@@ -86,30 +87,39 @@ public final class UserRepository {
             String username = user.getDisplayName();
             String useremail = user.getEmail();
             String uid = user.getUid();
+            userToCreate = new User(uid, username, useremail, urlPicture, userRestoId);
 
             DocumentReference userDocumentRef = getUsersCollection().document(uid);
-            userDocumentRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            userDocumentRef.get().addOnSuccessListener(documentSnapshot -> {
+                if(!documentSnapshot.exists()){
+                    this.getUsersCollection().document(uid).set(userToCreate);
+                }
+            });
+           /* userDocumentRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                     if (task.isSuccessful()) {
                         DocumentSnapshot document = task.getResult();
                         if (document != null) {
-                            userRestoId = document.getString("userRestoId");
+                            //userRestoId = document.getString("userRestoId");
+                           // userToCreate = new User(uid, username,useremail, urlPicture,userRestoId);
+                            //getUsersCollection().document(uid).set(userToCreate);
 
-                        }// else {
+
+                        } else {
                            // userRestoId = null;
-                        //}
+                            userToCreate = new User(uid, username,useremail, urlPicture,userRestoId);
+                            getUsersCollection().document(uid).set(userToCreate);
+
+                            }
                     } else {
                         Log.d("LOGGER", "get failed with ", task.getException());
                     }
                 }
             });
 
-            User userToCreate = new User(uid, username,useremail, urlPicture,userRestoId);
-
-            this.getUsersCollection().document(uid).set(userToCreate);
-
-        }// Gerer les cas d'erreur
+            */
+        }// TODO Gerer les cas d'erreur
         else{ }
     }
     // Get UID of current user

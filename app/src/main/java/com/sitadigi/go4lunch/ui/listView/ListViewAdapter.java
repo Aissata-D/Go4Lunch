@@ -82,7 +82,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
                 mPosition = listViewHolder.getAdapterPosition();
                 GoogleClass1.Result restaurant = mRestaurents.get(mPosition);
                 Intent intentDetail = new Intent(v.getContext(), DetailActivity.class);
-                intentDetail.putExtra(RESTO_ID, restaurant.getName());
+                intentDetail.putExtra(RESTO_ID, restaurant.getPlaceId());
                 intentDetail.putExtra(RESTO_NAME, restaurant.getName());
                 if((restaurant.getTypes()) != null && (restaurant.getTypes().get(0))!=null) {
                     String restoAdressesAndTypeForDetailActivity = restaurant.getTypes().get(0) + " - "

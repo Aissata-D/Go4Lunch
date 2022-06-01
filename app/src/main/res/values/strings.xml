@@ -33,5 +33,6 @@
     <string name="resto_open_now">open now</string>
     <string name="resto_close">close</string>
     <string name="restoopening_hour_unknow">unknow</string>
+    <string name="is_joining">\" is joining \"</string>
 
 </resources>

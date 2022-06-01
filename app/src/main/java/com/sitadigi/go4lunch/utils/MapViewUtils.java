@@ -95,32 +95,36 @@ public class MapViewUtils {
                              if (mapViewViewModel.getLocationMutableLiveData() != null) {
                                  mapViewViewModel.getLocationMutableLiveData()
                                          .observe(mLifecycleOwner,
-                                         LocationResponse ->{ lastKnownLocation = LocationResponse;});
-                                 mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                                         new LatLng(lastKnownLocation.getLatitude(),
+                                         LocationResponse ->{ lastKnownLocation = LocationResponse;
+                                             mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                                            new LatLng(lastKnownLocation.getLatitude(),
                                                  lastKnownLocation.getLongitude()), DEFAULT_ZOOM));
-                                // Call list of restaurant
-                                 mapViewViewModel.getRestaurent().observe(mLifecycleOwner, RestaurentResponse -> {
-                                     listOfRestaurent.clear();
-                                     listOfRestaurent.addAll(RestaurentResponse);
+                                         });
+                                 if ( mapViewViewModel.getRestaurent() != null){
+                                     // Call list of restaurant
+                                     mapViewViewModel.getRestaurent().observe(mLifecycleOwner, RestaurentResponse -> {
+                                         listOfRestaurent.clear();
+                                         listOfRestaurent.addAll(RestaurentResponse);
 
-                                     // 2.1 - When getting response, we update UI
-                                     if (listOfRestaurent != null) {
-                                         // this.updateUIWithListOfUsers(listOfRestaurent);
-                                         for (GoogleClass1.Result restaurant : listOfRestaurent) {
-                                             if (!resultList.contains(restaurant)) {
-                                                 resultList.add(restaurant);
-                                                 LatLng restoPosition = new LatLng(restaurant.getGeometry().getLocation().getLat()
-                                                         , restaurant.getGeometry().getLocation().getLng());
-                                                 String restoNameForMarker = restaurant.getName();
-                                                 mGoogleMap.addMarker(new MarkerOptions()
-                                                         .position(restoPosition)
-                                                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-                                                         .title(restoNameForMarker));
+                                         // 2.1 - When getting response, we update UI
+                                         if (listOfRestaurent != null) {
+                                             // this.updateUIWithListOfUsers(listOfRestaurent);
+                                             for (GoogleClass1.Result restaurant : listOfRestaurent) {
+                                                 if (!resultList.contains(restaurant)) {
+                                                     resultList.add(restaurant);
+                                                     LatLng restoPosition = new LatLng(restaurant.getGeometry().getLocation().getLat()
+                                                             , restaurant.getGeometry().getLocation().getLng());
+                                                     String restoNameForMarker = restaurant.getName();
+                                                     mGoogleMap.addMarker(new MarkerOptions()
+                                                             .position(restoPosition)
+                                                             .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                                                             .title(restoNameForMarker));
+                                                 }
                                              }
                                          }
-                                     }
-                             });
+                                     });
+
+                                 }
                              }else {
                            //  Log.e("TAG", "Exception: %s", task.getException());
                              mGoogleMap.moveCamera(CameraUpdateFactory

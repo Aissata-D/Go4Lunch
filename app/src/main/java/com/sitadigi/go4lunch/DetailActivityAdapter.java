@@ -22,7 +22,7 @@ public class DetailActivityAdapter extends RecyclerView.Adapter<DetailActivityAd
          * The list of user in a same restaurent
          */
         @NonNull
-        private final List<User> mUsers ;
+        private List<User> mUsers ;
         /**
          * Instantiates a new UserAdapter.
          *
@@ -98,5 +98,14 @@ public class DetailActivityAdapter extends RecyclerView.Adapter<DetailActivityAd
         }
 
 
-
+    /**
+     * Updates the list of tasks the adapter deals with.
+     *
+     * @param users the list of tasks the adapter deals with to set
+     */
+    void updateUsers(@NonNull final List<User> users) {
+       // this.mUsers.clear();
+        this.mUsers.addAll( users);
+        notifyDataSetChanged();
+    }
 }

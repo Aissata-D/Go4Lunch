@@ -31,6 +31,8 @@ public class ListViewFragment extends Fragment {
    // ListViewViewModel mListViewViewModel;
     List<GoogleClass1.Result> listOfRestaurent = new ArrayList<>();
     private RecyclerView mRecyclerView;
+    String restoId;
+    String restoName;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -56,6 +58,12 @@ public class ListViewFragment extends Fragment {
         });
 
         Log.e("TAG", "onCreateView: "+listOfRestaurent );
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            restoName = arguments.getString("RESTO_NAME");
+            restoId = arguments.getString("RESTO_ID");
+            Log.e("TAG", "onCreateView ListView: "+restoName +" "+ restoId);
+        }
 
         return root;
     }

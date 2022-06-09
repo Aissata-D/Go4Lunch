@@ -3,6 +3,7 @@ package com.sitadigi.go4lunch;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -26,7 +27,6 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.sitadigi.go4lunch.models.GoogleClass1;
 import com.sitadigi.go4lunch.models.User;
-import com.sitadigi.go4lunch.ui.workmaters.WorkmatersAdapter;
 import com.sitadigi.go4lunch.ui.workmaters.WorkmatersViewModel;
 import com.sitadigi.go4lunch.utils.GooglePlacePhotoApiCalls;
 import com.sitadigi.go4lunch.viewModel.UserViewModel;
@@ -65,7 +65,10 @@ public class DetailActivity extends AppCompatActivity implements GooglePlacePhot
     UserViewModel mUserViewModel;
     RecyclerView mRecyclerView;
     WorkmatersViewModel workmatersViewModel;
-    List<User> users = new ArrayList<>();
+    //List<User> users = new ArrayList<>();
+
+    DetailActivityAdapter detailActivityAdapter;
+    LinearLayoutManager linearLayoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +89,12 @@ public class DetailActivity extends AppCompatActivity implements GooglePlacePhot
 
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_detail_activity);
+        linearLayoutManager = new LinearLayoutManager(DetailActivity.this);
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.VERTICAL));
+
+
+
+
         mImageViewResto = (ImageView) findViewById(R.id.resto_img);
         //tvRestoId = (TextView) findViewById(R.id.resto_id);
         tvRestoName = (TextView) findViewById(R.id.resto_name_detail_activity);
@@ -122,43 +131,43 @@ public class DetailActivity extends AppCompatActivity implements GooglePlacePhot
                                     //Ajouter user.setRestoId(restoId)
                                     //Set restoId with actual restoIdChoice
                                     userDocumentRef.update("userRestoId",restoId);
-                                    initRecyclerView();
                                 }else{//restoId != null
                                     if(userLastRestoId.equals(restoId))// C'est le meme resto)
                                     {
                                         //Set fab icon color gray
                                         fbaRestoChoice.setImageTintList(ColorStateList.valueOf(getApplicationContext()
                                                 .getResources().getColor(R.color.fab_gray)));
-                                        users.remove(firebaseUser);
+                                       // usersInter.remove(firebaseUser);
                                         //user.setRestoId(null)
+
                                         userDocumentRef.update("userRestoId","NoRestoChoice");
-                                        initRecyclerView();
+
+
                                     }else{//c'est pas le meme resto
                                         //Set fab icon color green
                                         fbaRestoChoice.setImageTintList(ColorStateList.valueOf(getApplicationContext()
                                                 .getResources().getColor(R.color.fab_green)));
                                         //user.setRestoId (restoId)
                                         userDocumentRef.update("userRestoId",restoId);
-                                        initRecyclerView();
+
 
 
                                     }
                                 }
+                               // initRecyclerView();
                             }
 
                         } else {
                             Log.d("LOGGER", "get failed with ", task.getException());
                         }
+
+
+                    initRecyclerView();
+
                     }
                 });
-
-
             }
         });
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(DetailActivity.this);
-        mRecyclerView.setLayoutManager(linearLayoutManager);
-        mRecyclerView.addItemDecoration(new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.VERTICAL));
-
 
         configureDetailView();
         executeHttpRequestWithRetrofit();
@@ -250,31 +259,52 @@ public class DetailActivity extends AppCompatActivity implements GooglePlacePhot
     public void initRecyclerView() {
 
         workmatersViewModel.getAllUser().observe(this, usersLiveData -> {
-            List<User> mItems = usersLiveData;
-            users.clear();
-            List<User> userInter = new ArrayList<>();
-            for(User user : mItems){
-                if(user.getUserRestoId().equals(restoId)  ){
-                    if(!users.contains(user)){
-                        users.add(user);
+//            mRecyclerView.getLayoutManager().removeAllViews();
+            mRecyclerView.getRecycledViewPool().clear();
+            mRecyclerView.setAdapter(null);
+            mRecyclerView.setLayoutManager(null);
+
+
+           // MutableLiveData<String> liveDataRestoId = new MutableLiveData<>();
+            List<User> usersInter = new ArrayList<>();
+
+          // usersInter.clear();
+            for(User user : usersLiveData){
+                // liveDataRestoId.setValue(user.getUserRestoId());
+               //  liveDataRestoId.equals()
+                if(user.getUserRestoId().equals(restoId)  ) {
+                    if (!usersInter.contains(user)) {
+                        usersInter.add(user);
                     }
-                }else{
-                    users.remove(user);
+
+                    } else {
+                    usersInter.remove(user);
                 }
             }
-            // users.addAll(userInter);
-            //users.addAll(mItems);
-           // initRecyclerView();
+            List<User> userList = new ArrayList<>();
+            //userList= usersInter;
 
-            DetailActivityAdapter detailActivityAdapter = new DetailActivityAdapter(users);
+            detailActivityAdapter = new DetailActivityAdapter(userList);
+            detailActivityAdapter = new DetailActivityAdapter(usersInter);
+            detailActivityAdapter.notifyDataSetChanged();
+           // mRecyclerView.swapAdapter(detailActivityAdapter,false);
+            mRecyclerView.getRecycledViewPool().clear();
+            mRecyclerView.setAdapter(null);
+            mRecyclerView.setLayoutManager(null);
             mRecyclerView.setAdapter(detailActivityAdapter);
+            mRecyclerView.setLayoutManager(linearLayoutManager);
+           // mRecyclerView.getLayoutManager().removeAllViews();
 
+
+           // mRecyclerView.requestLayout();
+            //mRecyclerView.invalidate();
 
         });
-
-        // workmatersViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
-
-
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initRecyclerView();
+    }
 }

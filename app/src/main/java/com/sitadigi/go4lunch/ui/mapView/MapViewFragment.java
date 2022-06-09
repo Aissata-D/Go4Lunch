@@ -8,10 +8,13 @@ import static com.sitadigi.go4lunch.DetailActivity.RESTO_TYPE_ADRESSES;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.sitadigi.go4lunch.DetailActivity;
 import com.sitadigi.go4lunch.R;
 import android.content.Intent;
@@ -19,6 +22,8 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -38,6 +43,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         GoogleMap.OnMarkerClickListener  {
 
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1234;
+    private static final float DEFAULT_ZOOM = 15f;
     boolean locationPermissionGranted;
     GoogleMap googleMap;
     List<GoogleClass1.Result> resultList;
@@ -49,6 +55,9 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
     private String markerName;
     private LatLng markerPosition;
     GeoLocateRepository mGeoLocateRepository;
+    String restoId;
+    String restoName;
+    LatLng  latLngPlaceSelected;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -59,7 +68,29 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         resultList = new ArrayList<>();
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
         mGeoLocateRepository = new GeoLocateRepository();
+
         googleMapView();
+
+       /* mapViewViewModel.getResultSearchLatLng().observe(getViewLifecycleOwner(), LatLngPlaceResponse -> {
+            latLngPlaceSelected = LatLngPlaceResponse ;
+            // placeSelectedIdAndName.addAll(RestaurentResponse);
+
+            if(latLngPlaceSelected != null){
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                        latLngPlaceSelected, DEFAULT_ZOOM));
+                Log.e("TAG", "onMapReady: CAMERA MOVE " + latLngPlaceSelected );
+
+            }
+        });*/
+
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+           restoName = arguments.getString("RESTO_NAME");
+           restoId = arguments.getString("RESTO_ID");
+            Log.e("TAG", "onCreateView MapFragment: "+restoName +" "+ restoId);
+        }
+
+
         return root;
     }
 
@@ -90,6 +121,25 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
       //  mMapViewUtils.moveCamera(this.googleMap, this.getViewLifecycleOwner());
         googleMap.setOnMarkerClickListener(this);
        // mMapViewUtils.getLastLocation();
+
+        List<String> placeSelectedIdAndName = new ArrayList<>();
+
+        mapViewViewModel.getResultSearchLatLng().observe(getViewLifecycleOwner(), LatLngPlaceResponse -> {
+            latLngPlaceSelected = LatLngPlaceResponse ;
+            // placeSelectedIdAndName.addAll(RestaurentResponse);
+
+            if(latLngPlaceSelected != null){
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                        latLngPlaceSelected, 20f));
+               // String restoNameForMarker = restaurant.getName();
+                googleMap.addMarker(new MarkerOptions()
+                        .position(latLngPlaceSelected)
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+                );
+                Log.e("TAG", "onMapReady: CAMERA MOVE " + latLngPlaceSelected );
+
+            }
+        });
     }
 
     @Override
@@ -144,4 +194,32 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         }
         mMapViewUtils.updateLocationUI(this.googleMap);
     }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+       /* mapViewViewModel.getResultSearchLatLng().observe(getViewLifecycleOwner(), LatLngPlaceResponse -> {
+            latLngPlaceSelected = LatLngPlaceResponse ;
+            // placeSelectedIdAndName.addAll(RestaurentResponse);
+
+            if(latLngPlaceSelected != null){
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                        latLngPlaceSelected, DEFAULT_ZOOM));
+                Log.e("TAG", "onMapReady: CAMERA MOVE " + latLngPlaceSelected );
+
+            }
+        });*/
+    }
+    /* @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.options_menu, menu);
+
+        return true;
+    }*/
 }

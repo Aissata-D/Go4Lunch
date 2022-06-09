@@ -156,9 +156,7 @@ public final class UserRepository {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference usersRef = db.collection("users");
 
-        db.collection("users")
-                //.whereEqualTo("state", "CA")
-                .addSnapshotListener(
+        db.collection("users").addSnapshotListener(
                         new EventListener<QuerySnapshot>() {
 
                             @Override
@@ -168,8 +166,6 @@ public final class UserRepository {
                                     System.err.println("Listen failed:" + error);
                                     return;
                                 }
-
-
                                 if (value != null) {
                                     for (DocumentSnapshot document : value) {
                                         String username = document.getString("username");
@@ -191,6 +187,12 @@ public final class UserRepository {
         return listOfUserLiveData;
     }
 
+   /* public MutableLiveData<String> getAllUserRestoId() {
+        MutableLiveData<List<User>> users = getAllUser();
+        for(User user : getAllUser()){
+
+        }
+    }*/
     // Get User Data from Firestore// Return the document  of user
    /* public Task<DocumentSnapshot> getUserData(){
         String uid = this.getCurrentUserUID();

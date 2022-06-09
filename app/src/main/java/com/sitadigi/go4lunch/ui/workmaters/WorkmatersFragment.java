@@ -2,6 +2,7 @@ package com.sitadigi.go4lunch.ui.workmaters;
 
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,8 @@ public class WorkmatersFragment extends Fragment  {
     TextView textView;
     private RecyclerView mRecyclerView;
     List<User> users = new ArrayList<>();
+    String restoId;
+    String restoName;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -50,6 +53,12 @@ public class WorkmatersFragment extends Fragment  {
 
          });
 
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            restoName = arguments.getString("RESTO_NAME");
+            restoId = arguments.getString("RESTO_ID");
+            Log.e("TAG", "onCreateView Workmates: "+restoName +" "+ restoId);
+        }
         return root;
     }
     public void initRecyclerView() {

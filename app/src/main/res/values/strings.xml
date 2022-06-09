@@ -1,4 +1,5 @@
 <resources>
+    <string name="google_map_api_key">AIzaSyDsQUD7ukIhqdJYZIQxj535IvrDRrkrH08</string>
     <string name="facebook_app_id">989231408442739</string>
     <string name="facebook_application_id">989231408442739</string>
     <string name="fb_login_protocol_scheme">fb989231408442739</string>

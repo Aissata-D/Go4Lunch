@@ -1,13 +1,5 @@
 package com.sitadigi.go4lunch.ui.workmaters;
 
-import static com.sitadigi.go4lunch.DetailActivity.RESTO_ID;
-import static com.sitadigi.go4lunch.DetailActivity.RESTO_NAME;
-import static com.sitadigi.go4lunch.DetailActivity.RESTO_OPENINGHOURS;
-import static com.sitadigi.go4lunch.DetailActivity.RESTO_PHOTO_URL;
-import static com.sitadigi.go4lunch.DetailActivity.RESTO_TYPE_ADRESSES;
-
-import android.content.Intent;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,9 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.sitadigi.go4lunch.DetailActivity;
 import com.sitadigi.go4lunch.R;
-import com.sitadigi.go4lunch.models.GoogleClass1;
 import com.sitadigi.go4lunch.models.User;
 
 import java.util.List;
@@ -96,7 +86,15 @@ public class WorkmatersAdapter extends RecyclerView.Adapter<WorkmatersAdapter.Wo
              * @param users the task to bind in the item view
              */
             void bind(User users) {
-                tvUser.setText(users.getUsername());
+                String userText="";
+                if(!users.getUserRestoId().equals("NoRestoChoice")){
+                    if(!users.getUserRestoName().equals("restoNameCreated"))
+                    userText = users.getUsername() +" is eating "+ users.getUserRestoType() +" "+"(" + users.getUserRestoName()+")";
+                }else {
+                    userText = users.getUsername()+" hasn't decided yet";
+                }
+
+                tvUser.setText(userText);
                 //GLIDE TO SHOW PHOTO
                 Glide.with(imgUser.getContext())
                         .load(users.getUrlPicture())

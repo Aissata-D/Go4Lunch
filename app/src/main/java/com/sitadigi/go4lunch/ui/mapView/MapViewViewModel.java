@@ -6,6 +6,7 @@ import android.location.Location;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
+import androidx.arch.core.internal.SafeIterableMap;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -20,11 +21,10 @@ public class MapViewViewModel extends ViewModel implements GoogleMapApiCallsRepo
     private final GoogleMapApiCallsRepository mGoogleMapApiCallsRepository;
     private MutableLiveData<List<String>> resultSearchMutablelist;
     public MutableLiveData<Location> locationMutableLiveData;
-
-    GeoLocateRepository mGeoLocateRepository ;
-    // private final MutableLiveData<String> mText;
+    private GeoLocateRepository mGeoLocateRepository ;
     private MutableLiveData<List<GoogleClass1.Result>> listOfRestaurent;
     private MutableLiveData<LatLng> resultSearchLatLng;
+    private MutableLiveData<String> resultSearchPlaceName;
 
     public MapViewViewModel() {
         mGoogleMapApiCallsRepository = GoogleMapApiCallsRepository.getInstance();
@@ -32,55 +32,60 @@ public class MapViewViewModel extends ViewModel implements GoogleMapApiCallsRepo
         locationMutableLiveData = new MutableLiveData<>();
         resultSearchMutablelist = new MutableLiveData<>();
         resultSearchLatLng = new MutableLiveData<>();
+        resultSearchPlaceName = new MutableLiveData<>();
+        listOfRestaurent = new MutableLiveData<>();
     }
 
     public MutableLiveData<List<GoogleClass1.Result>> getRestaurent() {
 
-        Log.e("TAG", "getRestaurent: " +listOfRestaurent );
         return listOfRestaurent;
     }
     public void loadRestaurentData(String location) {
-//        locationMutableLiveData.setValue(location);
 
-        listOfRestaurent = mGoogleMapApiCallsRepository.fetchResultFollowing(this, location,1500,
-                "restaurant","AIzaSyDsQUD7ukIhqdJYZIQxj535IvrDRrkrH08");
-
+        listOfRestaurent.setValue(mGoogleMapApiCallsRepository.fetchResultFollowing(this, location,1500,
+                "restaurant","AIzaSyDsQUD7ukIhqdJYZIQxj535IvrDRrkrH08"));
     }
+
     public void loadLocationMutableLiveData(Context context, Activity activity, MapViewViewModel mapViewViewModel){
+
         locationMutableLiveData = mGeoLocateRepository.getDeviceLocation( context,activity,mapViewViewModel);
-
-
     }
 
     public MutableLiveData<Location> getLocationMutableLiveData() {
 
         return locationMutableLiveData;
-
     }
 
     public void getSearchMutableLiveData(List<String> list) {
-        resultSearchMutablelist.setValue(list); ;
 
+        resultSearchMutablelist.setValue(list);
     }
+
     public MutableLiveData<List<String>> getResultSearch(){
         return resultSearchMutablelist;
     }
 
-    public void getSearchLocationMutableLiveData(LatLng latLng) {
-        resultSearchLatLng.setValue(latLng); ;
+    public void setSearchLatLngMutableLiveData(LatLng latLng) {
 
+        resultSearchLatLng.setValue(latLng);
     }
     public MutableLiveData<LatLng> getResultSearchLatLng(){
         return resultSearchLatLng;
     }
 
+    public void setSearchPlaceNameMutableLiveData(String placeName) {
+
+        resultSearchPlaceName.setValue(placeName);
+    }
+
+    public MutableLiveData<String> getResultSearchPlaceName(){
+            return resultSearchPlaceName;
+    }
 
     @Override
     public void onResponse(@Nullable GoogleClass1 results) {
         listOfRestaurent.setValue(results.getResults());
         Log.e("TAG", "onResponse: listeresto recupere"+listOfRestaurent.getValue() );
-        //listOfRestaurent.setValue(results.getResults());
-
     }
 
     @Override

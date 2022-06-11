@@ -9,7 +9,9 @@ public class User {
     private String email;
     @Nullable
     private String urlPicture;
-    String userRestoId;
+    private String userRestoId;
+    private String userRestoName;
+    private  String userRestoType;
 
    // public User() {
     //}
@@ -20,16 +22,18 @@ public class User {
         this.username = username;
         this.email = email;
         this.urlPicture = urlPicture;
-        this.userRestoId = "restoIDdNULL";
+        this.userRestoId = "NoRestoChoice";
     }
 
     public User(String uid, String username, String email, @Nullable String urlPicture,
-                String userRestoId) {
+                String userRestoId, String userRestoName, String userRestoType) {
         this.uid = uid;
         this.username = username;
         this.email = email;
         this.urlPicture = urlPicture;
         this.userRestoId = userRestoId;
+        this.userRestoName = userRestoName;
+        this.userRestoType = userRestoType;
     }
 //-------------------GETTER----------------------------------------
 
@@ -53,7 +57,15 @@ public class User {
     public String getUserRestoId() {
         return userRestoId;
     }
-//------------------SETTER----------------------------------------
+
+    public String getUserRestoName() {
+        return userRestoName;
+    }
+
+    public String getUserRestoType() {
+        return userRestoType;
+    }
+    //------------------SETTER----------------------------------------
 
     public void setUid(String uid) {
         this.uid = uid;
@@ -75,4 +87,11 @@ public class User {
         this.userRestoId = userRestoId;
     }
 
+    public void setUserRestoName(String userRestoName) {
+        this.userRestoName = userRestoName;
+    }
+
+    public void setUserRestoType(String userRestoType) {
+        this.userRestoType = userRestoType;
+    }
 }

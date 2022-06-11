@@ -5,6 +5,16 @@
     android:layout_height="match_parent"
     tools:context=".ui.workmaters.WorkmatersFragment">
 
+        <TextView
+            android:id="@+id/no_workmate_found"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="72dp"
+            android:gravity="center"
+            android:text="NO WORKMATE SELECTED THIS RESTAURANT"
+            android:textSize="24dp"
+            android:textStyle="bold" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerview_workmaters"
             android:layout_width="match_parent"

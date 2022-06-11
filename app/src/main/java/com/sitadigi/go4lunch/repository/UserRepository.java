@@ -34,6 +34,9 @@ public final class UserRepository {
 
     private static volatile UserRepository instance;
     String userRestoId = "restoIdCreated";
+    String userRestoName ="restoNameCreated";
+    String userRestoType = "restoTypeCreated";
+
     User userToCreate;
 
     //----FIRESTORE FIELD-------------
@@ -87,7 +90,7 @@ public final class UserRepository {
             String username = user.getDisplayName();
             String useremail = user.getEmail();
             String uid = user.getUid();
-            userToCreate = new User(uid, username, useremail, urlPicture, userRestoId);
+            userToCreate = new User(uid, username, useremail, urlPicture, userRestoId,userRestoName,userRestoType);
 
             DocumentReference userDocumentRef = getUsersCollection().document(uid);
             userDocumentRef.get().addOnSuccessListener(documentSnapshot -> {
@@ -173,8 +176,10 @@ public final class UserRepository {
                                         String urlPicture = document.getString("urlPicture");
                                         String uid = document.getId();
                                         String restoId = document.getString("userRestoId");
+                                        String restoName = document.getString("userRestoName");
+                                        String restoType = document.getString("userRestoType");
 
-                                        User userToGet = new User(uid, username, email, urlPicture,restoId);
+                                        User userToGet = new User(uid, username, email, urlPicture,restoId,restoName,restoType) ;
                                         if (!usersUsingApp.contains(userToGet)) {
                                             usersUsingApp.add(userToGet);
                                         }

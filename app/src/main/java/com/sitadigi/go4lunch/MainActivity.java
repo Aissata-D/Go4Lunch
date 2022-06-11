@@ -10,15 +10,16 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -28,6 +29,7 @@ import androidx.navigation.ui.NavigationUI;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -44,12 +46,7 @@ import com.google.android.libraries.places.widget.listener.PlaceSelectionListene
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.sitadigi.go4lunch.databinding.ActivityMainBinding;
-import com.sitadigi.go4lunch.ui.gallery.GalleryFragment;
-import com.sitadigi.go4lunch.ui.home.HomeFragment;
-import com.sitadigi.go4lunch.ui.listView.ListViewFragment;
-import com.sitadigi.go4lunch.ui.mapView.MapViewFragment;
 import com.sitadigi.go4lunch.ui.mapView.MapViewViewModel;
-import com.sitadigi.go4lunch.ui.workmaters.WorkmatersFragment;
 import com.sitadigi.go4lunch.utils.DialogClass;
 import com.sitadigi.go4lunch.utils.MapViewUtils;
 import com.sitadigi.go4lunch.viewModel.UserViewModel;
@@ -58,7 +55,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+       /* implements NavigationView.OnNavigationItemSelectedListener*/ {
 
 
     TextView userName;
@@ -76,8 +73,9 @@ public class MainActivity extends AppCompatActivity
     String location;
     private String restoId;
     private String restoName;
-    private int menuItemVisible;
     LatLng restoLatLng;
+    CardView mCardViewAutocomplete;
+    ImageView imgSearch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,22 +84,32 @@ public class MainActivity extends AppCompatActivity
         com.sitadigi.go4lunch.databinding.ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         setSupportActionBar(binding.appBarMain.toolbar);
+        mCardViewAutocomplete = binding.appBarMain.autocompleteCardview;
+        imgSearch = binding.appBarMain.toolbarSearchBar;
+        mCardViewAutocomplete.setVisibility(View.GONE);
 
-         mUserViewModel = UserViewModel.getInstance();
+        mUserViewModel = UserViewModel.getInstance();
         mDialogClass = new DialogClass();
         initViewModel();
 
-        binding.appBarMain.fab.setOnClickListener(new View.OnClickListener() {
+        imgSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mCardViewAutocomplete.setVisibility(View.VISIBLE);
+                imgSearch.setVisibility(View.GONE);
             }
         });
+
         // Manage Navigation menus
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
         BottomNavigationView bottomNavigation = binding.bottomNavigation;
 
         //////////////////////////AUTOCOMPLETE
+        // Create a RectangularBounds object.
+        RectangularBounds bounds = RectangularBounds.newInstance(
+                new LatLng(45.7714678,4.8901636),
+                new LatLng(45.7714678,4.8901636));
       // EditText queryText = findViewById(R.id.edit_text);
         if(!Places.isInitialized()){
             Places.initialize(getApplicationContext(), getString(R.string.google_map_api_key));
@@ -111,6 +119,11 @@ public class MainActivity extends AppCompatActivity
         // Initialize the AutocompleteSupportFragment.
         AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
                 getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
+        //Set search contry
+        assert autocompleteFragment != null;
+        autocompleteFragment.setCountry("fr");
+        autocompleteFragment.setTypeFilter(TypeFilter.ESTABLISHMENT);
+        autocompleteFragment.setHint("search restaurant");
 
         // Specify the types of place data to return.
         autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME
@@ -127,100 +140,9 @@ public class MainActivity extends AppCompatActivity
                 restoLatLng = place.getLatLng();
                 List<String> list = Arrays.asList(restoId,restoName);
 
-                mapViewViewModel.getSearchLocationMutableLiveData(restoLatLng);
-               // mapViewViewModel.getResultSearchLatLng();
-                mapViewViewModel.getSearchMutableLiveData(list);
-                /*
-                Bundle bundle = new Bundle();
-                bundle.putString("RESTO_NAME", restoName);
-                bundle.putString("RESTO_ID", restoId);
-                Fragment fragmentOnScreen = getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_content_main);
-
-                //MapViewFragment mapViewFragment1 = fragmentOnScreen instanceof MapViewFragment ?
-                //        ((MapViewFragment) fragmentOnScreen) : null;
-                MapViewFragment mapViewFragment =  new MapViewFragment();
-                ListViewFragment listViewFragment = new ListViewFragment();
-                WorkmatersFragment workmatersFragment = new WorkmatersFragment();
-               // Bundle bundle = new Bundle();
-              //  bundle.putString(TABLET, "TELEPHONE");
-                mapViewFragment.setArguments(bundle);
-                listViewFragment.setArguments(bundle);
-                workmatersFragment.setArguments(bundle);
-                NavController navController = Navigation.findNavController(MainActivity.this, R.id.nav_host_fragment_content_main);
-                //navController.navigate(R.id.menu_map_view, bundle);
-                if(menuItemVisible == 0){
-                    navController.navigate(R.id.menu_map_view, bundle);
-                    Log.e("TAG", "onPlaceSelected: Menu Item "+ menuItemVisible +" "
-                            +R.id.menu_map_view );
+                mapViewViewModel.setSearchLatLngMutableLiveData(restoLatLng);
+                mapViewViewModel.setSearchPlaceNameMutableLiveData(restoName);
                 }
-                if(menuItemVisible == 1){
-                    navController.navigate(R.id.menu_list_view, bundle);
-                    Log.e("TAG", "onPlaceSelected: Menu Item "+ menuItemVisible +" "
-                            +R.id.menu_list_view );
-
-                }
-                if(menuItemVisible == 2){
-                    navController.navigate(R.id.menu_workmates, bundle);
-                    Log.e("TAG", "onPlaceSelected: Menu Item "+ menuItemVisible +" "
-                            +R.id.menu_workmates );
-
-                }
-                if(menuItemVisible == 3){
-                    navController.navigate(R.id.menu_map_view, bundle);
-                    Log.e("TAG", "onPlaceSelected: Menu Item "+ menuItemVisible +" "
-                            +R.id.menu_map_view );
-                }
-                if(menuItemVisible == 4){
-                    navController.navigate(R.id.menu_list_view, bundle);
-                    Log.e("TAG", "onPlaceSelected: Menu Item "+ menuItemVisible +" "
-                            +R.id.menu_list_view );
-
-                }
-                if(menuItemVisible == 5){
-                    navController.navigate(R.id.menu_workmates, bundle);
-                    Log.e("TAG", "onPlaceSelected: Menu Item "+ menuItemVisible +" "
-                            +R.id.menu_workmates );
-
-                }
-                bottomNavigation.getMenu().findItem(R.id.menu_map_view).setOnMenuItemClickListener(menuItem -> {
-                    //showAlertDialogSinOut(this);
-                    navController.navigate(R.id.menu_map_view, bundle); // called fragment with agruments
-
-                    return true;
-                });
-                bottomNavigation.getMenu().findItem(R.id.menu_list_view).setOnMenuItemClickListener(menuItem -> {
-                    //showAlertDialogSinOut(this);
-                    navController.navigate(R.id.menu_list_view, bundle); // called fragment with agruments
-
-                    return true;
-                });
-                bottomNavigation.getMenu().findItem(R.id.menu_workmates).setOnMenuItemClickListener(menuItem -> {
-                    //showAlertDialogSinOut(this);
-                    navController.navigate(R.id.menu_workmates, bundle); // called fragment with agruments
-
-                    return true;
-                });
-                //MapViewFragment mapViewFragment = (MapViewFragment) findViewById(R.id.map_view_fragment);
-                if (fragmentOnScreen == mapViewFragment) {
-                    navController.navigate(R.id.menu_map_view, bundle); // called fragment with agruments
-                }
-                if (fragmentOnScreen.equals(listViewFragment)) {
-                    navController.navigate(R.id.menu_list_view, bundle); // called fragment with agruments
-                }
-                if (fragmentOnScreen instanceof WorkmatersFragment) {
-                    navController.navigate(R.id.menu_workmates, bundle); // called fragment with agruments
-                }
-                if (fragmentOnScreen instanceof HomeFragment) {
-                    navController.navigate(R.id.menu_map_view, bundle); // called fragment with agruments
-                }
-                if (fragmentOnScreen instanceof GalleryFragment) {
-                    navController.navigate(R.id.menu_map_view, bundle); // called fragment with agruments
-                }
-                */
-
-                //navController.navigate(R.id.menu_list_view, bundle); // called fragment with agruments
-                //navController.navigate(R.id.menu_workmates, bundle); // called fragment with agruments
-            }
 
 
             @Override
@@ -229,16 +151,31 @@ public class MainActivity extends AppCompatActivity
                 Log.i("TAG", "An error occurred: " + status);
             }
         });
+        EditText editText = autocompleteFragment.getView().findViewById(com.google.android.libraries.places
+              .R.id.places_autocomplete_search_input);
 
+
+// Custom Button clear autocomplete
+        autocompleteFragment.getView().findViewById(com.google.android.libraries.places
+                        .R.id.places_autocomplete_clear_button)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        autocompleteFragment.setText("");
+                                    restoName = null;
+                                    restoLatLng = null;
+                                    mapViewViewModel.setSearchLatLngMutableLiveData(restoLatLng);
+                                    mapViewViewModel.setSearchPlaceNameMutableLiveData(restoName);
+                                    mCardViewAutocomplete.setVisibility(View.GONE);
+                                    imgSearch.setVisibility(View.VISIBLE);
+                    }
+                });
 
         // Create a new token for the autocomplete session. Pass this to FindAutocompletePredictionsRequest,
         // and once again when the user makes a selection (for example when calling fetchPlace()).
         AutocompleteSessionToken token = AutocompleteSessionToken.newInstance();
 
-        // Create a RectangularBounds object.
-        RectangularBounds bounds = RectangularBounds.newInstance(
-                new LatLng(45.7714678,4.8901636),
-                new LatLng(45.7714678,4.8901636));
+
         // Use the builder to create a FindAutocompletePredictionsRequest.
         FindAutocompletePredictionsRequest request = FindAutocompletePredictionsRequest.builder()
                 // Call either setLocationBias() OR setLocationRestriction().
@@ -262,12 +199,7 @@ public class MainActivity extends AppCompatActivity
                 Log.e("TAG", "Place not found: " + apiException.getStatusCode());
             }
         });
-
-
-
         /////////////////////////AUTOCOMPLETE FIN
-
-
 
         // Passing each menu ID as a set of Ids because each // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
@@ -282,10 +214,7 @@ public class MainActivity extends AppCompatActivity
         bundle.putString("RESTO_ID", restoId);
 
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-      //  navController.navigate(R.id.menu_map_view, bundle); // called fragment with agruments
-       // navController.navigate(R.id.menu_list_view, bundle); // called fragment with agruments
-        //navController.navigate(R.id.menu_workmates, bundle); // called fragment with agruments
-        NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
+      NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
 
         //Passing navigationView menu to a navigation controller
         NavigationUI.setupWithNavController(navigationView, navController);
@@ -314,17 +243,6 @@ public class MainActivity extends AppCompatActivity
         userPhoto = (ImageView) header.findViewById(R.id.img_user);
         mUserViewModel.updateUIWithUserData(this, userName, userEmail, userPhoto);
     }
-
-
-
-    // For menu settings
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
 
     private void showAlertDialogSinOut(Context context) {
 
@@ -372,77 +290,7 @@ public class MainActivity extends AppCompatActivity
                 this.locationPermissionGranted, MainActivity.this);
         mapViewViewModel.loadLocationMutableLiveData(getApplicationContext(),MainActivity.this,mapViewViewModel);
         mapViewViewModel.getLocationMutableLiveData();
-        // getLocationPermission();
-        //getDeviceLocation();
+
 
     }
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        Fragment fragment = null;
-        menuItemVisible = item.getItemId();
-        return true;
-    }
-
-  /*  public void getLocationPermission() {
-        /*
-         * Request location permission, so that we can get the location of the
-         * device. The result of the permission request is handled by a callback,
-         * onRequestPermissionsResult.
-         */
-      /*  if (ContextCompat.checkSelfPermission(getApplicationContext(),
-                android.Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            locationPermissionGranted = true;
-        } else {
-            ActivityCompat.requestPermissions(MainActivity.this,
-                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-        }
-    }
-    public  void getDeviceLocation() {
-        /*
-         * Get the best and most recent location of the device, which may be null in rare
-         * cases when a location is not available.
-         */
-
-    /*    try {
-
-            if (locationPermissionGranted) {
-                if(ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION)
-                        != PackageManager.PERMISSION_GRANTED
-                        && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION)
-                        != PackageManager.PERMISSION_GRANTED){
-                    return;
-                }
-                fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(MainActivity.this);
-
-                Task<Location> locationResult = fusedLocationProviderClient.getLastLocation();
-                locationResult.addOnCompleteListener(MainActivity.this, new OnCompleteListener<Location>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Location> task) {
-                        if (task.isSuccessful()) {
-                            // Set the map's camera position to the current location of the device.
-                            lastKnownLocation = task.getResult();
-                            location = lastKnownLocation.getLatitude() + "," + lastKnownLocation.getLongitude();
-                            //moveCamera();
-                            mapViewViewModel.loadRestaurentData(location);
-                            mapViewViewModel.getRestaurent();
-                            Log.e("TAG", "onComplete: MainActivity" );
-                        } else {
-                            Log.e("TAG", "Exception: %s MainActivity", task.getException());
-
-                        }
-
-                    }
-                });
-            }
-        } catch (SecurityException e)  {
-            Log.e("Exception: %s", e.getMessage(), e);
-        }
-
-    }*/
-
-
-
 }

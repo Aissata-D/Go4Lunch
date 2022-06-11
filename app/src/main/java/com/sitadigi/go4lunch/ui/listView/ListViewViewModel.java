@@ -37,16 +37,16 @@ public class ListViewViewModel extends ViewModel implements GoogleMapApiCallsRep
     }
     public void loadRestaurentData(String location) {
 
-        listOfRestaurent = mGoogleMapApiCallsRepository.fetchResultFollowing(this, location,1500,
-                "restaurant","AIzaSyDsQUD7ukIhqdJYZIQxj535IvrDRrkrH08");
+        listOfRestaurent.setValue(mGoogleMapApiCallsRepository.fetchResultFollowing(this, location,1500,
+                "restaurant","AIzaSyDsQUD7ukIhqdJYZIQxj535IvrDRrkrH08"));
 
     }
 
     @Override
     public void onResponse(@Nullable GoogleClass1 results) {
+
         listOfRestaurent.setValue(results.getResults());
-        Log.e("TAG", "onResponse: listeresto recupere"+listOfRestaurent.getValue() );
-        //listOfRestaurent.setValue(results.getResults());
+
 
     }
 

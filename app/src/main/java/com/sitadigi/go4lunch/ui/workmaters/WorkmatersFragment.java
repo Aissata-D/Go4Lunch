@@ -18,7 +18,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.sitadigi.go4lunch.databinding.FragmentWorkmatersBinding;
 
 
+import com.sitadigi.go4lunch.models.GoogleClass1;
 import com.sitadigi.go4lunch.models.User;
+import com.sitadigi.go4lunch.ui.listView.ListViewAdapter;
+import com.sitadigi.go4lunch.ui.mapView.MapViewViewModel;
 
 
 import java.util.ArrayList;
@@ -27,46 +30,66 @@ import java.util.List;
 public class WorkmatersFragment extends Fragment  {
 
     private FragmentWorkmatersBinding binding;
-    TextView textView;
     private RecyclerView mRecyclerView;
     List<User> users = new ArrayList<>();
-    String restoId;
-    String restoName;
+    private String placeNameSelected;
+    private TextView tvNoWorkmate;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         WorkmatersViewModel workmatersViewModel =
                 new ViewModelProvider(this).get(WorkmatersViewModel.class);
+        MapViewViewModel mapViewViewModel =
+                new ViewModelProvider(requireActivity()).get(MapViewViewModel.class);
 
         binding = FragmentWorkmatersBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-
         mRecyclerView = binding.recyclerviewWorkmaters;
+        tvNoWorkmate = binding.noWorkmateFound;
+        tvNoWorkmate.setVisibility(View.GONE);
 
-        // workmatersViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
          workmatersViewModel.getAllUser().observe(getViewLifecycleOwner(), usersLiveData -> {
          List<User> mItems = usersLiveData;
          users.clear();
          users.addAll(mItems);
          initRecyclerView();
-
          });
 
-        Bundle arguments = getArguments();
-        if (arguments != null) {
-            restoName = arguments.getString("RESTO_NAME");
-            restoId = arguments.getString("RESTO_ID");
-            Log.e("TAG", "onCreateView Workmates: "+restoName +" "+ restoId);
-        }
+        mapViewViewModel.getResultSearchPlaceName().observe(getViewLifecycleOwner(), PlaceNameResponse -> {
+            placeNameSelected = PlaceNameResponse;
+           initRecyclerView();
+
+        });
         return root;
     }
     public void initRecyclerView() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this.getActivity());
         mRecyclerView.setLayoutManager(linearLayoutManager);
+        List<User> listOfUserFiltered = new ArrayList<>();
+        if (placeNameSelected != null) {
+            for (User filter : users) {
+                if (filter.getUserRestoName().equals(placeNameSelected)) {
+                    listOfUserFiltered.add(filter);
+                }
+            }
+            if (listOfUserFiltered.size() == 0) {
+                tvNoWorkmate.setVisibility(View.VISIBLE);
+                mRecyclerView.setVisibility(View.GONE);
+            } else {
+                tvNoWorkmate.setVisibility(View.GONE);
+                mRecyclerView.setVisibility(View.VISIBLE);
+                WorkmatersAdapter workmatersAdapter = new WorkmatersAdapter(listOfUserFiltered);
+                mRecyclerView.setAdapter(workmatersAdapter);
+            }
 
-        WorkmatersAdapter workmatersAdapter = new WorkmatersAdapter(users);
-        mRecyclerView.setAdapter(workmatersAdapter);
+        } else {
+            tvNoWorkmate.setVisibility(View.GONE);
+            mRecyclerView.setVisibility(View.VISIBLE);
+            WorkmatersAdapter workmatersAdapter = new WorkmatersAdapter(users);
+            mRecyclerView.setAdapter(workmatersAdapter);
+
+        }
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
 
     }

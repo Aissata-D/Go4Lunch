@@ -3,7 +3,6 @@ package com.sitadigi.go4lunch;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -36,28 +35,25 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class DetailActivity extends AppCompatActivity implements GooglePlacePhotoApiCalls.Callbacks{
+public class DetailActivity extends AppCompatActivity implements GooglePlacePhotoApiCalls.Callbacks {
+    public static final String RESTO_NAME = "RESTO_NAME";
+    public static final String RESTO_PHOTO_URL = "RESTO_PHOTO_URL";
+    public static final String RESTO_OPENINGHOURS = "RESTO_OPENINGHOURS";
+    public static final String RESTO_ADRESSES = "RESTO_ADRESSES";
+    public static final String RESTO_TYPE = "RESTO_TYPE";
+    public static final String RESTO_ID = null;
     ImageView mImageViewResto;
     TextView tvRestoId;
     TextView tvRestoName;
     TextView tvRestoTypeAndAdresses;
     TextView tvRestoOpeningHours;
     FloatingActionButton fbaRestoChoice;
-    public static final String RESTO_NAME = "RESTO_NAME";
-  //  public static final String RESTO_ID = "RESTO_ID";
-    public static final String RESTO_PHOTO_URL = "RESTO_PHOTO_URL";
-    public static final String RESTO_OPENINGHOURS = "RESTO_OPENINGHOURS";
-    public static final String RESTO_TYPE_ADRESSES = "RESTO_TYPE";
-    public static final String RESTO_ADRESSES = "RESTO_ADRESSES";
-    public static final String RESTO_ID = null;
-
-
-    String userLastRestoId ="";
+    String userLastRestoId = "";
     String restoId;
     String restoName;
     String restoPhotoUrl;
-    String restoTypeAndAdresses;
-    Boolean isRestoOpeningHours;
+    String restoAdresses;
+    private String restoType;
 
     StringBuilder stringBuilderURL;
     URL mURL;
@@ -69,6 +65,7 @@ public class DetailActivity extends AppCompatActivity implements GooglePlacePhot
 
     DetailActivityAdapter detailActivityAdapter;
     LinearLayoutManager linearLayoutManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,17 +79,14 @@ public class DetailActivity extends AppCompatActivity implements GooglePlacePhot
 
         mUserViewModel = new UserViewModel();
         restoId = getIntent().getStringExtra(RESTO_ID);
-        restoName= getIntent().getStringExtra(RESTO_NAME);
+        restoName = getIntent().getStringExtra(RESTO_NAME);
         restoPhotoUrl = getIntent().getStringExtra(RESTO_PHOTO_URL);
-        restoTypeAndAdresses = getIntent().getStringExtra(RESTO_TYPE_ADRESSES);
-        //isRestoOpeningHours = getIntent().getBooleanExtra(RESTO_OPENINGHOURS,false);
-
+        restoAdresses = getIntent().getStringExtra(RESTO_ADRESSES);
+        restoType = getIntent().getStringExtra(RESTO_TYPE);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_detail_activity);
         linearLayoutManager = new LinearLayoutManager(DetailActivity.this);
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.VERTICAL));
-
-
 
 
         mImageViewResto = (ImageView) findViewById(R.id.resto_img);
@@ -110,7 +104,7 @@ public class DetailActivity extends AppCompatActivity implements GooglePlacePhot
             public void onClick(View view) {
                 FirebaseUser firebaseUser = mUserViewModel.getCurrentUser();
                 // Get uid of user on logged
-                String userUid =  mUserViewModel.getCurrentUser().getUid();
+                String userUid = mUserViewModel.getCurrentUser().getUid();
                 // Get userRestoId on firebaseFirestore
                 DocumentReference userDocumentRef = mUserViewModel.getUsersCollection().document(userUid);
                 userDocumentRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -119,51 +113,44 @@ public class DetailActivity extends AppCompatActivity implements GooglePlacePhot
                         if (task.isSuccessful()) {
                             DocumentSnapshot document = task.getResult();
                             if (document != null) {
-                                //String test = document.getString("username");
                                 userLastRestoId = document.getString("userRestoId");
 
-
-                                if(userLastRestoId == null){
+                                if (userLastRestoId == null) {
                                     //Set fab icon color green
                                     fbaRestoChoice.setImageTintList(ColorStateList.valueOf(getApplicationContext()
                                             .getResources().getColor(R.color.fab_green))); //setImageDrawable(
-                                    //  getResources().getDrawable(R.drawable.ic_baseline_check_circle_24_green));
                                     //Ajouter user.setRestoId(restoId)
                                     //Set restoId with actual restoIdChoice
-                                    userDocumentRef.update("userRestoId",restoId);
-                                }else{//restoId != null
-                                    if(userLastRestoId.equals(restoId))// C'est le meme resto)
-                                    {
+                                    userDocumentRef.update("userRestoId", restoId);
+                                    userDocumentRef.update("userRestoName", restoName);
+                                    userDocumentRef.update("userRestoType", restoType);
+                                } else {//restoId != null
+                                    if (userLastRestoId.equals(restoId)){ // C'est le meme resto)
                                         //Set fab icon color gray
                                         fbaRestoChoice.setImageTintList(ColorStateList.valueOf(getApplicationContext()
                                                 .getResources().getColor(R.color.fab_gray)));
-                                       // usersInter.remove(firebaseUser);
+                                        // usersInter.remove(firebaseUser);
                                         //user.setRestoId(null)
 
-                                        userDocumentRef.update("userRestoId","NoRestoChoice");
-
-
-                                    }else{//c'est pas le meme resto
+                                        userDocumentRef.update("userRestoId", "NoRestoChoice");
+                                        userDocumentRef.update("userRestoName", "restoNameCreated");
+                                        userDocumentRef.update("userRestoType", "restoTypeCreated");
+                                    } else {//c'est pas le meme resto
                                         //Set fab icon color green
                                         fbaRestoChoice.setImageTintList(ColorStateList.valueOf(getApplicationContext()
                                                 .getResources().getColor(R.color.fab_green)));
                                         //user.setRestoId (restoId)
-                                        userDocumentRef.update("userRestoId",restoId);
-
-
-
+                                        userDocumentRef.update("userRestoId", restoId);
+                                        userDocumentRef.update("userRestoName", restoName);
+                                        userDocumentRef.update("userRestoType", restoType);
                                     }
                                 }
-                               // initRecyclerView();
+                                // initRecyclerView();
                             }
-
                         } else {
                             Log.d("LOGGER", "get failed with ", task.getException());
                         }
-
-
-                    initRecyclerView();
-
+                        initRecyclerView();
                     }
                 });
             }
@@ -174,9 +161,10 @@ public class DetailActivity extends AppCompatActivity implements GooglePlacePhot
         initRecyclerView();
 
     }
-    public void setfabColor(){
+
+    public void setfabColor() {
         // Get uid of user on logged
-        String userUid =  mUserViewModel.getCurrentUser().getUid();
+        String userUid = mUserViewModel.getCurrentUser().getUid();
         // Get userRestoId on firebaseFirestore
         DocumentReference userDocumentRef = mUserViewModel.getUsersCollection().document(userUid);
         userDocumentRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -188,20 +176,20 @@ public class DetailActivity extends AppCompatActivity implements GooglePlacePhot
                         //String test = document.getString("username");
                         userLastRestoId = document.getString("userRestoId");
 
-                            if(userLastRestoId.equals(restoId))// C'est le meme resto)
-                                 {
-                                //Set fab icon color gray
-                                fbaRestoChoice.setImageTintList(ColorStateList.valueOf(getApplicationContext()
-                                        .getResources().getColor(R.color.fab_green)));
-                                //user.setRestoId(null)
-                              //  userDocumentRef.update("userRestoId",/*"restoIDdNULL"*/restoId);
-                            }else{//c'est pas le meme resto
-                                //Set fab icon color green
-                                fbaRestoChoice.setImageTintList(ColorStateList.valueOf(getApplicationContext()
-                                        .getResources().getColor(R.color.fab_gray)));
+                        if (userLastRestoId.equals(restoId))// C'est le meme resto)
+                        {
+                            //Set fab icon color gray
+                            fbaRestoChoice.setImageTintList(ColorStateList.valueOf(getApplicationContext()
+                                    .getResources().getColor(R.color.fab_green)));
+                            //user.setRestoId(null)
+                            //  userDocumentRef.update("userRestoId",/*"restoIDdNULL"*/restoId);
+                        } else {//c'est pas le meme resto
+                            //Set fab icon color green
+                            fbaRestoChoice.setImageTintList(ColorStateList.valueOf(getApplicationContext()
+                                    .getResources().getColor(R.color.fab_gray)));
 
-                            }
                         }
+                    }
 
 
                 } else {
@@ -211,9 +199,9 @@ public class DetailActivity extends AppCompatActivity implements GooglePlacePhot
         });
     }
 
-    public void configureDetailView(){
+    public void configureDetailView() {
+        String restoTypeAndAdresses = restoType +" - " + restoAdresses;
         tvRestoName.setText(restoName);
-       // tvRestoId.setText(restoId);
         tvRestoTypeAndAdresses.setText(restoTypeAndAdresses);
 
         //GLIDE TO SHOW PHOTO
@@ -224,8 +212,9 @@ public class DetailActivity extends AppCompatActivity implements GooglePlacePhot
                 .into(mImageViewResto);
 
     }
-   Uri getUrl(String base){
-        Uri uri = Uri.parse( base );
+
+    Uri getUrl(String base) {
+        Uri uri = Uri.parse(base);
         return uri;
     }
 
@@ -234,20 +223,18 @@ public class DetailActivity extends AppCompatActivity implements GooglePlacePhot
     // ------------------------------
 
     // 4 - Execute HTTP request and update UI
-    private void executeHttpRequestWithRetrofit(){
+    private void executeHttpRequestWithRetrofit() {
 
-        GooglePlacePhotoApiCalls.fetchRestaurantPhoto(this, RESTO_PHOTO_URL,400,
-                300,"AIzaSyDsQUD7ukIhqdJYZIQxj535IvrDRrkrH08");
-
+        GooglePlacePhotoApiCalls.fetchRestaurantPhoto(this, RESTO_PHOTO_URL, 400,
+                300, "AIzaSyDsQUD7ukIhqdJYZIQxj535IvrDRrkrH08");
     }
 
     // 2 - Override callback methods
 
 
-
     @Override
     public void onResponse(@Nullable GoogleClass1 results) {
-        Log.e("TAG", "onResponse: "+results );
+        Log.e("TAG", "onResponse: " + results);
 
     }
 
@@ -265,19 +252,19 @@ public class DetailActivity extends AppCompatActivity implements GooglePlacePhot
             mRecyclerView.setLayoutManager(null);
 
 
-           // MutableLiveData<String> liveDataRestoId = new MutableLiveData<>();
+            // MutableLiveData<String> liveDataRestoId = new MutableLiveData<>();
             List<User> usersInter = new ArrayList<>();
 
-          // usersInter.clear();
-            for(User user : usersLiveData){
+            // usersInter.clear();
+            for (User user : usersLiveData) {
                 // liveDataRestoId.setValue(user.getUserRestoId());
-               //  liveDataRestoId.equals()
-                if(user.getUserRestoId().equals(restoId)  ) {
+                //  liveDataRestoId.equals()
+                if (user.getUserRestoId().equals(restoId)) {
                     if (!usersInter.contains(user)) {
                         usersInter.add(user);
                     }
 
-                    } else {
+                } else {
                     usersInter.remove(user);
                 }
             }
@@ -287,16 +274,16 @@ public class DetailActivity extends AppCompatActivity implements GooglePlacePhot
             detailActivityAdapter = new DetailActivityAdapter(userList);
             detailActivityAdapter = new DetailActivityAdapter(usersInter);
             detailActivityAdapter.notifyDataSetChanged();
-           // mRecyclerView.swapAdapter(detailActivityAdapter,false);
+            // mRecyclerView.swapAdapter(detailActivityAdapter,false);
             mRecyclerView.getRecycledViewPool().clear();
             mRecyclerView.setAdapter(null);
             mRecyclerView.setLayoutManager(null);
             mRecyclerView.setAdapter(detailActivityAdapter);
             mRecyclerView.setLayoutManager(linearLayoutManager);
-           // mRecyclerView.getLayoutManager().removeAllViews();
+            // mRecyclerView.getLayoutManager().removeAllViews();
 
 
-           // mRecyclerView.requestLayout();
+            // mRecyclerView.requestLayout();
             //mRecyclerView.invalidate();
 
         });

@@ -76,7 +76,7 @@ public class GeoLocateRepository {
                             locationMutableLiveData.setValue(lastKnownLocation);
                             //moveCamera();
                             mapViewViewModel.loadRestaurentData(location);
-                            mapViewViewModel.getRestaurent();
+                        //    mapViewViewModel.getRestaurent();
                             Log.e("TAG", "onComplete: MainActivity" );
                         } else {
                             Log.e("TAG", "Exception: %s MainActivity", task.getException());

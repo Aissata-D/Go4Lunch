@@ -156,6 +156,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
                     .load(getUrl(urlConcat))
                     .apply(RequestOptions.noTransformation())
                     .centerCrop()
+                    .placeholder(R.drawable.img_resto_placeholder)
                     .into(restoImageView);
 
             restoName.setText(restaurant.getName());

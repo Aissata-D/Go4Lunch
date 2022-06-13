@@ -42,11 +42,10 @@ public class LoginActivity extends AppCompatActivity {
     private void setupListeners() {
 
         mAuthStateListner = new FirebaseAuth.AuthStateListener() {
-            @SuppressLint("ResourceType")
+            // @SuppressLint("ResourceType")
             @Override
             // we are calling method for on authentication state changed ==> if user changed
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-
                 //Get current user which is authenticated previously. // checking if the user is null or not.
                 if (mUserViewModel.isCurrentUserLogged()) {
                     // if the user is already authenticated then he will redirecting to new screen via an intent(His own ProfileActivity).
@@ -69,13 +68,15 @@ public class LoginActivity extends AppCompatActivity {
     private void startSignInActivity() {
         // Choose authentication providers
         List<AuthUI.IdpConfig> providers =
-                Arrays.asList(new AuthUI.IdpConfig.FacebookBuilder().build(),
-                        new AuthUI.IdpConfig.GoogleBuilder().build());
-
+                Arrays.asList(new AuthUI.IdpConfig.EmailBuilder().build()
+                        , new AuthUI.IdpConfig.TwitterBuilder().build()
+                        , new AuthUI.IdpConfig.FacebookBuilder().build()
+                        , new AuthUI.IdpConfig.GoogleBuilder().build());
         // Launch the activity
         startActivityForResult(
                 AuthUI.getInstance()
                         .createSignInIntentBuilder()
+                        .setLogo(R.drawable.fond_d_ecran)
                         .setTheme(R.style.LoginTheme)
                         .setAvailableProviders(providers)
                         .setIsSmartLockEnabled(false, true)
@@ -104,8 +105,6 @@ public class LoginActivity extends AppCompatActivity {
         this.handleResponseAfterSignIn(requestCode, resultCode, data);
     }
 
-
-    // TODO Replace this snackBar with a Toast
     private void showToast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
@@ -114,7 +113,6 @@ public class LoginActivity extends AppCompatActivity {
     private void handleResponseAfterSignIn(int requestCode, int resultCode, Intent data) {
 
         IdpResponse response = IdpResponse.fromResultIntent(data);
-
         if (requestCode == RC_SIGN_IN) {
             Log.e("TAG", "handleResponseAfterSignIn: RC_SIGN_IN");
             // SUCCESS
@@ -123,7 +121,6 @@ public class LoginActivity extends AppCompatActivity {
                 // Create a new document users on Firestore if user does not exist
                 mUserViewModel.createUser();
                 showToast(getString(R.string.connection_succeed));
-                //startProfileActivity();
             } else {
                 // ERRORS
                 if (response == null) {
@@ -141,6 +138,4 @@ public class LoginActivity extends AppCompatActivity {
             }
         }
     }
-
-
 }

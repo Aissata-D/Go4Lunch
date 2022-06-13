@@ -29,17 +29,10 @@ public class SlideshowFragment extends Fragment {
 
         binding = FragmentSlideshowBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-        // From another Fragment or Activity where you wish to show this
-// PurchaseConfirmationDialogFragment.
-
-       // final TextView textView = binding.textSlideshow;
-        //slideshowViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
-        //showAlert();
-      //  showAlertDialogFilterByRoom();
 
         return root;
     }
-    private void showAlert() {
+   /* private void showAlert() {
         new AlertDialog.Builder(this.getActivity().getApplicationContext())
                 .setTitle("Delete entry")
                 .setMessage("Are you sure you want to delete this entry?")
@@ -79,7 +72,7 @@ public class SlideshowFragment extends Fragment {
         AlertDialog alert = alertDialog.create();
         alert.setCanceledOnTouchOutside(false);
         alert.show();
-    }
+    }*/
 
     @Override
     public void onDestroyView() {

@@ -19,10 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class WorkmatersViewModel extends ViewModel {
+
     private final UserRepository userRepository;
-
-
-
     private final MutableLiveData<String> mText;
 
     public WorkmatersViewModel() {
@@ -37,6 +35,4 @@ public class WorkmatersViewModel extends ViewModel {
     public MutableLiveData<List<User>> getAllUser(){
        return userRepository.getAllUser();
     }
-
-
 }

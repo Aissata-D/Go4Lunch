@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.util.Log;
+import android.widget.ImageView;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -25,22 +26,17 @@ import java.util.List;
 public class MapViewUtils {
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1234;
     private static final float DEFAULT_ZOOM = 15f;
+    public List<GoogleClass1.Result> resultList = new ArrayList<>();
     Context mContext;
     Activity mActivity;
-    Location lastKnownLocation ;
-    String location;
-
+    Location lastKnownLocation;
     boolean locationPermissionGranted;
-
-
-    public List<GoogleClass1.Result> resultList = new ArrayList<>();
-    LatLng defaultLocation = new LatLng(5,8);
+    LatLng defaultLocation = new LatLng(5, 8);
     List<GoogleClass1.Result> listOfRestaurent = new ArrayList<>();
     MapViewViewModel mapViewViewModel;
-    LifecycleOwner mLifecycleOwner;
     GeoLocateRepository mGeoLocateRepository;
 
-    public MapViewUtils(MapViewViewModel mapViewViewModel,Context context,  boolean locationPermissionGranted,
+    public MapViewUtils(MapViewViewModel mapViewViewModel, Context context, boolean locationPermissionGranted,
                         Activity activity) {
         this.mapViewViewModel = mapViewViewModel;
         mContext = context;
@@ -49,7 +45,7 @@ public class MapViewUtils {
         mGeoLocateRepository = new GeoLocateRepository();
     }
 
-    public List<GoogleClass1.Result> getNearRestaurantList(){
+    public List<GoogleClass1.Result> getNearRestaurantList() {
         return resultList;
     }
 
@@ -59,7 +55,7 @@ public class MapViewUtils {
          * device. The result of the permission request is handled by a callback,
          * onRequestPermissionsResult.
          */
-       if (ContextCompat.checkSelfPermission(mContext.getApplicationContext(),
+        if (ContextCompat.checkSelfPermission(mContext.getApplicationContext(),
                 android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             locationPermissionGranted = true;
@@ -84,110 +80,51 @@ public class MapViewUtils {
                 lastKnownLocation = null;
                 getLocationPermission();
             }
-        } catch (SecurityException e)  {
+        } catch (SecurityException e) {
             Log.e("Exception: %s", e.getMessage());
         }
     }
 
-     public  void getDeviceLocation(GoogleMap mGoogleMap,LifecycleOwner mLifecycleOwner) {
+    public void GeolocationOfDeviceAndUpdateGoogleMapView(GoogleMap mGoogleMap, LifecycleOwner mLifecycleOwner, ImageView placeHolder) {
 
-                             //moveCamera
-                             if (mapViewViewModel.getLocationMutableLiveData() != null) {
-                                 mapViewViewModel.getLocationMutableLiveData()
-                                         .observe(mLifecycleOwner,
-                                         LocationResponse ->{ lastKnownLocation = LocationResponse;
-                                             mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                                            new LatLng(lastKnownLocation.getLatitude(),
-                                                 lastKnownLocation.getLongitude()), DEFAULT_ZOOM));
-                                         });
-                                 if ( mapViewViewModel.getRestaurent() != null){
-                                     // Call list of restaurant
-                                     mapViewViewModel.getRestaurent().observe(mLifecycleOwner, RestaurentResponse -> {
-                                         listOfRestaurent.clear();
-                                         listOfRestaurent.addAll(RestaurentResponse);
+        //moveCamera
+        if (mapViewViewModel.getLocationMutableLiveData() != null) {
+            mapViewViewModel.getLocationMutableLiveData()
+                    .observe(mLifecycleOwner,
+                            LocationResponse -> {
+                                lastKnownLocation = LocationResponse;
+                                mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                                        new LatLng(lastKnownLocation.getLatitude(),
+                                                lastKnownLocation.getLongitude()), DEFAULT_ZOOM));
+                            });
+            if (mapViewViewModel.getRestaurent() != null) {
 
-                                         // 2.1 - When getting response, we update UI
-                                         if (listOfRestaurent != null) {
-                                             // this.updateUIWithListOfUsers(listOfRestaurent);
-                                             for (GoogleClass1.Result restaurant : listOfRestaurent) {
-                                                 if (!resultList.contains(restaurant)) {
-                                                     resultList.add(restaurant);
-                                                     LatLng restoPosition = new LatLng(restaurant.getGeometry().getLocation().getLat()
-                                                             , restaurant.getGeometry().getLocation().getLng());
-                                                     String restoNameForMarker = restaurant.getName();
-                                                     mGoogleMap.addMarker(new MarkerOptions()
-                                                             .position(restoPosition)
-                                                             .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-                                                             .title(restoNameForMarker));
-                                                 }
-                                             }
-                                         }
-                                     });
+                // Call list of restaurant
+                mapViewViewModel.getRestaurent().observe(mLifecycleOwner, RestaurentResponse -> {
+                    listOfRestaurent.clear();
+                    listOfRestaurent.addAll(RestaurentResponse);
 
-                                 }
-                             }else {
-                           //  Log.e("TAG", "Exception: %s", task.getException());
-                             mGoogleMap.moveCamera(CameraUpdateFactory
-                                     .newLatLngZoom(defaultLocation, DEFAULT_ZOOM));
-                             mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
-
-                         }
-
-     }
-
- /*   public Location getLastLocation() {
-        return lastKnownLocation;
-    }
-
-    public void moveCamera(GoogleMap mGoogleMap, LifecycleOwner mLifecycleOwner){
-        Location lastKnownLocation = getLastLocation();
-
-        if (lastKnownLocation != null) {
-            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                    new LatLng(lastKnownLocation.getLatitude(),
-                            lastKnownLocation.getLongitude()), DEFAULT_ZOOM));
-            // executeHttpRequestWithRetrofit();
-            //Call of viewModel
-            mapViewViewModel.loadRestaurentData(location);
-            mapViewViewModel.getRestaurent().observe(mLifecycleOwner, RestaurentResponse -> {
-                listOfRestaurent.clear();
-                listOfRestaurent.addAll(RestaurentResponse);
-
-                // 2.1 - When getting response, we update UI
-                if (listOfRestaurent!= null) {
-                    // this.updateUIWithListOfUsers(listOfRestaurent);
-                    for(GoogleClass1.Result restaurant : listOfRestaurent) {
-                        if(!resultList.contains(restaurant)) {
-                            resultList.add(restaurant);
-                            LatLng restoPosition = new LatLng(restaurant.getGeometry().getLocation().getLat()
-                                    , restaurant.getGeometry().getLocation().getLng());
-                            String restoNameForMarker = restaurant.getName();
-                            mGoogleMap.addMarker(new MarkerOptions()
-                                    .position(restoPosition)
-                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-                                    .title(restoNameForMarker));
+                    //  When getting response, we update UI
+                    if (listOfRestaurent != null) {
+                        for (GoogleClass1.Result restaurant : listOfRestaurent) {
+                            if (!resultList.contains(restaurant)) {
+                                resultList.add(restaurant);
+                                LatLng restoPosition = new LatLng(restaurant.getGeometry().getLocation().getLat()
+                                        , restaurant.getGeometry().getLocation().getLng());
+                                String restoNameForMarker = restaurant.getName();
+                                mGoogleMap.addMarker(new MarkerOptions()
+                                        .position(restoPosition)
+                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                                        .title(restoNameForMarker));
+                            }
                         }
-
                     }
-
-                    int a = resultList.size();
-                    // LatLng villeurbanne = new LatLng(45.771944, 4.8901709);
-                    Log.e("TAG", "onResponse: " );
-
-                }
-            });
-
-//                                int b = resultList.size();
-
-
-        }else {Log.d("TAG", "Current location is null. Using defaults.");
-           //
-
+                });
+            }
+        } else {
             mGoogleMap.moveCamera(CameraUpdateFactory
                     .newLatLngZoom(defaultLocation, DEFAULT_ZOOM));
-            mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);}
-
+            mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
+        }
     }
-
-*/
 }

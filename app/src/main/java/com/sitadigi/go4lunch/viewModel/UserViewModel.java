@@ -110,25 +110,4 @@ public class UserViewModel extends ViewModel {
         Log.e("TAG", "getRestaurent: " +listOfRestaurent );
         return listOfRestaurent;
     }
-   /* public void loadRestaurentData(String location) {
-
-        listOfRestaurent = mGoogleMapApiCalls.fetchResultFollowing(this, location,1500,
-                "restaurant","AIzaSyDsQUD7ukIhqdJYZIQxj535IvrDRrkrH08");
-
-    }
-
-    @Override
-    public void onResponse(@Nullable GoogleClass1 results) {
-        listOfRestaurent.setValue(results.getResults());
-        Log.e("TAG", "onResponse: listeresto recupere"+listOfRestaurent.getValue() );
-        //listOfRestaurent.setValue(results.getResults());
-
-    }
-
-    @Override
-    public void onFailure() {
-        Log.e("TAG", "onFailure: ");
-
-    }*/
-
 }

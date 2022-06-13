@@ -23,7 +23,7 @@ public class GeoLocateRepository {
     public boolean locationPermissionGranted;
     public Location lastKnownLocation;
     public FusedLocationProviderClient fusedLocationProviderClient;
-    public MutableLiveData<Location> locationMutableLiveData ;
+    public MutableLiveData<Location> locationMutableLiveData;
     String location;
 
     public GeoLocateRepository() {
@@ -46,24 +46,25 @@ public class GeoLocateRepository {
                     PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
         }
     }
+
     public MutableLiveData<Location> getDeviceLocation(Context context, Activity activity, MapViewViewModel mapViewViewModel) {
         /*
          * Get the best and most recent location of the device, which may be null in rare
          * cases when a location is not available.
          */
-            getLocationPermission(context,activity);
+        getLocationPermission(context, activity);
         try {
 
             if (locationPermissionGranted) {
-                if(ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
+                if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
                         != PackageManager.PERMISSION_GRANTED
                         && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
-                        != PackageManager.PERMISSION_GRANTED){
+                        != PackageManager.PERMISSION_GRANTED) {
                     return null;
                 }
                 fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(activity);
 
-             Task<Location> locationResult = fusedLocationProviderClient.getLastLocation();
+                Task<Location> locationResult = fusedLocationProviderClient.getLastLocation();
                 locationResult.addOnCompleteListener(/*(Executor) this*/activity, new OnCompleteListener<Location>() {
                     //private MapViewViewModel mapViewViewModel;
 
@@ -76,17 +77,13 @@ public class GeoLocateRepository {
                             locationMutableLiveData.setValue(lastKnownLocation);
                             //moveCamera();
                             mapViewViewModel.loadRestaurentData(location);
-                        //    mapViewViewModel.getRestaurent();
-                            Log.e("TAG", "onComplete: MainActivity" );
                         } else {
                             Log.e("TAG", "Exception: %s MainActivity", task.getException());
-
                         }
-
                     }
                 });
             }
-        } catch (SecurityException e)  {
+        } catch (SecurityException e) {
             Log.e("Exception: %s", e.getMessage(), e);
         }
         return locationMutableLiveData;

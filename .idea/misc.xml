@@ -4,6 +4,7 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="../../../../layout/custom_preview.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/bg_login.xml" value="0.115" />
         <entry key="app/src/main/res/drawable/bottom_navigation_colors.xml" value="0.1375" />
         <entry key="app/src/main/res/drawable/ic_baseline_check_circle_24_green.xml" value="0.1295" />
         <entry key="app/src/main/res/drawable/ic_baseline_local_phone_24.xml" value="0.187" />
@@ -20,7 +21,7 @@
         <entry key="app/src/main/res/layout/activity_login2.xml" value="0.14010416666666667" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.15" />
         <entry key="app/src/main/res/layout/activity_nav_header_main.xml" value="0.15833333333333333" />
-        <entry key="app/src/main/res/layout/activity_profil.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/activity_profil.xml" value="0.18" />
         <entry key="app/src/main/res/layout/app_bar_main.xml" value="0.25" />
         <entry key="app/src/main/res/layout/content_main.xml" value="0.19375" />
         <entry key="app/src/main/res/layout/fragment_gallery.xml" value="0.10597826086956522" />

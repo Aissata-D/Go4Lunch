@@ -1,4 +1,6 @@
 <resources>
+    <string name="twitter_consumer_key" translatable="true"> cH5R5NWg2bP3ffhiCslGrsiSK </string>
+    <string name="twitter_consumer_secret" translatable="true"> 6qhVrake6ceXc77Z7n4U4qvWJ6oidKTI3yJry4qve9YCx82BXh </string>
     <string name="google_map_api_key">AIzaSyDsQUD7ukIhqdJYZIQxj535IvrDRrkrH08</string>
     <string name="facebook_app_id">989231408442739</string>
     <string name="facebook_application_id">989231408442739</string>
@@ -35,5 +37,6 @@
     <string name="resto_close">close</string>
     <string name="restoopening_hour_unknow">unknow</string>
     <string name="is_joining">\" is joining \"</string>
+    <string name="not_photo_url">pas de url photo</string>
 
 </resources>

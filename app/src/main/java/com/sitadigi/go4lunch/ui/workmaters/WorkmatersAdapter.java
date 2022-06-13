@@ -32,9 +32,6 @@ public class WorkmatersAdapter extends RecyclerView.Adapter<WorkmatersAdapter.Wo
     public WorkmatersAdapter(@NonNull List<User> users) {
         mUsers = users;
     }
-
-
-
         @NonNull
         @Override
         public WorkmatersAdapter.WorkmatersViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
@@ -76,8 +73,6 @@ public class WorkmatersAdapter extends RecyclerView.Adapter<WorkmatersAdapter.Wo
 
                 imgUser = itemView.findViewById(R.id.imageView_item_workmaters);
                 tvUser = itemView.findViewById(R.id.user_name_item_workmaters);
-
-
             }
 
             /**
@@ -86,20 +81,18 @@ public class WorkmatersAdapter extends RecyclerView.Adapter<WorkmatersAdapter.Wo
              * @param users the task to bind in the item view
              */
             void bind(User users) {
-                String userText="";
+                String userText= users.getUsername()+" hasn't decided yet";;
                 if(!users.getUserRestoId().equals("NoRestoChoice")){
                     if(!users.getUserRestoName().equals("restoNameCreated"))
                     userText = users.getUsername() +" is eating "+ users.getUserRestoType() +" "+"(" + users.getUserRestoName()+")";
-                }else {
-                    userText = users.getUsername()+" hasn't decided yet";
                 }
-
                 tvUser.setText(userText);
                 //GLIDE TO SHOW PHOTO
                 Glide.with(imgUser.getContext())
                         .load(users.getUrlPicture())
                         .apply(RequestOptions.noTransformation())
                         .circleCrop()
+                        .placeholder(R.drawable.img_user_avatar)
                         .into(imgUser);
             }
         }

@@ -19,12 +19,12 @@ import java.util.List;
 
 public class MapViewViewModel extends ViewModel implements GoogleMapApiCallsRepository.Callbacks{
     private final GoogleMapApiCallsRepository mGoogleMapApiCallsRepository;
-    private MutableLiveData<List<String>> resultSearchMutablelist;
+    private final MutableLiveData<List<String>> resultSearchMutablelist;
     public MutableLiveData<Location> locationMutableLiveData;
-    private GeoLocateRepository mGeoLocateRepository ;
-    private MutableLiveData<List<GoogleClass1.Result>> listOfRestaurent;
-    private MutableLiveData<LatLng> resultSearchLatLng;
-    private MutableLiveData<String> resultSearchPlaceName;
+    private final GeoLocateRepository mGeoLocateRepository ;
+    private final MutableLiveData<List<GoogleClass1.Result>> listOfRestaurent;
+    private final MutableLiveData<LatLng> resultSearchLatLng;
+    private final MutableLiveData<String> resultSearchPlaceName;
 
     public MapViewViewModel() {
         mGoogleMapApiCallsRepository = GoogleMapApiCallsRepository.getInstance();
@@ -40,6 +40,7 @@ public class MapViewViewModel extends ViewModel implements GoogleMapApiCallsRepo
 
         return listOfRestaurent;
     }
+
     public void loadRestaurentData(String location) {
 
         listOfRestaurent.setValue(mGoogleMapApiCallsRepository.fetchResultFollowing(this, location,1500,
@@ -56,20 +57,13 @@ public class MapViewViewModel extends ViewModel implements GoogleMapApiCallsRepo
         return locationMutableLiveData;
     }
 
-    public void getSearchMutableLiveData(List<String> list) {
-
-        resultSearchMutablelist.setValue(list);
-    }
-
-    public MutableLiveData<List<String>> getResultSearch(){
-        return resultSearchMutablelist;
-    }
-
     public void setSearchLatLngMutableLiveData(LatLng latLng) {
 
         resultSearchLatLng.setValue(latLng);
     }
+
     public MutableLiveData<LatLng> getResultSearchLatLng(){
+
         return resultSearchLatLng;
     }
 

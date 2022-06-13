@@ -2,7 +2,6 @@ package com.sitadigi.go4lunch.ui.workmaters;
 
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,21 +16,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.sitadigi.go4lunch.databinding.FragmentWorkmatersBinding;
 
-
-import com.sitadigi.go4lunch.models.GoogleClass1;
 import com.sitadigi.go4lunch.models.User;
-import com.sitadigi.go4lunch.ui.listView.ListViewAdapter;
 import com.sitadigi.go4lunch.ui.mapView.MapViewViewModel;
-
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class WorkmatersFragment extends Fragment  {
+public class WorkmatersFragment extends Fragment {
 
     private FragmentWorkmatersBinding binding;
     private RecyclerView mRecyclerView;
-    List<User> users = new ArrayList<>();
+    private List<User> users = new ArrayList<>();
     private String placeNameSelected;
     private TextView tvNoWorkmate;
 
@@ -49,20 +44,21 @@ public class WorkmatersFragment extends Fragment  {
         tvNoWorkmate = binding.noWorkmateFound;
         tvNoWorkmate.setVisibility(View.GONE);
 
-         workmatersViewModel.getAllUser().observe(getViewLifecycleOwner(), usersLiveData -> {
-         List<User> mItems = usersLiveData;
-         users.clear();
-         users.addAll(mItems);
-         initRecyclerView();
-         });
+        workmatersViewModel.getAllUser().observe(getViewLifecycleOwner(), usersLiveData -> {
+            List<User> mItems = usersLiveData;
+            users.clear();
+            users.addAll(mItems);
+            initRecyclerView();
+        });
 
         mapViewViewModel.getResultSearchPlaceName().observe(getViewLifecycleOwner(), PlaceNameResponse -> {
             placeNameSelected = PlaceNameResponse;
-           initRecyclerView();
+            initRecyclerView();
 
         });
         return root;
     }
+
     public void initRecyclerView() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this.getActivity());
         mRecyclerView.setLayoutManager(linearLayoutManager);
@@ -91,13 +87,11 @@ public class WorkmatersFragment extends Fragment  {
 
         }
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
-
     }
 
-        @Override
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
     }
-
 }

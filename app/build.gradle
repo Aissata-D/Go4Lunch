@@ -4,11 +4,7 @@ plugins {
     id 'com.google.gms.google-services'
     //GOOGLE MAP
     id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
-    //id 'androidx.navigation.safeargs'
-
-
-
-
+//    id 'io.fabric'
 }
 
 android {
@@ -41,8 +37,8 @@ android {
 
 dependencies {
 
-    implementation 'androidx.appcompat:appcompat:1.4.1'
-    implementation 'com.google.android.material:material:1.6.0'
+    implementation 'androidx.appcompat:appcompat:1.4.2'
+    implementation 'com.google.android.material:material:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.4.1'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1'
@@ -55,10 +51,10 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     // Import the Firebase BoM
     implementation platform('com.google.firebase:firebase-bom:30.0.0')
-
-
     // Add the dependency for the Firebase SDK for Google Analytics
     // When using the BoM, don't specify versions in Firebase dependencies
+    // When using the BoM, you don't specify versions in Firebase library dependencies
+    implementation 'com.google.firebase:firebase-auth'
     implementation 'com.google.firebase:firebase-analytics'
     // FIREBASE UI
     implementation 'com.firebaseui:firebase-ui-auth:8.0.1'
@@ -76,7 +72,6 @@ dependencies {
     implementation 'com.google.android.libraries.places:places:2.6.0'
     //LOCATION GOOGLE
     implementation "com.google.android.gms:play-services-location:19.0.1"
-
     //OKHTTP
    // implementation 'com.squareup.okio:okio:1.17.5'
     //GSON
@@ -89,8 +84,14 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxjava:2.1.7'
     //GOOGLE PLACE
     implementation 'com.google.android.libraries.places:places:2.6.0'
+    // Include all the Twitter APIs
+    implementation 'com.twitter.sdk.android:twitter:3.1.1'
+    // (Optional) Monetize using mopub
+   implementation 'com.twitter.sdk.android:twitter-mopub:3.1.1'
 
-
-
+    implementation 'com.twitter.sdk.android:twitter-core:3.2.0'
+    implementation 'com.twitter.sdk.android:tweet-ui:3.1.1'
+    implementation'com.twitter.sdk.android:tweet-composer:3.1.1'
+    implementation 'com.twitter.sdk.android:twitter-mopub:3.1.1'
 
 }

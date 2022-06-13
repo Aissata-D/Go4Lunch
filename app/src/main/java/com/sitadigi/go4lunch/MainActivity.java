@@ -7,8 +7,6 @@ import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -19,7 +17,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -29,7 +26,6 @@ import androidx.navigation.ui.NavigationUI;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -47,30 +43,23 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.sitadigi.go4lunch.databinding.ActivityMainBinding;
 import com.sitadigi.go4lunch.ui.mapView.MapViewViewModel;
-import com.sitadigi.go4lunch.utils.DialogClass;
 import com.sitadigi.go4lunch.utils.MapViewUtils;
 import com.sitadigi.go4lunch.viewModel.UserViewModel;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity
-       /* implements NavigationView.OnNavigationItemSelectedListener*/ {
-
+public class MainActivity extends AppCompatActivity {
 
     TextView userName;
     TextView userEmail;
     ImageView userPhoto;
-    DialogClass mDialogClass;
     private UserViewModel mUserViewModel;
     private AppBarConfiguration mAppBarConfiguration;
     private MapViewViewModel mapViewViewModel;
     MapViewUtils mMapViewUtils;
-    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1234;
     private boolean locationPermissionGranted;
-    Location lastKnownLocation;
     FusedLocationProviderClient fusedLocationProviderClient;
-    String location;
     private String restoId;
     private String restoName;
     LatLng restoLatLng;
@@ -87,11 +76,9 @@ public class MainActivity extends AppCompatActivity
         mCardViewAutocomplete = binding.appBarMain.autocompleteCardview;
         imgSearch = binding.appBarMain.toolbarSearchBar;
         mCardViewAutocomplete.setVisibility(View.GONE);
-
         mUserViewModel = UserViewModel.getInstance();
-        mDialogClass = new DialogClass();
-        initViewModel();
 
+        initViewModel();
         imgSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -105,17 +92,15 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = binding.navView;
         BottomNavigationView bottomNavigation = binding.bottomNavigation;
 
-        //////////////////////////AUTOCOMPLETE
+        //////////////////////////API PLACE AUTOCOMPLETE//////////////////////////////////
         // Create a RectangularBounds object.
         RectangularBounds bounds = RectangularBounds.newInstance(
                 new LatLng(45.7714678,4.8901636),
                 new LatLng(45.7714678,4.8901636));
-      // EditText queryText = findViewById(R.id.edit_text);
         if(!Places.isInitialized()){
             Places.initialize(getApplicationContext(), getString(R.string.google_map_api_key));
         }
         PlacesClient placesClient = Places.createClient(this);
-
         // Initialize the AutocompleteSupportFragment.
         AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
                 getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
@@ -124,26 +109,20 @@ public class MainActivity extends AppCompatActivity
         autocompleteFragment.setCountry("fr");
         autocompleteFragment.setTypeFilter(TypeFilter.ESTABLISHMENT);
         autocompleteFragment.setHint("search restaurant");
-
         // Specify the types of place data to return.
         autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME
                 , Place.Field.LAT_LNG));
-
         // Set up a PlaceSelectionListener to handle the response.
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(@NonNull Place place) {
                 // TODO: Get info about the selected place.
                 Log.e("TAG", "Place: " + place.getName() + ", placeID : " + place.getId());
-                restoId = place.getId();
                 restoName = place.getName();
                 restoLatLng = place.getLatLng();
-                List<String> list = Arrays.asList(restoId,restoName);
-
                 mapViewViewModel.setSearchLatLngMutableLiveData(restoLatLng);
                 mapViewViewModel.setSearchPlaceNameMutableLiveData(restoName);
                 }
-
 
             @Override
             public void onError(@NonNull Status status) {
@@ -151,10 +130,6 @@ public class MainActivity extends AppCompatActivity
                 Log.i("TAG", "An error occurred: " + status);
             }
         });
-        EditText editText = autocompleteFragment.getView().findViewById(com.google.android.libraries.places
-              .R.id.places_autocomplete_search_input);
-
-
 // Custom Button clear autocomplete
         autocompleteFragment.getView().findViewById(com.google.android.libraries.places
                         .R.id.places_autocomplete_clear_button)
@@ -173,9 +148,7 @@ public class MainActivity extends AppCompatActivity
 
         // Create a new token for the autocomplete session. Pass this to FindAutocompletePredictionsRequest,
         // and once again when the user makes a selection (for example when calling fetchPlace()).
-        AutocompleteSessionToken token = AutocompleteSessionToken.newInstance();
-
-
+      /*  AutocompleteSessionToken token = AutocompleteSessionToken.newInstance();
         // Use the builder to create a FindAutocompletePredictionsRequest.
         FindAutocompletePredictionsRequest request = FindAutocompletePredictionsRequest.builder()
                 // Call either setLocationBias() OR setLocationRestriction().
@@ -183,9 +156,9 @@ public class MainActivity extends AppCompatActivity
                 //.setLocationRestriction(bounds)
                 .setOrigin(new LatLng(45.7714678,4.8901636))
                 .setCountries("FR")
-                .setTypeFilter(TypeFilter.ESTABLISHMENT/* ADDRESS*/)
+                .setTypeFilter(TypeFilter.ESTABLISHMENT)
                 .setSessionToken(token)
-                .setQuery("RUE Flachet"/*queryText.getText().toString()*/)
+                .setQuery("RUE Flachet")
                 .build();
 
         placesClient.findAutocompletePredictions(request).addOnSuccessListener((response) -> {
@@ -198,8 +171,8 @@ public class MainActivity extends AppCompatActivity
                 ApiException apiException = (ApiException) exception;
                 Log.e("TAG", "Place not found: " + apiException.getStatusCode());
             }
-        });
-        /////////////////////////AUTOCOMPLETE FIN
+        });*/
+        /////////////////////////AUTOCOMPLETE END
 
         // Passing each menu ID as a set of Ids because each // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
@@ -208,19 +181,12 @@ public class MainActivity extends AppCompatActivity
         )
                 .setOpenableLayout(drawer)
                 .build();
-
-        Bundle bundle = new Bundle();
-        bundle.putString("RESTO_NAME", restoName);
-        bundle.putString("RESTO_ID", restoId);
-
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-      NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
-
+        NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         //Passing navigationView menu to a navigation controller
         NavigationUI.setupWithNavController(navigationView, navController);
         //Passing bottomNavigation menu to a navigation controller
         NavigationUI.setupWithNavController(bottomNavigation, navController);
-
         //FOR navigation header // Allow to access to a headerNavigationView
         View header;
         // View header = navigationView1.inflateHeaderView(R.layout.nav_header_main);
@@ -231,7 +197,6 @@ public class MainActivity extends AppCompatActivity
         } else {
             header = navigationView.inflateHeaderView(R.layout.nav_header_main);
         }
-
         navigationView.getMenu().findItem(R.id.nav_slideshow).setOnMenuItemClickListener(menuItem -> {
             showAlertDialogSinOut(this);
             return true;
@@ -270,7 +235,6 @@ public class MainActivity extends AppCompatActivity
                         // do nothing
                     }
                 });
-
         AlertDialog alert = alertDialog.create();
         alert.setCanceledOnTouchOutside(false);
         alert.show();
@@ -278,7 +242,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onSupportNavigateUp() {
-        //Bundle bundle = new Bundle();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
@@ -290,7 +253,5 @@ public class MainActivity extends AppCompatActivity
                 this.locationPermissionGranted, MainActivity.this);
         mapViewViewModel.loadLocationMutableLiveData(getApplicationContext(),MainActivity.this,mapViewViewModel);
         mapViewViewModel.getLocationMutableLiveData();
-
-
     }
 }

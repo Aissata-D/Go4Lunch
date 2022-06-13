@@ -5,12 +5,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.sitadigi.go4lunch.databinding.FragmentListViewBinding;
 import com.sitadigi.go4lunch.models.GoogleClass1;
 import com.sitadigi.go4lunch.ui.mapView.MapViewViewModel;
@@ -37,7 +39,6 @@ public class ListViewFragment extends Fragment {
         View root = binding.getRoot();
         mRecyclerView = binding.recyclerviewListView;
         tvNoRestoFound = binding.noRestoFound;
-
         tvNoRestoFound.setVisibility(View.GONE);
         mapViewViewModel.getRestaurent().observe(getViewLifecycleOwner(), RestaurentResponse -> {
             listOfRestaurent.clear();

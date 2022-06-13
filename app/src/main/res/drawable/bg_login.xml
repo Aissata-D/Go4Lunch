@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:tools="http://schemas.android.com/tools" xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/fond_d_ecran" tools:ignore="StateListReachable" />
+
+    <item android:top="120dp">
+        <bitmap
+            android:src="@drawable/fond_d_ecran"
+            android:gravity="top|center_horizontal" />
+    </item>
+</selector>

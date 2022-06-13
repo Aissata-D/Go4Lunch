@@ -18,18 +18,19 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.sitadigi.go4lunch.DetailActivity;
 import com.sitadigi.go4lunch.R;
+
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+
 import com.google.android.gms.maps.SupportMapFragment;
 import com.sitadigi.go4lunch.databinding.FragmentMapViewBinding;
 import com.sitadigi.go4lunch.models.GoogleClass1;
@@ -40,24 +41,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MapViewFragment extends Fragment implements OnMapReadyCallback,
-        GoogleMap.OnMarkerClickListener  {
+        GoogleMap.OnMarkerClickListener {
 
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1234;
-    private static final float DEFAULT_ZOOM = 15f;
     boolean locationPermissionGranted;
-    GoogleMap googleMap;
-    List<GoogleClass1.Result> resultList;
-    FusedLocationProviderClient fusedLocationProviderClient;
-    MapViewViewModel mapViewViewModel;
-    MapViewUtils mMapViewUtils;
+    private GoogleMap googleMap;
+    private List<GoogleClass1.Result> resultList;
+    private MapViewViewModel mapViewViewModel;
+    private MapViewUtils mMapViewUtils;
     private FragmentMapViewBinding binding;
-    private String markerId;
-    private String markerName;
-    private LatLng markerPosition;
-    GeoLocateRepository mGeoLocateRepository;
-    String restoId;
-    String restoName;
-    LatLng  latLngPlaceSelected;
+    private LatLng latLngPlaceSelected;
+    private ImageView mapViewPlaceHolder;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -65,11 +59,11 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         mapViewViewModel = new ViewModelProvider(requireActivity()).get(MapViewViewModel.class);
         binding = FragmentMapViewBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+        mapViewPlaceHolder = binding.mapViewPlaceholder;
         resultList = new ArrayList<>();
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
-        mGeoLocateRepository = new GeoLocateRepository();
+        FusedLocationProviderClient fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
+        GeoLocateRepository geoLocateRepository = new GeoLocateRepository();
         googleMapView();
-
         return root;
     }
 
@@ -96,19 +90,21 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         // Turn on the My Location layer and the related control on the map.
         mMapViewUtils.updateLocationUI(this.googleMap);
         // Get the current location of the device and set the position of the map.
-        mMapViewUtils.getDeviceLocation(this.googleMap, this.getViewLifecycleOwner());
+        mMapViewUtils.GeolocationOfDeviceAndUpdateGoogleMapView(this.googleMap, this.getViewLifecycleOwner(), mapViewPlaceHolder);
+        //Hint PlaceHolder
+        //mapViewPlaceHolder.setVisibility(View.GONE);
         googleMap.setOnMarkerClickListener(this);
         mapViewViewModel.getResultSearchLatLng().observe(getViewLifecycleOwner(), LatLngPlaceResponse -> {
-            latLngPlaceSelected = LatLngPlaceResponse ;
-            if(latLngPlaceSelected != null){
+            latLngPlaceSelected = LatLngPlaceResponse;
+            if (latLngPlaceSelected != null) {
                 googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                         latLngPlaceSelected, 20f));
                 googleMap.addMarker(new MarkerOptions()
                         .position(latLngPlaceSelected)
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
                 );
-            }else{
-                mMapViewUtils.getDeviceLocation(this.googleMap, this.getViewLifecycleOwner());
+            } else {
+                mMapViewUtils.GeolocationOfDeviceAndUpdateGoogleMapView(this.googleMap, this.getViewLifecycleOwner(), mapViewPlaceHolder);
             }
         });
     }
@@ -116,9 +112,8 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public boolean onMarkerClick(@NonNull Marker marker) {
         resultList = mMapViewUtils.getNearRestaurantList();
-        markerId = marker.getId();
-        markerName = marker.getTitle();
-        markerPosition = marker.getPosition();
+        String markerName = marker.getTitle();
+        LatLng markerPosition = marker.getPosition();
         for (GoogleClass1.Result restaurant : resultList) {
             LatLng restoPosition = new LatLng(restaurant.getGeometry().getLocation().getLat(),
                     restaurant.getGeometry().getLocation().getLng());
@@ -127,7 +122,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
                 Intent intentDetail = new Intent(this.getActivity(), DetailActivity.class);
                 intentDetail.putExtra(RESTO_ID, restaurant.getPlaceId());
                 intentDetail.putExtra(RESTO_NAME, restoName);
-                if((restaurant.getOpeningHours() != null) && (restaurant.getOpeningHours().getOpenNow()) != null) {
+                if ((restaurant.getOpeningHours() != null) && (restaurant.getOpeningHours().getOpenNow()) != null) {
                     intentDetail.putExtra(RESTO_OPENINGHOURS, restaurant.getOpeningHours().getOpenNow());
                 }
                 if (restaurant.getPhotos() != null) {
@@ -135,7 +130,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
                         intentDetail.putExtra(RESTO_PHOTO_URL, restaurant.getPhotos().get(0).getPhotoReference());
                     }
                 }
-                if((restaurant.getTypes()) != null && (restaurant.getTypes().get(0))!=null) {
+                if ((restaurant.getTypes()) != null && (restaurant.getTypes().get(0)) != null) {
                     String restoAdresses = restaurant.getVicinity();
                     intentDetail.putExtra(RESTO_ADRESSES, restoAdresses);
                     String restoType = restaurant.getTypes().get(0);
@@ -163,14 +158,13 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         mMapViewUtils.updateLocationUI(this.googleMap);
     }
 
-    @Override
+   /* @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-    }
+    }*/
 
     @Override
     public void onResume() {
         super.onResume();
     }
-
 }

@@ -16,7 +16,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.sitadigi.go4lunch.R;
-import com.sitadigi.go4lunch.models.GoogleClass1;
+import com.sitadigi.go4lunch.models.GoogleMapApiClass;
 import com.sitadigi.go4lunch.repository.UserRepository;
 
 import java.util.List;
@@ -24,7 +24,7 @@ import java.util.List;
 public class UserViewModel extends ViewModel {
     private static volatile UserViewModel instance;
     private final UserRepository userRepository;
-    private MutableLiveData<List<GoogleClass1.Result>> listOfRestaurent;
+    private MutableLiveData<List<GoogleMapApiClass.Result>> listOfRestaurent;
     //private final GoogleMapApiCallsRepository mGoogleMapApiCalls;
 
     public UserViewModel() {
@@ -105,7 +105,7 @@ public class UserViewModel extends ViewModel {
             userEmail.setText(email);
         }
     }
-    public MutableLiveData<List<GoogleClass1.Result>> getRestaurent() {
+    public MutableLiveData<List<GoogleMapApiClass.Result>> getRestaurent() {
 
         Log.e("TAG", "getRestaurent: " +listOfRestaurent );
         return listOfRestaurent;

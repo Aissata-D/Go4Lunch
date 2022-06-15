@@ -10,10 +10,10 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
    // public static Object Result;
-//-----------------------------------com.example.GoogleClass1.java-----------------------------------
+//-----------------------------------com.example.GoogleMapApiClass.java-----------------------------------
 
 
-public class GoogleClass1 {
+public class GoogleMapApiClass {
 
     @SerializedName("html_attributions")
     @Expose

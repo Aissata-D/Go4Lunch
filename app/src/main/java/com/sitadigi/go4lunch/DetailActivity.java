@@ -1,7 +1,6 @@
 package com.sitadigi.go4lunch;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -24,18 +23,15 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.sitadigi.go4lunch.models.GoogleClass1;
 import com.sitadigi.go4lunch.models.User;
 import com.sitadigi.go4lunch.ui.workmaters.WorkmatersViewModel;
-import com.sitadigi.go4lunch.repository.GooglePlacePhotoApiCallsRepository;
 import com.sitadigi.go4lunch.viewModel.UserViewModel;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class DetailActivity extends AppCompatActivity /*implements GooglePlacePhotoApiCallsRepository.Callbacks*/ {
+public class DetailActivity extends AppCompatActivity  {
     public static final String RESTO_NAME = "RESTO_NAME";
     public static final String RESTO_PHOTO_URL = "RESTO_PHOTO_URL";
     public static final String RESTO_OPENINGHOURS = "RESTO_OPENINGHOURS";
@@ -82,9 +78,9 @@ public class DetailActivity extends AppCompatActivity /*implements GooglePlacePh
         mImageViewResto = (ImageView) findViewById(R.id.resto_img);
         tvRestoName = (TextView) findViewById(R.id.resto_name_detail_activity);
         tvRestoTypeAndAdresses = (TextView) findViewById(R.id.resto_type_detail_detail_activity);
-        String urlPart1 = "https://maps.googleapis.com/maps/api/place/photo?maxheigth=500&maxwidth=800&photo_reference=";
+        String urlPart1 = getString(R.string.url_google_place_photo_part1);
         String urlPart2 = restoPhotoUrl;
-        String urlPart3 = "&key=AIzaSyDsQUD7ukIhqdJYZIQxj535IvrDRrkrH08";
+        String urlPart3 = getString(R.string.url_google_place_photo_part3);
         urlConcat = urlPart1 + urlPart2 + urlPart3;
 
         setfabColor();
@@ -196,30 +192,6 @@ public class DetailActivity extends AppCompatActivity /*implements GooglePlacePh
         return Uri.parse(base);
     }
 
-    // ------------------------------
-    //  HTTP REQUEST (Retrofit Way)
-    // ------------------------------
-
-    // 4 - Execute HTTP request and update UI
-  /*  private void executeHttpRequestWithRetrofit() {
-// A DEPLACER DANS VIEWMODEL
-        GooglePlacePhotoApiCallsRepository.fetchRestaurantPhoto(this, RESTO_PHOTO_URL, 400,
-                300, "AIzaSyDsQUD7ukIhqdJYZIQxj535IvrDRrkrH08");
-    }
-
-    // 2 - Override callback methods
-
-
-    @Override
-    public void onResponse(@Nullable GoogleClass1 results) {
-        Log.e("TAG", "onResponse: " + results);
-
-    }
-
-    @Override
-    public void onFailure() {
-
-    }*/
 
     public void initRecyclerView() {
 

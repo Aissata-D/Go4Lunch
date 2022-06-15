@@ -34,7 +34,7 @@ public final class UserRepository {
     String userRestoType = "restoTypeCreated";
     User userToCreate;
 
-    private UserRepository() {
+    public UserRepository() {
     }
 
     public static UserRepository getInstance() {
@@ -158,6 +158,44 @@ public final class UserRepository {
                     }
                 });
         return listOfUserLiveData;
+    }
+
+    public List<User> getAllUserForNotificationPush() {
+
+        MutableLiveData<List<User>> listOfUserLiveData = new MutableLiveData<>();
+        List<User> usersUsingApp = new ArrayList<>();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("users").addSnapshotListener(
+                new EventListener<QuerySnapshot>() {
+
+                    @Override
+                    public void onEvent(
+                            @androidx.annotation.Nullable QuerySnapshot value, @androidx.annotation.Nullable FirebaseFirestoreException error) {
+                        if (error != null) {
+                            System.err.println("Listen failed:" + error);
+                            return;
+                        }
+                        if (value != null) {
+                            for (DocumentSnapshot document : value) {
+                                String username = document.getString("username");
+                                String email = document.getString("email");
+                                String urlPicture = document.getString("urlPicture");
+                                String uid = document.getId();
+                                String restoId = document.getString("userRestoId");
+                                String restoName = document.getString("userRestoName");
+                                String restoType = document.getString("userRestoType");
+
+                                User userToGet = new User(uid, username, email, urlPicture, restoId, restoName, restoType);
+                                if (!usersUsingApp.contains(userToGet)) {
+                                    usersUsingApp.add(userToGet);
+                                }
+                               // listOfUserLiveData.setValue(usersUsingApp);
+                                Log.e("TAG", "onEvent: " + userToGet.getUsername());
+                            }
+                        }
+                    }
+                });
+        return usersUsingApp;
     }
 }
 

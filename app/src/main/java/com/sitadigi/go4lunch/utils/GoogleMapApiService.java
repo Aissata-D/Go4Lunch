@@ -1,7 +1,7 @@
 package com.sitadigi.go4lunch.utils;
 
 
-import com.sitadigi.go4lunch.models.GoogleClass1;
+import com.sitadigi.go4lunch.models.GoogleMapApiClass;
 
 import retrofit2.Call;
 import retrofit2.Retrofit;
@@ -12,16 +12,16 @@ import retrofit2.http.Query;
 public interface GoogleMapApiService {
 
         @GET("maps/api/place/nearbysearch/json")
-        Call<GoogleClass1> getRestaurent(@Query("location") String location,
-                                         @Query("radius") int radius,
-                                         @Query("type") String type,
-                                         @Query("key") String key);
+        Call<GoogleMapApiClass> getRestaurent(@Query("location") String location,
+                                              @Query("radius") int radius,
+                                              @Query("type") String type,
+                                              @Query("key") String key);
 
         @GET("/maps/api/place/photo")
-        Call<GoogleClass1> getRestaurentPhoto(@Query("photo_reference") String referencePhoto,
-                                              @Query("maxwidth") int maxWidth,
-                                              @Query("maxheight") int maxHeigth,
-                                              @Query("key") String key);
+        Call<GoogleMapApiClass> getRestaurentPhoto(@Query("photo_reference") String referencePhoto,
+                                                   @Query("maxwidth") int maxWidth,
+                                                   @Query("maxheight") int maxHeigth,
+                                                   @Query("key") String key);
 
 
 

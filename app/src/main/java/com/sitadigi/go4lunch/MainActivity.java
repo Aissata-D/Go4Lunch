@@ -1,17 +1,10 @@
 package com.sitadigi.go4lunch;
 
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,31 +16,23 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
-import com.google.android.libraries.places.api.model.AutocompletePrediction;
-import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.model.RectangularBounds;
 import com.google.android.libraries.places.api.model.TypeFilter;
-import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest;
-import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.sitadigi.go4lunch.databinding.ActivityMainBinding;
-import com.sitadigi.go4lunch.ui.mapView.MapViewViewModel;
+import com.sitadigi.go4lunch.viewModel.MainViewViewModel;
 import com.sitadigi.go4lunch.utils.MapViewUtils;
+import com.sitadigi.go4lunch.utils.ShowSignOutDialogueAlertAndDetailActivity;
 import com.sitadigi.go4lunch.viewModel.UserViewModel;
 
 import java.util.Arrays;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -56,15 +41,15 @@ public class MainActivity extends AppCompatActivity {
     ImageView userPhoto;
     private UserViewModel mUserViewModel;
     private AppBarConfiguration mAppBarConfiguration;
-    private MapViewViewModel mapViewViewModel;
-    MapViewUtils mMapViewUtils;
+    private MainViewViewModel mMainViewViewModel;
     private boolean locationPermissionGranted;
-    FusedLocationProviderClient fusedLocationProviderClient;
-    private String restoId;
     private String restoName;
     LatLng restoLatLng;
     CardView mCardViewAutocomplete;
     ImageView imgSearch;
+
+    MapViewUtils mMapViewUtils;
+    ShowSignOutDialogueAlertAndDetailActivity mShowSignOutDialogueAlertAndDetailActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +62,8 @@ public class MainActivity extends AppCompatActivity {
         imgSearch = binding.appBarMain.toolbarSearchBar;
         mCardViewAutocomplete.setVisibility(View.GONE);
         mUserViewModel = UserViewModel.getInstance();
-
+        mShowSignOutDialogueAlertAndDetailActivity = new ShowSignOutDialogueAlertAndDetailActivity();
+        
         initViewModel();
         imgSearch.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
         BottomNavigationView bottomNavigation = binding.bottomNavigation;
-
+        
         //////////////////////////API PLACE AUTOCOMPLETE//////////////////////////////////
         // Create a RectangularBounds object.
         RectangularBounds bounds = RectangularBounds.newInstance(
@@ -100,7 +86,6 @@ public class MainActivity extends AppCompatActivity {
         if(!Places.isInitialized()){
             Places.initialize(getApplicationContext(), getString(R.string.google_map_api_key));
         }
-        PlacesClient placesClient = Places.createClient(this);
         // Initialize the AutocompleteSupportFragment.
         AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
                 getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
@@ -120,8 +105,8 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("TAG", "Place: " + place.getName() + ", placeID : " + place.getId());
                 restoName = place.getName();
                 restoLatLng = place.getLatLng();
-                mapViewViewModel.setSearchLatLngMutableLiveData(restoLatLng);
-                mapViewViewModel.setSearchPlaceNameMutableLiveData(restoName);
+                mMainViewViewModel.setSearchLatLngMutableLiveData(restoLatLng);
+                mMainViewViewModel.setSearchPlaceNameMutableLiveData(restoName);
                 }
 
             @Override
@@ -130,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.i("TAG", "An error occurred: " + status);
             }
         });
-// Custom Button clear autocomplete
+        // Custom Button clear autocomplete
         autocompleteFragment.getView().findViewById(com.google.android.libraries.places
                         .R.id.places_autocomplete_clear_button)
                 .setOnClickListener(new View.OnClickListener() {
@@ -139,46 +124,16 @@ public class MainActivity extends AppCompatActivity {
                         autocompleteFragment.setText("");
                                     restoName = null;
                                     restoLatLng = null;
-                                    mapViewViewModel.setSearchLatLngMutableLiveData(restoLatLng);
-                                    mapViewViewModel.setSearchPlaceNameMutableLiveData(restoName);
+                                    mMainViewViewModel.setSearchLatLngMutableLiveData(restoLatLng);
+                                    mMainViewViewModel.setSearchPlaceNameMutableLiveData(restoName);
                                     mCardViewAutocomplete.setVisibility(View.GONE);
                                     imgSearch.setVisibility(View.VISIBLE);
                     }
                 });
-
-        // Create a new token for the autocomplete session. Pass this to FindAutocompletePredictionsRequest,
-        // and once again when the user makes a selection (for example when calling fetchPlace()).
-      /*  AutocompleteSessionToken token = AutocompleteSessionToken.newInstance();
-        // Use the builder to create a FindAutocompletePredictionsRequest.
-        FindAutocompletePredictionsRequest request = FindAutocompletePredictionsRequest.builder()
-                // Call either setLocationBias() OR setLocationRestriction().
-                .setLocationBias(bounds)
-                //.setLocationRestriction(bounds)
-                .setOrigin(new LatLng(45.7714678,4.8901636))
-                .setCountries("FR")
-                .setTypeFilter(TypeFilter.ESTABLISHMENT)
-                .setSessionToken(token)
-                .setQuery("RUE Flachet")
-                .build();
-
-        placesClient.findAutocompletePredictions(request).addOnSuccessListener((response) -> {
-            for (AutocompletePrediction prediction : response.getAutocompletePredictions()) {
-                Log.e("TAG", prediction.getPlaceId());
-                Log.e("TAG", prediction.getPrimaryText(null).toString());
-            }
-        }).addOnFailureListener((exception) -> {
-            if (exception instanceof ApiException) {
-                ApiException apiException = (ApiException) exception;
-                Log.e("TAG", "Place not found: " + apiException.getStatusCode());
-            }
-        });*/
-        /////////////////////////AUTOCOMPLETE END
-
         // Passing each menu ID as a set of Ids because each // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_gallery,
-                R.id.menu_map_view, R.id.menu_list_view, R.id.menu_workmates
-        )
+                R.id.nav_gallery,
+                R.id.menu_map_view, R.id.menu_list_view, R.id.menu_workmates)
                 .setOpenableLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
@@ -197,47 +152,20 @@ public class MainActivity extends AppCompatActivity {
         } else {
             header = navigationView.inflateHeaderView(R.layout.nav_header_main);
         }
-        navigationView.getMenu().findItem(R.id.nav_slideshow).setOnMenuItemClickListener(menuItem -> {
-            showAlertDialogSinOut(this);
+        navigationView.getMenu().findItem(R.id.nav_slideshow  ).setOnMenuItemClickListener(menuItem -> {
+            mShowSignOutDialogueAlertAndDetailActivity.showAlertDialogSinOut(this);
             return true;
         });
-
+        navigationView.getMenu().findItem(R.id.nav_home).setOnMenuItemClickListener(menuItem -> {
+            Log.e("TAG", "onCreate: R.id.nav_home clicked" );
+            mShowSignOutDialogueAlertAndDetailActivity.showDetailActivity(mMainViewViewModel, this,this);
+            return true;
+        });
         //Instanciate views
         userName = (TextView) header.findViewById(R.id.name_user);
         userEmail = (TextView) header.findViewById(R.id.email_user);
         userPhoto = (ImageView) header.findViewById(R.id.img_user);
         mUserViewModel.updateUIWithUserData(this, userName, userEmail, userPhoto);
-    }
-
-    private void showAlertDialogSinOut(Context context) {
-
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
-        alertDialog.setTitle("SIGN OUT")
-                .setMessage("Are you sure you want to sign out ?")
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        mUserViewModel.signOut(MainActivity.this)
-                                // after sign out is executed we are redirecting on LoginActivity
-                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            public void onComplete(@NonNull Task<Void> task) {
-                                // below method is used after logout from device.
-                                Toast.makeText(MainActivity.this, "User Signed Out", Toast.LENGTH_SHORT).show();
-                                // Return to LoginActivity via an intent.
-                                Intent i = new Intent(MainActivity.this, LoginActivity.class);
-                                startActivity(i);
-                            }
-                        });
-                    }
-
-                })
-                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        // do nothing
-                    }
-                });
-        AlertDialog alert = alertDialog.create();
-        alert.setCanceledOnTouchOutside(false);
-        alert.show();
     }
 
     @Override
@@ -248,10 +176,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private  void initViewModel(){
-        mapViewViewModel = new ViewModelProvider(this).get(MapViewViewModel.class);
-        mMapViewUtils = new MapViewUtils(this.mapViewViewModel, getApplicationContext(),
+        mMainViewViewModel = new ViewModelProvider(this).get(MainViewViewModel.class);
+        mMapViewUtils = new MapViewUtils(this.mMainViewViewModel, getApplicationContext(),
                 this.locationPermissionGranted, MainActivity.this);
-        mapViewViewModel.loadLocationMutableLiveData(getApplicationContext(),MainActivity.this,mapViewViewModel);
-        mapViewViewModel.getLocationMutableLiveData();
+        mMainViewViewModel.loadLocationMutableLiveData(getApplicationContext(),MainActivity.this, mMainViewViewModel);
+        mMainViewViewModel.getLocationMutableLiveData();
     }
 }

@@ -120,6 +120,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout2"
         tools:itemCount="10"
-        tools:listitem="@layout/item_detail_restaurent" />
+        tools:listitem="@layout/item_detail_restaurant" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

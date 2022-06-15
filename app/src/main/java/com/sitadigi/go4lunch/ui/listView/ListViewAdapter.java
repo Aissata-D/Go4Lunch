@@ -21,7 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.sitadigi.go4lunch.DetailActivity;
-import com.sitadigi.go4lunch.models.GoogleClass1;
+import com.sitadigi.go4lunch.models.GoogleMapApiClass;
 
 
 import java.util.List;
@@ -39,7 +39,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
      * The list of restaurent adapter
      */
     @NonNull
-    private final List<GoogleClass1.Result> mRestaurents ;
+    private final List<GoogleMapApiClass.Result> mRestaurents ;
     public int mPosition;
 
 
@@ -48,7 +48,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
      *
      * @param restaurents the list of tasks the adapter deals with to set
      */
-    public ListViewAdapter(@NonNull final List<GoogleClass1.Result> restaurents) {
+    public ListViewAdapter(@NonNull final List<GoogleMapApiClass.Result> restaurents) {
         this.mRestaurents = restaurents;
 
     }
@@ -73,7 +73,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
             @Override
             public void onClick(View v) {
                 mPosition = listViewHolder.getAdapterPosition();
-                GoogleClass1.Result restaurant = mRestaurents.get(mPosition);
+                GoogleMapApiClass.Result restaurant = mRestaurents.get(mPosition);
                 Intent intentDetail = new Intent(v.getContext(), DetailActivity.class);
                 intentDetail.putExtra(RESTO_ID, restaurant.getPlaceId());
                 intentDetail.putExtra(RESTO_NAME, restaurant.getName());
@@ -141,7 +141,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
          * Binds a restaurent to the item view.
          * @param restaurant the task to bind in the item view
          */
-        void bind(GoogleClass1.Result restaurant) {
+        void bind(GoogleMapApiClass.Result restaurant) {
 
             if(restaurant.getPhotos() != null) {
                 if (restaurant.getPhotos().get(0).getPhotoReference() != null) {

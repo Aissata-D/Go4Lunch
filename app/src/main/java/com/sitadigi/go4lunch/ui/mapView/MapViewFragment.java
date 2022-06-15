@@ -33,9 +33,10 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.maps.SupportMapFragment;
 import com.sitadigi.go4lunch.databinding.FragmentMapViewBinding;
-import com.sitadigi.go4lunch.models.GoogleClass1;
+import com.sitadigi.go4lunch.models.GoogleMapApiClass;
 import com.sitadigi.go4lunch.utils.MapViewUtils;
 import com.sitadigi.go4lunch.repository.GeoLocateRepository;
+import com.sitadigi.go4lunch.viewModel.MainViewViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,8 +47,8 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1234;
     boolean locationPermissionGranted;
     private GoogleMap googleMap;
-    private List<GoogleClass1.Result> resultList;
-    private MapViewViewModel mapViewViewModel;
+    private List<GoogleMapApiClass.Result> resultList;
+    private MainViewViewModel mMainViewViewModel;
     private MapViewUtils mMapViewUtils;
     private FragmentMapViewBinding binding;
     private LatLng latLngPlaceSelected;
@@ -56,7 +57,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        mapViewViewModel = new ViewModelProvider(requireActivity()).get(MapViewViewModel.class);
+        mMainViewViewModel = new ViewModelProvider(requireActivity()).get(MainViewViewModel.class);
         binding = FragmentMapViewBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
         mapViewPlaceHolder = binding.mapViewPlaceholder;
@@ -83,7 +84,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         this.googleMap = googleMap;
-        mMapViewUtils = new MapViewUtils(this.mapViewViewModel, this.getContext(),
+        mMapViewUtils = new MapViewUtils(this.mMainViewViewModel, this.getContext(),
                 this.locationPermissionGranted, this.getActivity());
 
         mMapViewUtils.getLocationPermission();
@@ -94,7 +95,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         //Hint PlaceHolder
         //mapViewPlaceHolder.setVisibility(View.GONE);
         googleMap.setOnMarkerClickListener(this);
-        mapViewViewModel.getResultSearchLatLng().observe(getViewLifecycleOwner(), LatLngPlaceResponse -> {
+        mMainViewViewModel.getResultSearchLatLng().observe(getViewLifecycleOwner(), LatLngPlaceResponse -> {
             latLngPlaceSelected = LatLngPlaceResponse;
             if (latLngPlaceSelected != null) {
                 googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
@@ -114,7 +115,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         resultList = mMapViewUtils.getNearRestaurantList();
         String markerName = marker.getTitle();
         LatLng markerPosition = marker.getPosition();
-        for (GoogleClass1.Result restaurant : resultList) {
+        for (GoogleMapApiClass.Result restaurant : resultList) {
             LatLng restoPosition = new LatLng(restaurant.getGeometry().getLocation().getLat(),
                     restaurant.getGeometry().getLocation().getLng());
             String restoName = restaurant.getName();

@@ -16,7 +16,7 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.sitadigi.go4lunch.ui.mapView.MapViewViewModel;
+import com.sitadigi.go4lunch.viewModel.MainViewViewModel;
 
 public class GeoLocateRepository {
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1234;
@@ -47,7 +47,7 @@ public class GeoLocateRepository {
         }
     }
 
-    public MutableLiveData<Location> getDeviceLocation(Context context, Activity activity, MapViewViewModel mapViewViewModel) {
+    public MutableLiveData<Location> getDeviceLocation(Context context, Activity activity, MainViewViewModel mainViewViewModel) {
         /*
          * Get the best and most recent location of the device, which may be null in rare
          * cases when a location is not available.
@@ -66,7 +66,7 @@ public class GeoLocateRepository {
 
                 Task<Location> locationResult = fusedLocationProviderClient.getLastLocation();
                 locationResult.addOnCompleteListener(/*(Executor) this*/activity, new OnCompleteListener<Location>() {
-                    //private MapViewViewModel mapViewViewModel;
+                    //private MainViewViewModel mainViewViewModel;
 
                     @Override
                     public void onComplete(@NonNull Task<Location> task) {
@@ -76,7 +76,7 @@ public class GeoLocateRepository {
                             location = lastKnownLocation.getLatitude() + "," + lastKnownLocation.getLongitude();
                             locationMutableLiveData.setValue(lastKnownLocation);
                             //moveCamera();
-                            mapViewViewModel.loadRestaurentData(location);
+                            mainViewViewModel.loadRestaurentData(location);
                         } else {
                             Log.e("TAG", "Exception: %s MainActivity", task.getException());
                         }

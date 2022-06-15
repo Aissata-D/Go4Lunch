@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="default_notification_channel_id">com.mycompany.myapp.urgent</string>
+    <string name="url_google_place_photo_part1">"https://maps.googleapis.com/maps/api/place/photo?maxheigth=500&amp;maxwidth=800&amp;photo_reference="</string>
+    <string name="url_google_place_photo_part3">"&amp;key=AIzaSyDsQUD7ukIhqdJYZIQxj535IvrDRrkrH08"</string>
+    <string name="Api_key_google_map">"AIzaSyDsQUD7ukIhqdJYZIQxj535IvrDRrkrH08"</string>
+    <string name="google_map_api_key">AIzaSyDsQUD7ukIhqdJYZIQxj535IvrDRrkrH08</string>
+    <string name="facebook_app_id">989231408442739</string>
+    <string name="facebook_application_id">989231408442739</string>
+    <string name="fb_login_protocol_scheme">fb989231408442739</string>
+    <string name="facebook_client_token">dc8ecaae428e124640ef2aa2b7c64b9e</string>
+    <string name="default_web_client_id_in_string">"838688106638-45mr19aj3cao0mrj6kp18353spg7hskh.apps.googleusercontent.com"</string>
+    <!-- BOTTOM NAVIGATION VIEW -->
+    <string name="bottom_navigation_menu_map_view">Vue de la carte</string>
+    <string name="bottom_navigation_menu_list_view">Vue liste</string>
+    <string name="bottom_navigation_menu_workmates">collègues</string>
+
+    <string name="app_name">Go4Lunch</string>
+    <string name="navigation_drawer_open"> Navigation drawer ouverte</string>
+    <string name="navigation_drawer_close">Navigation drawer fermée</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Paramètres</string>
+
+    <string name="menu_your_lunch">VOTRE REPAS</string>
+    <string name="menu_settings">PARAMETRES</string>
+    <string name="menu_logout">DECONNEXION</string>
+    <string name="connection_succeed">CONNEXION REUSSIE</string>
+    <string name="error_authentication_canceled">AUTHENTIFICATION ANNULEE</string>
+    <string name="error_no_internet">ERREUR PAS INTERNET</string>
+    <string name="error_unknown_error">ERREUR INCONNUE</string>
+    <string name="info_no_email_found">Pas d\'email trouvé</string>
+    <string name="info_no_username_found">Aucun de nom d\'utilisateur trouvé</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Fragment vide</string>
+    <string name="sign_out_message">Voulez-vous vraiment vous déconnecter ?</string>
+    <string name="ok">OK</string>
+    <string name="resto_open_now">ouvert</string>
+    <string name="resto_close">fermé</string>
+    <string name="restoopening_hour_unknow">inconnu</string>
+    <string name="is_joining"> va rejoindre </string>
+    <string name="not_photo_url">pas de url photo</string>
+    <string name="receive_notification" type="id">Vous avez choisit de recevoir les notifications</string>
+    <string name="not_receive_notification">Vous avez choisit de ne pas recevoir de notifications</string>
+    <string name="question_notification">Voulez-vous recevoir des notifications ?</string>
+    <string name="yes">OUI</string>
+    <string name="no">NON</string>
+
+
+
+</resources>

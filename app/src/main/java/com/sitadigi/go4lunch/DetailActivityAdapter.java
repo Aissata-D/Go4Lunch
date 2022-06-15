@@ -36,7 +36,7 @@ public class DetailActivityAdapter extends RecyclerView.Adapter<DetailActivityAd
     @NonNull
     @Override
     public DetailActivityViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_detail_restaurent, viewGroup, false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_detail_restaurant, viewGroup, false);
         return new DetailActivityViewHolder(view);
     }
 

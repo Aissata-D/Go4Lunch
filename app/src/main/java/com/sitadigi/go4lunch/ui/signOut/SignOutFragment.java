@@ -1,31 +1,30 @@
-package com.sitadigi.go4lunch.ui.home;
+package com.sitadigi.go4lunch.ui.signOut;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.sitadigi.go4lunch.databinding.FragmentHomeBinding;
+import com.sitadigi.go4lunch.databinding.FragmentSignOutBinding;
+import com.sitadigi.go4lunch.viewModel.UserViewModel;
 
-public class HomeFragment extends Fragment {
+public class SignOutFragment extends Fragment {
+    private final UserViewModel mUserViewModel = UserViewModel.getInstance();
 
-    private FragmentHomeBinding binding;
+    private FragmentSignOutBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        HomeViewModel homeViewModel =
-                new ViewModelProvider(this).get(HomeViewModel.class);
+        SlideshowViewModel slideshowViewModel =
+                new ViewModelProvider(this).get(SlideshowViewModel.class);
 
-        binding = FragmentHomeBinding.inflate(inflater, container, false);
+        binding = FragmentSignOutBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textHome;
-        homeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
 

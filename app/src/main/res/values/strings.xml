@@ -1,6 +1,8 @@
 <resources>
-    <string name="twitter_consumer_key" translatable="true"> cH5R5NWg2bP3ffhiCslGrsiSK </string>
-    <string name="twitter_consumer_secret" translatable="true"> 6qhVrake6ceXc77Z7n4U4qvWJ6oidKTI3yJry4qve9YCx82BXh </string>
+    <string name="default_notification_channel_id">com.mycompany.myapp.urgent</string>
+    <string name="url_google_place_photo_part1">"https://maps.googleapis.com/maps/api/place/photo?maxheigth=500&amp;maxwidth=800&amp;photo_reference="</string>
+    <string name="url_google_place_photo_part3">"&amp;key=AIzaSyDsQUD7ukIhqdJYZIQxj535IvrDRrkrH08"</string>
+    <string name="Api_key_google_map">"AIzaSyDsQUD7ukIhqdJYZIQxj535IvrDRrkrH08"</string>
     <string name="google_map_api_key">AIzaSyDsQUD7ukIhqdJYZIQxj535IvrDRrkrH08</string>
     <string name="facebook_app_id">989231408442739</string>
     <string name="facebook_application_id">989231408442739</string>
@@ -36,7 +38,12 @@
     <string name="resto_open_now">open now</string>
     <string name="resto_close">close</string>
     <string name="restoopening_hour_unknow">unknow</string>
-    <string name="is_joining">\" is joining \"</string>
+    <string name="is_joining">is joining </string>
     <string name="not_photo_url">pas de url photo</string>
 
+    <string name="receive_notification" type="id">You have chosen to receive notifications</string>
+    <string name="not_receive_notification">You have chosen to no longer receive notifications</string>
+    <string name="question_notification">Do you want to receive notifications ?</string>
+    <string name="yes">YES</string>
+    <string name="no">NO</string>
 </resources>

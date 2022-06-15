@@ -14,15 +14,15 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.sitadigi.go4lunch.databinding.FragmentListViewBinding;
-import com.sitadigi.go4lunch.models.GoogleClass1;
-import com.sitadigi.go4lunch.ui.mapView.MapViewViewModel;
+import com.sitadigi.go4lunch.models.GoogleMapApiClass;
+import com.sitadigi.go4lunch.viewModel.MainViewViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ListViewFragment extends Fragment {
 
-    List<GoogleClass1.Result> listOfRestaurent = new ArrayList<>();
+    List<GoogleMapApiClass.Result> listOfRestaurent = new ArrayList<>();
     String placeNameSelected;
     private FragmentListViewBinding binding;
     private RecyclerView mRecyclerView;
@@ -31,8 +31,8 @@ public class ListViewFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        MapViewViewModel mapViewViewModel =
-                new ViewModelProvider(requireActivity()).get(MapViewViewModel.class);
+        MainViewViewModel mainViewViewModel =
+                new ViewModelProvider(requireActivity()).get(MainViewViewModel.class);
 
 
         binding = FragmentListViewBinding.inflate(inflater, container, false);
@@ -40,13 +40,13 @@ public class ListViewFragment extends Fragment {
         mRecyclerView = binding.recyclerviewListView;
         tvNoRestoFound = binding.noRestoFound;
         tvNoRestoFound.setVisibility(View.GONE);
-        mapViewViewModel.getRestaurent().observe(getViewLifecycleOwner(), RestaurentResponse -> {
+        mainViewViewModel.getRestaurent().observe(getViewLifecycleOwner(), RestaurentResponse -> {
             listOfRestaurent.clear();
             listOfRestaurent.addAll(RestaurentResponse);
             initRecyclerView();
         });
 
-        mapViewViewModel.getResultSearchPlaceName().observe(getViewLifecycleOwner(), PlaceNameResponse -> {
+        mainViewViewModel.getResultSearchPlaceName().observe(getViewLifecycleOwner(), PlaceNameResponse -> {
             placeNameSelected = PlaceNameResponse;
             initRecyclerView();
         });
@@ -58,8 +58,8 @@ public class ListViewFragment extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this.getActivity());
         mRecyclerView.setLayoutManager(linearLayoutManager);
         if (placeNameSelected != null) {
-            List<GoogleClass1.Result> listOfRestaurentFiltered = new ArrayList<>();
-            for (GoogleClass1.Result filter : listOfRestaurent) {
+            List<GoogleMapApiClass.Result> listOfRestaurentFiltered = new ArrayList<>();
+            for (GoogleMapApiClass.Result filter : listOfRestaurent) {
                 if (filter.getName().equals(placeNameSelected)) {
                     listOfRestaurentFiltered.add(filter);
                 }

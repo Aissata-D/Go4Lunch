@@ -93,5 +93,8 @@ dependencies {
     implementation 'com.twitter.sdk.android:tweet-ui:3.1.1'
     implementation'com.twitter.sdk.android:tweet-composer:3.1.1'
     implementation 'com.twitter.sdk.android:twitter-mopub:3.1.1'
+    //NOTIFICATION MESSAGE FIREBASE
+    implementation 'com.google.firebase:firebase-messaging'
+
 
 }

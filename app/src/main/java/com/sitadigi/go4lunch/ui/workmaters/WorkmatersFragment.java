@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.sitadigi.go4lunch.databinding.FragmentWorkmatersBinding;
 
 import com.sitadigi.go4lunch.models.User;
-import com.sitadigi.go4lunch.ui.mapView.MapViewViewModel;
+import com.sitadigi.go4lunch.viewModel.MainViewViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,8 +34,8 @@ public class WorkmatersFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         WorkmatersViewModel workmatersViewModel =
                 new ViewModelProvider(this).get(WorkmatersViewModel.class);
-        MapViewViewModel mapViewViewModel =
-                new ViewModelProvider(requireActivity()).get(MapViewViewModel.class);
+        MainViewViewModel mainViewViewModel =
+                new ViewModelProvider(requireActivity()).get(MainViewViewModel.class);
 
         binding = FragmentWorkmatersBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
@@ -51,7 +51,7 @@ public class WorkmatersFragment extends Fragment {
             initRecyclerView();
         });
 
-        mapViewViewModel.getResultSearchPlaceName().observe(getViewLifecycleOwner(), PlaceNameResponse -> {
+        mainViewViewModel.getResultSearchPlaceName().observe(getViewLifecycleOwner(), PlaceNameResponse -> {
             placeNameSelected = PlaceNameResponse;
             initRecyclerView();
 

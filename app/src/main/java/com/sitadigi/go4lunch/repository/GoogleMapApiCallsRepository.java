@@ -1,6 +1,6 @@
 package com.sitadigi.go4lunch.repository;
 
-import com.sitadigi.go4lunch.models.GoogleClass1;
+import com.sitadigi.go4lunch.models.GoogleMapApiClass;
 import com.sitadigi.go4lunch.utils.GoogleMapApiService;
 
 import org.jetbrains.annotations.Nullable;
@@ -24,21 +24,21 @@ public class GoogleMapApiCallsRepository {
     }
 
     // Public method to start fetching users following by Jake Wharton
-    public static List<GoogleClass1.Result> fetchResultFollowing(Callbacks callbacks, String location, int radius,
-                                                                 String type, String key) {
+    public static List<GoogleMapApiClass.Result> fetchResultFollowing(Callbacks callbacks, String location, int radius,
+                                                                      String type, String key) {
 
-        final List<GoogleClass1.Result> listOfRestaurent = new ArrayList<>();
+        final List<GoogleMapApiClass.Result> listOfRestaurent = new ArrayList<>();
         //  Create a weak reference to callback (avoid memory leaks)
         final WeakReference<Callbacks> callbacksWeakReference = new WeakReference<Callbacks>(callbacks);
         //  Get a Retrofit instance and the related endpoints
         GoogleMapApiService googleMapApiService = GoogleMapApiService.retrofit.create(GoogleMapApiService.class);
         //  Create the call on Github API
-        Call<GoogleClass1> call = googleMapApiService.getRestaurent(location, radius, type, key);
+        Call<GoogleMapApiClass> call = googleMapApiService.getRestaurent(location, radius, type, key);
         //  Start the cal
-        call.enqueue(new Callback<GoogleClass1>() {
+        call.enqueue(new Callback<GoogleMapApiClass>() {
 
             @Override
-            public void onResponse(Call<GoogleClass1> call, Response<GoogleClass1> response) {
+            public void onResponse(Call<GoogleMapApiClass> call, Response<GoogleMapApiClass> response) {
                 if (response.isSuccessful()) {
                     listOfRestaurent.clear();
                     listOfRestaurent.addAll(response.body().getResults());
@@ -49,7 +49,7 @@ public class GoogleMapApiCallsRepository {
             }
 
             @Override
-            public void onFailure(Call<GoogleClass1> call, Throwable t) {
+            public void onFailure(Call<GoogleMapApiClass> call, Throwable t) {
                 listOfRestaurent.clear();
                 //  Call the proper callback used in controller (MainFragment)
                 if (callbacksWeakReference.get() != null) callbacksWeakReference.get().onFailure();
@@ -60,7 +60,7 @@ public class GoogleMapApiCallsRepository {
 
     //  Creating a callback
     public interface Callbacks {
-        void onResponse(@Nullable GoogleClass1 results);
+        void onResponse(@Nullable GoogleMapApiClass results);
 
         void onFailure();
     }

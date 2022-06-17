@@ -33,28 +33,26 @@ import com.sitadigi.go4lunch.viewModel.UserViewModel;
 import java.util.List;
 
 public class NotificationsService extends FirebaseMessagingService {
-    // WorkmatersViewModel workmatersViewModel = new ViewModelProvider( get).get(WorkmatersViewModel.class);
-    UserRepository mUserRepository ;
+
+    UserRepository mUserRepository;
     UserViewModel mUserViewModel = new UserViewModel();
     String userRestoName;
-
-  //  private List<User> userWithSameRestoNameList ;
     String workmateName = "";
+
 
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         // super.onMessageReceived(remoteMessage);
         String statusNotification = getSharedPreferences(SHARED_PREF_USER_INFO, MODE_PRIVATE).getString(SHARED_PREF_USER_INFO_NOTIFICATION, null);
-        Log.e("TAG", "onMessageReceived: statusNotification "+statusNotification );
-       if(statusNotification.equals(NO)){
-           Log.e("TAG", "onMessageReceived: statusNotification NO "+statusNotification );
-           //Do nothing
-       }else{
-           Log.e("TAG", "onMessageReceived: statusNotification YES"+statusNotification );
+        Log.e("TAG", "onMessageReceived: statusNotification " + statusNotification);
+        if (statusNotification.equals(NO)) {
+           // FirebaseInstanceId.getInstance().deleteInstanceId();
+            Log.e("TAG", "onMessageReceived: statusNotification NO " + statusNotification);
+            //Do nothing
+        } else {
+            Log.e("TAG", "onMessageReceived: statusNotification YES" + statusNotification);
             mUserRepository = UserRepository.getInstance();
-            FirebaseUser currentUser = mUserRepository.getCurrentUser();
             List<User> users = mUserRepository.getAllUserForNotificationPush();
-
             String userUid = mUserViewModel.getCurrentUser().getUid();
             // Get userRestoId on firebaseFirestore
             DocumentReference userDocumentRef = mUserViewModel.getUsersCollection().document(userUid);
@@ -65,12 +63,9 @@ public class NotificationsService extends FirebaseMessagingService {
                         DocumentSnapshot document = task.getResult();
                         if (document != null) {
                             userRestoName = document.getString("userRestoName");
-                          //  userWithSameRestoNameList = new ArrayList<>();
                             for (User userWithSameRestoName : users) {
                                 if (userWithSameRestoName.getUserRestoName().equals(userRestoName)) {
-                                    //userWithSameRestoNameList.add(userWithSameRestoName);
                                     workmateName = workmateName + " , " + userWithSameRestoName.getUsername();
-
                                 }
                             }
                             if (remoteMessage.getNotification() != null) {
@@ -105,7 +100,6 @@ public class NotificationsService extends FirebaseMessagingService {
                         .setContentIntent(pendingIntent);
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
         // Support Version >= Android 8
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence channelName = "Firebase Messages";

@@ -31,7 +31,7 @@
     <string name="error_no_internet">ERREUR PAS INTERNET</string>
     <string name="error_unknown_error">ERREUR INCONNUE</string>
     <string name="info_no_email_found">Pas d\'email trouvé</string>
-    <string name="info_no_username_found">Aucun de nom d\'utilisateur trouvé</string>
+    <string name="info_no_username_found">Aucun nom d\'utilisateur trouvé</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Fragment vide</string>
     <string name="sign_out_message">Voulez-vous vraiment vous déconnecter ?</string>
@@ -46,7 +46,28 @@
     <string name="question_notification">Voulez-vous recevoir des notifications ?</string>
     <string name="yes">OUI</string>
     <string name="no">NON</string>
-
+    <string name="call">TELL</string>
+    <string name="web_site">SITEWEB</string>
+    <string name="like">LIKE</string>
+    <string name="choice_restaurant">selectionné</string>
+    <string name="type_resto_adresse_resto">Type restaurent - adresse restaurent</string>
+    <string name="name_resto">NOM DU RESTAURENT</string>
+    <string name="img_restaurant">image restaurent</string>
+    <string name="img_workmate">image collègue</string>
+    <string name="mane_is_eating_french">Nom mange italien</string>
+    <string name="user_name">nom utilisateur</string>
+    <string name="img_search_bar">image search bar</string>
+    <string name="no_resto_found">AUCUN RESTAURANT TROUVÉ A PROXIMITÉ</string>
+    <string name="no_restaurant_choiced">Vous n\'avez choisit aucun restaurent</string>
+    <string name="img_google_map">image google map</string>
+    <string name="no_workmate_selected_this_restaurant">Aucun collegue n\'a selectionné ce restaurent</string>
+    <string name="opening_hour">Heure ouverture</string>
+    <string name="number_of_workmate">(0)</string>
+    <string name="type_adresse">Type - adresse</string>
+    <string name="distance">Xm</string>
+    <string name="name_firstname">Nom Premon</string>
+    <string name="email_user">Email utilisateur</string>
+    <string name="no_like_for_this_restaurant">Aucun like pour ce restaurent</string>
 
 
 </resources>

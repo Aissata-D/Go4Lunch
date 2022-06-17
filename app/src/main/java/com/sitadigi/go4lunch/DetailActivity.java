@@ -13,62 +13,80 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.sitadigi.go4lunch.models.RestaurantLike;
 import com.sitadigi.go4lunch.models.User;
-import com.sitadigi.go4lunch.ui.workmaters.WorkmatersViewModel;
+import com.sitadigi.go4lunch.ui.workmaters.WorkmateViewModel;
+import com.sitadigi.go4lunch.utils.UtilsDetailActivity;
+import com.sitadigi.go4lunch.viewModel.MainViewViewModel;
 import com.sitadigi.go4lunch.viewModel.UserViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class DetailActivity extends AppCompatActivity  {
+public class DetailActivity extends AppCompatActivity {
     public static final String RESTO_NAME = "RESTO_NAME";
     public static final String RESTO_PHOTO_URL = "RESTO_PHOTO_URL";
     public static final String RESTO_OPENINGHOURS = "RESTO_OPENINGHOURS";
     public static final String RESTO_ADRESSES = "RESTO_ADRESSES";
     public static final String RESTO_TYPE = "RESTO_TYPE";
-    public static final String RESTO_ID = null;
+    public static final String RESTO_ID = "RESTO_ID";
+    private static final String COLLECTION_RESTAURANT_LIKE_NAME = "restaurantLike";
+
+    String userUid;
     ImageView mImageViewResto;
     TextView tvRestoName;
     TextView tvRestoTypeAndAdresses;
     TextView tvRestoOpeningHours;
+    TextView tvRestoLike;
+    TextView tvRestoNumberLike;
+    RatingBar restaurantRatingBar;
     FloatingActionButton fbaRestoChoice;
     String userLastRestoId = "";
     String restoId;
     String restoName;
     String restoPhotoUrl;
     String restoAdresses;
-    private String restoType;
     String urlConcat;
+    UtilsDetailActivity utilsDetailActivity;
     UserViewModel mUserViewModel;
+    MainViewViewModel mMainViewViewModel;
     RecyclerView mRecyclerView;
-    WorkmatersViewModel workmatersViewModel;
+    WorkmateViewModel mWorkmateViewModel;
     DetailActivityAdapter detailActivityAdapter;
     LinearLayoutManager linearLayoutManager;
+    private String restoType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
         Objects.requireNonNull(this.getSupportActionBar()).hide();
-        workmatersViewModel = new ViewModelProvider(this).get(WorkmatersViewModel.class);
+        // Get uid of user on logged
+        mWorkmateViewModel = new ViewModelProvider(this).get(WorkmateViewModel.class);
 
         mUserViewModel = new UserViewModel();
+        userUid = mUserViewModel.getCurrentUser().getUid();
+
         restoId = getIntent().getStringExtra(RESTO_ID);
         restoName = getIntent().getStringExtra(RESTO_NAME);
         restoPhotoUrl = getIntent().getStringExtra(RESTO_PHOTO_URL);
         restoAdresses = getIntent().getStringExtra(RESTO_ADRESSES);
         restoType = getIntent().getStringExtra(RESTO_TYPE);
+        fbaRestoChoice = findViewById(R.id.fab_choice_resto);
+        tvRestoLike = (TextView) findViewById(R.id.restaurant_details_name_text_adresse);
+        restaurantRatingBar = (RatingBar) findViewById(R.id.rating_bar_star);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_detail_activity);
         linearLayoutManager = new LinearLayoutManager(DetailActivity.this);
@@ -83,99 +101,41 @@ public class DetailActivity extends AppCompatActivity  {
         String urlPart3 = getString(R.string.url_google_place_photo_part3);
         urlConcat = urlPart1 + urlPart2 + urlPart3;
 
-        setfabColor();
+        utilsDetailActivity = new UtilsDetailActivity(this, restoId, userLastRestoId,
+                this, restaurantRatingBar, mWorkmateViewModel, mUserViewModel);
+        utilsDetailActivity.setRatingIcon(/*DetailActivity.this,restaurantRatingBar,mWorkmateViewModel,
+        mUserViewModel*/);
+        utilsDetailActivity.setIconStarColor(tvRestoLike, mUserViewModel);
+        utilsDetailActivity.setfabColor(fbaRestoChoice, mUserViewModel);
 
-        fbaRestoChoice = (FloatingActionButton) findViewById(R.id.fab_choice_resto);
+
+        tvRestoLike.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //utilsDetailActivity.setRatingIcon(DetailActivity.this,restaurantRatingBar,mWorkmateViewModel,mUserViewModel);
+
+                utilsDetailActivity.clickOnButtonLike(userUid, tvRestoLike, restoName, mUserViewModel);
+                utilsDetailActivity.setRatingIcon();
+
+            }
+        });
         fbaRestoChoice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FirebaseUser firebaseUser = mUserViewModel.getCurrentUser();
-                // Get uid of user on logged
-                String userUid = mUserViewModel.getCurrentUser().getUid();
-                // Get userRestoId on firebaseFirestore
-                DocumentReference userDocumentRef = mUserViewModel.getUsersCollection().document(userUid);
-                userDocumentRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot document = task.getResult();
-                            if (document != null) {
-                                userLastRestoId = document.getString("userRestoId");
+                utilsDetailActivity.clickOnButtonFab(mUserViewModel, userUid, fbaRestoChoice, restoName, restoType);
 
-                                if (userLastRestoId == null) {
-                                    //Set fab icon color green
-                                    fbaRestoChoice.setImageTintList(ColorStateList.valueOf(getApplicationContext()
-                                            .getResources().getColor(R.color.fab_green))); //setImageDrawable(
-                                    //Ajouter user.setRestoId(restoId)
-                                    //Set restoId with actual restoIdChoice
-                                    userDocumentRef.update("userRestoId", restoId);
-                                    userDocumentRef.update("userRestoName", restoName);
-                                    userDocumentRef.update("userRestoType", restoType);
-                                } else {//restoId != null
-                                    if (userLastRestoId.equals(restoId)){ // It is a same restaurant)
-                                        //Set fab icon color gray
-                                        fbaRestoChoice.setImageTintList(ColorStateList.valueOf(getApplicationContext()
-                                                .getResources().getColor(R.color.fab_gray)));
-                                        // usersInter.remove(firebaseUser);
-                                        userDocumentRef.update("userRestoId", "NoRestoChoice");
-                                        userDocumentRef.update("userRestoName", "restoNameCreated");
-                                        userDocumentRef.update("userRestoType", "restoTypeCreated");
-                                    } else {//It is not a same restaurant
-                                        //Set fab icon color green
-                                        fbaRestoChoice.setImageTintList(ColorStateList.valueOf(getApplicationContext()
-                                                .getResources().getColor(R.color.fab_green)));
-                                        userDocumentRef.update("userRestoId", restoId);
-                                        userDocumentRef.update("userRestoName", restoName);
-                                        userDocumentRef.update("userRestoType", restoType);
-                                    }
-                                }
-                            }
-                        } else {
-                            Log.d("LOGGER", "get failed with ", task.getException());
-                        }
-                        initRecyclerView();
-                    }
-                });
+                initRecyclerView();
+                
             }
         });
 
         configureDetailView();
-       // executeHttpRequestWithRetrofit();
         initRecyclerView();
 
     }
 
-    public void setfabColor() {
-        // Get uid of user on logged
-        String userUid = mUserViewModel.getCurrentUser().getUid();
-        // Get userRestoId on firebaseFirestore
-        DocumentReference userDocumentRef = mUserViewModel.getUsersCollection().document(userUid);
-        userDocumentRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document != null) {
-                        userLastRestoId = document.getString("userRestoId");
-                        if (userLastRestoId.equals(restoId))// It is a same restaurant
-                        {//Set fab icon color gray
-                            fbaRestoChoice.setImageTintList(ColorStateList.valueOf(getApplicationContext()
-                                    .getResources().getColor(R.color.fab_green)));
-                        } else {//It is not a same restaurant
-                            //Set fab icon color green
-                            fbaRestoChoice.setImageTintList(ColorStateList.valueOf(getApplicationContext()
-                                    .getResources().getColor(R.color.fab_gray)));
-                        }
-                    }
-                } else {
-                    Log.d("LOGGER", "get failed with ", task.getException());
-                }
-            }
-        });
-    }
-
     public void configureDetailView() {
-        String restoTypeAndAdresses = restoType +" - " + restoAdresses;
+        String restoTypeAndAdresses = restoType + " - " + restoAdresses;
         tvRestoName.setText(restoName);
         tvRestoTypeAndAdresses.setText(restoTypeAndAdresses);
         //GLIDE TO SHOW PHOTO
@@ -195,7 +155,7 @@ public class DetailActivity extends AppCompatActivity  {
 
     public void initRecyclerView() {
 
-        workmatersViewModel.getAllUser().observe(this, usersLiveData -> {
+        mWorkmateViewModel.getAllUser().observe(this, usersLiveData -> {
             mRecyclerView.getRecycledViewPool().clear();
             mRecyclerView.setAdapter(null);
             mRecyclerView.setLayoutManager(null);

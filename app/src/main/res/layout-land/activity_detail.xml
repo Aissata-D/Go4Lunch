@@ -4,49 +4,40 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".DetailActivity"
-    >
+    android:orientation="horizontal"
+    tools:context=".DetailActivity">
+
     <ImageView
         android:id="@+id/resto_img"
-        android:layout_width="match_parent"
-        android:layout_height="244dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="390dp"
+        android:layout_height="215dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="@+id/guideline2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:contentDescription="@string/img_restaurant" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
-        android:layout_width="match_parent"
-        android:layout_height="91dp"
+        android:layout_width="390dp"
+        android:layout_height="80dp"
+        android:layout_marginEnd="8dp"
         android:background="@color/red_bottom_menu"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideline2"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/resto_img">
+
         <TextView
             android:id="@+id/resto_name_detail_activity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="16dp"
             android:text="@string/name_resto"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
-
-        <RatingBar
-            android:id="@+id/rating_bar_star"
-            style="?android:attr/ratingBarStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:secondaryProgressTint="@color/yellow"
-            android:layout_marginStart="16dp"
-            android:isIndicator="true"
-            android:numStars="5"
-            android:stepSize="0.1"
-            android:progressTint="@color/yellow"
-            app:layout_constraintBottom_toBottomOf="@+id/resto_name_detail_activity"
-            app:layout_constraintStart_toEndOf="@+id/resto_name_detail_activity"
-            app:layout_constraintTop_toTopOf="@+id/resto_name_detail_activity" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:drawableEndCompat="@drawable/ic_baseline_star_24_gray" />
 
         <TextView
             android:id="@+id/resto_type_detail_detail_activity"
@@ -56,14 +47,20 @@
             android:text="@string/type_resto_adresse_resto"
             app:layout_constraintStart_toStartOf="@+id/resto_name_detail_activity"
             app:layout_constraintTop_toBottomOf="@+id/resto_name_detail_activity" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout2"
-        android:layout_width="match_parent"
-        android:layout_height="90dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="390dp"
+        android:layout_height="73dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline2"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
+
         <TextView
             android:id="@+id/restaurant_details_name_text_phone"
             android:layout_width="wrap_content"
@@ -75,6 +72,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:drawableTopCompat="@drawable/ic_baseline_local_phone_24" />
+
         <TextView
             android:id="@+id/restaurant_details_name_text_social_media"
             android:layout_width="wrap_content"
@@ -86,6 +84,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:drawableTopCompat="@drawable/ic_baseline_sports_soccer_24" />
+
         <TextView
             android:id="@+id/restaurant_details_name_text_adresse"
             android:layout_width="wrap_content"
@@ -94,33 +93,41 @@
             android:drawablePadding="4dp"
             android:text="@string/like"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:drawableTopCompat="@drawable/ic_baseline_star_rate_24" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerview_detail_activity"
+        android:layout_width="400dp"
+        android:layout_height="match_parent"
+        android:layout_margin="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="@+id/guideline2"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:itemCount="10"
+        tools:listitem="@layout/item_detail_restaurant" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="399dp" />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_choice_resto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
         app:backgroundTint="#FFFFFF"
+        android:padding="4dp"
         app:layout_constraintBottom_toBottomOf="@+id/resto_img"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideline2"
         app:layout_constraintTop_toBottomOf="@+id/resto_img"
         app:srcCompat="@drawable/ic_baseline_check_circle_24_green"
         app:tint="@color/fab_gray"
         android:contentDescription="@string/choice_restaurant" />
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerview_detail_activity"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout2"
-        tools:itemCount="10"
-        tools:listitem="@layout/item_detail_restaurant" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

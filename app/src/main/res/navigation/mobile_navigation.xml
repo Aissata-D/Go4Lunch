@@ -19,7 +19,7 @@
 
     <fragment
         android:id="@+id/menu_workmates"
-        android:name="com.sitadigi.go4lunch.ui.workmaters.WorkmatersFragment"
+        android:name="com.sitadigi.go4lunch.ui.workmaters.WorkmateFragment"
         android:label="@string/bottom_navigation_menu_workmates"
         tools:layout="@layout/fragment_workmaters" />
 

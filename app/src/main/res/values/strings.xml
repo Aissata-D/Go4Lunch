@@ -46,4 +46,26 @@
     <string name="question_notification">Do you want to receive notifications ?</string>
     <string name="yes">YES</string>
     <string name="no">NO</string>
+    <string name="call">CALL</string>
+    <string name="web_site">WEBSITE</string>
+    <string name="like">LIKE</string>
+    <string name="choice_restaurant">select</string>
+    <string name="type_resto_adresse_resto">Type resto - adresse resto</string>
+    <string name="name_resto">NAME RESTO</string>
+    <string name="img_restaurant">image restaurant</string>
+    <string name="img_workmate">image workmate</string>
+    <string name="mane_is_eating_french">Name is eating french</string>
+    <string name="user_name">user name</string>
+    <string name="img_search_bar">image search bar</string>
+    <string name="no_resto_found">NO RESTO FOUND</string>
+    <string name="no_restaurant_choiced">Vous n\'avez choisit aucun restaurent</string>
+    <string name="img_google_map">image google map</string>
+    <string name="no_workmate_selected_this_restaurant">NO WORKMATE SELECTED THIS RESTAURANT</string>
+    <string name="opening_hour">Opening hour</string>
+    <string name="number_of_workmate">(0)</string>
+    <string name="type_adresse">Type - adresse</string>
+    <string name="distance">Xm</string>
+    <string name="name_firstname">Name FirstName</string>
+    <string name="email_user">Email User</string>
+    <string name="no_like_for_this_restaurant">Aucun like pour ce restaurent</string>
 </resources>

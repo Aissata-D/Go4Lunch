@@ -27,6 +27,7 @@ public final class UserRepository {
 
     //----FIRESTORE FIELD-------------
     private static final String COLLECTION_NAME = "users";
+    private static final String COLLECTION_RESTAURANT_LIKE_NAME = "restaurantLike";
     private static final String USERNAME_FIELD = "username";
     private static volatile UserRepository instance;
     String userRestoId = "restoIdCreated";
@@ -84,17 +85,20 @@ public final class UserRepository {
             String useremail = user.getEmail();
             String uid = user.getUid();
             userToCreate = new User(uid, username, useremail, urlPicture, userRestoId, userRestoName, userRestoType);
-            DocumentReference userDocumentRef = getUsersCollection().document(uid);
-            userDocumentRef.get().addOnSuccessListener(documentSnapshot -> {
-                if (!documentSnapshot.exists()) {
-                    this.getUsersCollection().document(uid).set(userToCreate);
-                }
-            });
+           this.getUsersCollection().document(uid).set(userToCreate);
+
+           // DocumentReference userRestaurantLikeRef = getUsersCollection().document(uid)
+             //       .collection(COLLECTION_RESTAURANT_LIKE_NAME).document(uid);
+
         }// TODO Gerer les cas d'erreur
         else {
         }
     }
-
+/*
+DocumentReference messageRef = db
+    .collection("rooms").document("roomA")
+    .collection("messages").document("message1");
+ */
     // Get UID of current user
     private String getCurrentUserUID() {
         FirebaseUser user = getCurrentUser();
@@ -125,7 +129,7 @@ public final class UserRepository {
     public MutableLiveData<List<User>> getAllUser() {
 
         MutableLiveData<List<User>> listOfUserLiveData = new MutableLiveData<>();
-        List<User> usersUsingApp = new ArrayList<>();
+
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("users").addSnapshotListener(
                 new EventListener<QuerySnapshot>() {
@@ -138,6 +142,7 @@ public final class UserRepository {
                             return;
                         }
                         if (value != null) {
+                            List<User> usersUsingApp = new ArrayList<>();
                             for (DocumentSnapshot document : value) {
                                 String username = document.getString("username");
                                 String email = document.getString("email");
@@ -148,22 +153,33 @@ public final class UserRepository {
                                 String restoType = document.getString("userRestoType");
 
                                 User userToGet = new User(uid, username, email, urlPicture, restoId, restoName, restoType);
-                                if (!usersUsingApp.contains(userToGet)) {
+                                if(usersUsingApp.size()==0){
                                     usersUsingApp.add(userToGet);
+                                }else{
+                                for(int i = 0; i<usersUsingApp.size();i++) {
+                                    if (usersUsingApp.get(i) != userToGet) {
+                                        Log.e("NEW", "ADD " + userToGet.getUsername());
+                                        Log.e("NEW", "i  " + i + "usersUsingApp " +usersUsingApp.size());
+                                        usersUsingApp.add(userToGet);
+                                    }}
                                 }
-                                listOfUserLiveData.setValue(usersUsingApp);
-                                Log.e("TAG", "onEvent: " + userToGet.getUsername());
+
+                                listOfUserLiveData.postValue(usersUsingApp);
+                                Log.e("NEW", "onEvent: " + userToGet.getUsername());
+                                Log.e("NEW", "i  "  + "usersUsingApp " +usersUsingApp.size());
+
                             }
                         }
                     }
                 });
+        Log.e("NEW", "getAllUser:dans repository "+listOfUserLiveData );
         return listOfUserLiveData;
     }
 
     public List<User> getAllUserForNotificationPush() {
 
         MutableLiveData<List<User>> listOfUserLiveData = new MutableLiveData<>();
-        List<User> usersUsingApp = new ArrayList<>();
+        List<User> usersUsingApp1 =new ArrayList<>();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("users").addSnapshotListener(
                 new EventListener<QuerySnapshot>() {
@@ -176,6 +192,7 @@ public final class UserRepository {
                             return;
                         }
                         if (value != null) {
+                            List<User>  usersUsingApp = new ArrayList<>();
                             for (DocumentSnapshot document : value) {
                                 String username = document.getString("username");
                                 String email = document.getString("email");
@@ -190,12 +207,16 @@ public final class UserRepository {
                                     usersUsingApp.add(userToGet);
                                 }
                                // listOfUserLiveData.setValue(usersUsingApp);
-                                Log.e("TAG", "onEvent: " + userToGet.getUsername());
+                                usersUsingApp1.clear();
+                                usersUsingApp1.addAll(usersUsingApp);
+                                Log.e("NEW", "onEvent:STATIC " + userToGet.getUsername());
+                                Log.e("NEW", "onEvent: STATIC TAILLE usersUsingApp1 " + usersUsingApp1.size());
+
                             }
                         }
                     }
                 });
-        return usersUsingApp;
+        return usersUsingApp1;
     }
 }
 

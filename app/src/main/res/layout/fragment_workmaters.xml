@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.workmaters.WorkmatersFragment">
+    tools:context=".ui.workmaters.WorkmateFragment">
 
         <TextView
             android:id="@+id/no_workmate_found"
@@ -11,8 +11,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="72dp"
             android:gravity="center"
-            android:text="NO WORKMATE SELECTED THIS RESTAURANT"
-            android:textSize="24dp"
+            android:text="@string/no_workmate_selected_this_restaurant"
+            android:textSize="24sp"
             android:textStyle="bold" />
 
         <androidx.recyclerview.widget.RecyclerView

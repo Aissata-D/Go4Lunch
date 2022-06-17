@@ -11,12 +11,15 @@ import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.sitadigi.go4lunch.models.GoogleMapApiClass;
+import com.sitadigi.go4lunch.models.User;
 import com.sitadigi.go4lunch.repository.GoogleMapApiCallsRepository;
 import com.sitadigi.go4lunch.repository.GeoLocateRepository;
+import com.sitadigi.go4lunch.repository.UserRepository;
 
 import java.util.List;
 
 public class MainViewViewModel extends ViewModel implements GoogleMapApiCallsRepository.Callbacks{
+    private final UserRepository userRepository;
     private final GoogleMapApiCallsRepository mGoogleMapApiCallsRepository;
     private final MutableLiveData<List<String>> resultSearchMutablelist;
     public MutableLiveData<Location> locationMutableLiveData;
@@ -26,6 +29,7 @@ public class MainViewViewModel extends ViewModel implements GoogleMapApiCallsRep
     private final MutableLiveData<String> resultSearchPlaceName;
 
     public MainViewViewModel() {
+        userRepository = UserRepository.getInstance();
         mGoogleMapApiCallsRepository = GoogleMapApiCallsRepository.getInstance();
         mGeoLocateRepository = new GeoLocateRepository();
         locationMutableLiveData = new MutableLiveData<>();
@@ -33,6 +37,7 @@ public class MainViewViewModel extends ViewModel implements GoogleMapApiCallsRep
         resultSearchLatLng = new MutableLiveData<>();
         resultSearchPlaceName = new MutableLiveData<>();
         listOfRestaurent = new MutableLiveData<>();
+
     }
 
     public MutableLiveData<List<GoogleMapApiClass.Result>> getRestaurent() {
@@ -85,5 +90,8 @@ public class MainViewViewModel extends ViewModel implements GoogleMapApiCallsRep
     public void onFailure() {
         Log.e("TAG", "onFailure: ");
 
+    }
+    public MutableLiveData<List<User>> getAllUser(){
+        return userRepository.getAllUser();
     }
 }

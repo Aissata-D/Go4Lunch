@@ -16,7 +16,7 @@ import com.sitadigi.go4lunch.models.User;
 
 import java.util.List;
 
-public class WorkmatersAdapter extends RecyclerView.Adapter<WorkmatersAdapter.WorkmatersViewHolder>{
+public class WorkmateAdapter extends RecyclerView.Adapter<WorkmateAdapter.WorkmatersViewHolder>{
 
         /**
          * The list of restaurent adapter
@@ -29,12 +29,12 @@ public class WorkmatersAdapter extends RecyclerView.Adapter<WorkmatersAdapter.Wo
          * @param users the list of tasks the adapter deals with to set
          */
 
-    public WorkmatersAdapter(@NonNull List<User> users) {
+    public WorkmateAdapter(@NonNull List<User> users) {
         mUsers = users;
     }
         @NonNull
         @Override
-        public WorkmatersAdapter.WorkmatersViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
+        public WorkmateAdapter.WorkmatersViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
             View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_workmaters, viewGroup, false);
             return new WorkmatersViewHolder(view);
         }

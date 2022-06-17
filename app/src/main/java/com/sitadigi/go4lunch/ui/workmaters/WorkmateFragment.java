@@ -22,7 +22,7 @@ import com.sitadigi.go4lunch.viewModel.MainViewViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WorkmatersFragment extends Fragment {
+public class WorkmateFragment extends Fragment {
 
     private FragmentWorkmatersBinding binding;
     private RecyclerView mRecyclerView;
@@ -32,8 +32,8 @@ public class WorkmatersFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        WorkmatersViewModel workmatersViewModel =
-                new ViewModelProvider(this).get(WorkmatersViewModel.class);
+        WorkmateViewModel workmateViewModel =
+                new ViewModelProvider(this).get(WorkmateViewModel.class);
         MainViewViewModel mainViewViewModel =
                 new ViewModelProvider(requireActivity()).get(MainViewViewModel.class);
 
@@ -44,7 +44,7 @@ public class WorkmatersFragment extends Fragment {
         tvNoWorkmate = binding.noWorkmateFound;
         tvNoWorkmate.setVisibility(View.GONE);
 
-        workmatersViewModel.getAllUser().observe(getViewLifecycleOwner(), usersLiveData -> {
+        workmateViewModel.getAllUser().observe(getViewLifecycleOwner(), usersLiveData -> {
             List<User> mItems = usersLiveData;
             users.clear();
             users.addAll(mItems);
@@ -75,15 +75,15 @@ public class WorkmatersFragment extends Fragment {
             } else {
                 tvNoWorkmate.setVisibility(View.GONE);
                 mRecyclerView.setVisibility(View.VISIBLE);
-                WorkmatersAdapter workmatersAdapter = new WorkmatersAdapter(listOfUserFiltered);
-                mRecyclerView.setAdapter(workmatersAdapter);
+                WorkmateAdapter workmateAdapter = new WorkmateAdapter(listOfUserFiltered);
+                mRecyclerView.setAdapter(workmateAdapter);
             }
 
         } else {
             tvNoWorkmate.setVisibility(View.GONE);
             mRecyclerView.setVisibility(View.VISIBLE);
-            WorkmatersAdapter workmatersAdapter = new WorkmatersAdapter(users);
-            mRecyclerView.setAdapter(workmatersAdapter);
+            WorkmateAdapter workmateAdapter = new WorkmateAdapter(users);
+            mRecyclerView.setAdapter(workmateAdapter);
 
         }
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));

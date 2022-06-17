@@ -25,11 +25,10 @@ public class UserViewModel extends ViewModel {
     private static volatile UserViewModel instance;
     private final UserRepository userRepository;
     private MutableLiveData<List<GoogleMapApiClass.Result>> listOfRestaurent;
-    //private final GoogleMapApiCallsRepository mGoogleMapApiCalls;
+
 
     public UserViewModel() {
         userRepository = UserRepository.getInstance();
-      // mGoogleMapApiCalls = GoogleMapApiCallsRepository.getInstance();
 
     }
 
@@ -110,4 +109,5 @@ public class UserViewModel extends ViewModel {
         Log.e("TAG", "getRestaurent: " +listOfRestaurent );
         return listOfRestaurent;
     }
+
 }

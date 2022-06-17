@@ -48,7 +48,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 //Get current user which is authenticated previously. // checking if the user is null or not.
                 if (mUserViewModel.isCurrentUserLogged()) {
-                    // if the user is already authenticated then he will redirecting to new screen via an intent(His own ProfileActivity).
+                    // if the user is already authenticated then he will redirecting to new screen via an intent(His own profileActivity).
                     startProfileActivity();
                     // we are calling finish method to kill on LoginActivity which is displaying our login ui.
                     finish();

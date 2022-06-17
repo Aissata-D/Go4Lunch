@@ -18,12 +18,12 @@ import com.sitadigi.go4lunch.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WorkmatersViewModel extends ViewModel {
+public class WorkmateViewModel extends ViewModel {
 
     private final UserRepository userRepository;
     private final MutableLiveData<String> mText;
 
-    public WorkmatersViewModel() {
+    public WorkmateViewModel() {
         userRepository = UserRepository.getInstance();
         mText = new MutableLiveData<>();
     }
@@ -31,7 +31,9 @@ public class WorkmatersViewModel extends ViewModel {
     /*
      *getAllUser method return users using this app in real time
      */
-
+    public List<User> getAllUserForNotificationPush(){
+        return userRepository.getAllUserForNotificationPush();
+    }
     public MutableLiveData<List<User>> getAllUser(){
        return userRepository.getAllUser();
     }

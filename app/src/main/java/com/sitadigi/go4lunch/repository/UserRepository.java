@@ -85,10 +85,13 @@ public final class UserRepository {
             String useremail = user.getEmail();
             String uid = user.getUid();
             userToCreate = new User(uid, username, useremail, urlPicture, userRestoId, userRestoName, userRestoType);
-           this.getUsersCollection().document(uid).set(userToCreate);
 
-           // DocumentReference userRestaurantLikeRef = getUsersCollection().document(uid)
-             //       .collection(COLLECTION_RESTAURANT_LIKE_NAME).document(uid);
+            DocumentReference userDocumentRef = getUsersCollection().document(uid);
+            userDocumentRef.get().addOnSuccessListener(documentSnapshot -> {
+                if(!documentSnapshot.exists()){
+                        this.getUsersCollection().document(uid).set(userToCreate);
+                    }
+                });
 
         }// TODO Gerer les cas d'erreur
         else {

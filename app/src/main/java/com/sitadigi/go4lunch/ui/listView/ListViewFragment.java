@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.sitadigi.go4lunch.databinding.FragmentListViewBinding;
 import com.sitadigi.go4lunch.models.GoogleMapApiClass;
+import com.sitadigi.go4lunch.models.User;
 import com.sitadigi.go4lunch.viewModel.MainViewViewModel;
 
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ public class ListViewFragment extends Fragment {
     private FragmentListViewBinding binding;
     private RecyclerView mRecyclerView;
     private TextView tvNoRestoFound;
+    List<User> mUsers = new ArrayList<>();
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -40,6 +42,7 @@ public class ListViewFragment extends Fragment {
         mRecyclerView = binding.recyclerviewListView;
         tvNoRestoFound = binding.noRestoFound;
         tvNoRestoFound.setVisibility(View.GONE);
+
         mainViewViewModel.getRestaurent().observe(getViewLifecycleOwner(), RestaurentResponse -> {
             listOfRestaurent.clear();
             listOfRestaurent.addAll(RestaurentResponse);
@@ -49,6 +52,11 @@ public class ListViewFragment extends Fragment {
         mainViewViewModel.getResultSearchPlaceName().observe(getViewLifecycleOwner(), PlaceNameResponse -> {
             placeNameSelected = PlaceNameResponse;
             initRecyclerView();
+        });
+        mainViewViewModel.getAllUser().observe(getViewLifecycleOwner(),AllUsers ->{
+            mUsers = AllUsers;
+            initRecyclerView();
+
         });
 
         return root;
@@ -70,13 +78,13 @@ public class ListViewFragment extends Fragment {
             } else {
                 tvNoRestoFound.setVisibility(View.GONE);
                 mRecyclerView.setVisibility(View.VISIBLE);
-                ListViewAdapter listViewAdapter = new ListViewAdapter(listOfRestaurentFiltered);
+                ListViewAdapter listViewAdapter = new ListViewAdapter(listOfRestaurentFiltered, mUsers);
                 mRecyclerView.setAdapter(listViewAdapter);
             }
         } else {
             tvNoRestoFound.setVisibility(View.GONE);
             mRecyclerView.setVisibility(View.VISIBLE);
-            ListViewAdapter listViewAdapter = new ListViewAdapter(listOfRestaurent);
+            ListViewAdapter listViewAdapter = new ListViewAdapter(listOfRestaurent, mUsers);
             mRecyclerView.setAdapter(listViewAdapter);
         }
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));

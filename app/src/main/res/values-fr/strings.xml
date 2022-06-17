@@ -68,6 +68,8 @@
     <string name="name_firstname">Nom Premon</string>
     <string name="email_user">Email utilisateur</string>
     <string name="no_like_for_this_restaurant">Aucun like pour ce restaurent</string>
+    <string name="no_phone_number">Pas de numéro de téléphone disponible</string>
+    <string name="no_web_site_link">Pas de lien site web disponible</string>
 
 
 </resources>

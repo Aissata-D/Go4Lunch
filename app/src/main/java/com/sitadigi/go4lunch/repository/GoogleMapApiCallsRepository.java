@@ -24,12 +24,12 @@ public class GoogleMapApiCallsRepository {
     }
 
     // Public method to start fetching users following by Jake Wharton
-    public static List<GoogleMapApiClass.Result> fetchResultFollowing(Callbacks callbacks, String location, int radius,
+    public static List<GoogleMapApiClass.Result> fetchResultFollowing(/*Callbacks callbacks,*/ String location, int radius,
                                                                       String type, String key) {
 
         final List<GoogleMapApiClass.Result> listOfRestaurent = new ArrayList<>();
         //  Create a weak reference to callback (avoid memory leaks)
-        final WeakReference<Callbacks> callbacksWeakReference = new WeakReference<Callbacks>(callbacks);
+      //  final WeakReference<Callbacks> callbacksWeakReference = new WeakReference<Callbacks>(callbacks);
         //  Get a Retrofit instance and the related endpoints
         GoogleMapApiService googleMapApiService = GoogleMapApiService.retrofit.create(GoogleMapApiService.class);
         //  Create the call on Github API
@@ -44,24 +44,24 @@ public class GoogleMapApiCallsRepository {
                     listOfRestaurent.addAll(response.body().getResults());
                 }
                 // Call the proper callback used in controller (MainFragment)
-                if (callbacksWeakReference.get() != null)
-                    callbacksWeakReference.get().onResponse(response.body());
+               // if (callbacksWeakReference.get() != null)
+                  //  callbacksWeakReference.get().onResponse(response.body());
             }
 
             @Override
             public void onFailure(Call<GoogleMapApiClass> call, Throwable t) {
                 listOfRestaurent.clear();
                 //  Call the proper callback used in controller (MainFragment)
-                if (callbacksWeakReference.get() != null) callbacksWeakReference.get().onFailure();
+              //  if (callbacksWeakReference.get() != null) callbacksWeakReference.get().onFailure();
             }
         });
         return listOfRestaurent;
     }
 
     //  Creating a callback
-    public interface Callbacks {
+   /* public interface Callbacks {
         void onResponse(@Nullable GoogleMapApiClass results);
 
         void onFailure();
-    }
+    }*/
 }

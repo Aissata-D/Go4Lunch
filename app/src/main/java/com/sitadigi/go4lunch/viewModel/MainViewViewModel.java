@@ -18,7 +18,7 @@ import com.sitadigi.go4lunch.repository.UserRepository;
 
 import java.util.List;
 
-public class MainViewViewModel extends ViewModel implements GoogleMapApiCallsRepository.Callbacks{
+public class MainViewViewModel extends ViewModel /*implements GoogleMapApiCallsRepository.Callbacks*/{
     private final UserRepository userRepository;
     private final GoogleMapApiCallsRepository mGoogleMapApiCallsRepository;
     private final MutableLiveData<List<String>> resultSearchMutablelist;
@@ -47,7 +47,7 @@ public class MainViewViewModel extends ViewModel implements GoogleMapApiCallsRep
 
     public void loadRestaurentData(String location) {
 
-        listOfRestaurent.setValue(mGoogleMapApiCallsRepository.fetchResultFollowing(this, location,1500,
+        listOfRestaurent.setValue(mGoogleMapApiCallsRepository.fetchResultFollowing(/*this,*/ location,1500,
                 "restaurant","AIzaSyDsQUD7ukIhqdJYZIQxj535IvrDRrkrH08"));
     }
 
@@ -79,8 +79,10 @@ public class MainViewViewModel extends ViewModel implements GoogleMapApiCallsRep
     public MutableLiveData<String> getResultSearchPlaceName(){
             return resultSearchPlaceName;
     }
-
-    @Override
+    public MutableLiveData<List<User>> getAllUser(){
+        return userRepository.getAllUser();
+    }
+  /*  @Override
     public void onResponse(@Nullable GoogleMapApiClass results) {
         listOfRestaurent.setValue(results.getResults());
         Log.e("TAG", "onResponse: listeresto recupere"+listOfRestaurent.getValue() );
@@ -91,7 +93,7 @@ public class MainViewViewModel extends ViewModel implements GoogleMapApiCallsRep
         Log.e("TAG", "onFailure: ");
 
     }
-    public MutableLiveData<List<User>> getAllUser(){
-        return userRepository.getAllUser();
-    }
+
+
+   */
 }

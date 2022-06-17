@@ -42,6 +42,8 @@ public class DetailActivity extends AppCompatActivity {
     public static final String RESTO_ADRESSES = "RESTO_ADRESSES";
     public static final String RESTO_TYPE = "RESTO_TYPE";
     public static final String RESTO_ID = "RESTO_ID";
+    public static final String RESTO_RATING = "RESTO_RATING";
+
     private static final String COLLECTION_RESTAURANT_LIKE_NAME = "restaurantLike";
 
     String userUid;
@@ -50,7 +52,8 @@ public class DetailActivity extends AppCompatActivity {
     TextView tvRestoTypeAndAdresses;
     TextView tvRestoOpeningHours;
     TextView tvRestoLike;
-    TextView tvRestoNumberLike;
+    TextView tvRestaurantWebsite;
+    TextView tvRestaurantPhoneNumber;
     RatingBar restaurantRatingBar;
     FloatingActionButton fbaRestoChoice;
     String userLastRestoId = "";
@@ -67,6 +70,7 @@ public class DetailActivity extends AppCompatActivity {
     DetailActivityAdapter detailActivityAdapter;
     LinearLayoutManager linearLayoutManager;
     private String restoType;
+    float restaurantRating;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,9 +88,12 @@ public class DetailActivity extends AppCompatActivity {
         restoPhotoUrl = getIntent().getStringExtra(RESTO_PHOTO_URL);
         restoAdresses = getIntent().getStringExtra(RESTO_ADRESSES);
         restoType = getIntent().getStringExtra(RESTO_TYPE);
+        restaurantRating = getIntent().getFloatExtra(RESTO_RATING,0);
         fbaRestoChoice = findViewById(R.id.fab_choice_resto);
         tvRestoLike = (TextView) findViewById(R.id.restaurant_details_name_text_adresse);
         restaurantRatingBar = (RatingBar) findViewById(R.id.rating_bar_star);
+        tvRestaurantWebsite = (TextView) findViewById(R.id.restaurant_website);
+        tvRestaurantPhoneNumber = (TextView) findViewById(R.id.restaurant_phone_number);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_detail_activity);
         linearLayoutManager = new LinearLayoutManager(DetailActivity.this);
@@ -103,10 +110,12 @@ public class DetailActivity extends AppCompatActivity {
 
         utilsDetailActivity = new UtilsDetailActivity(this, restoId, userLastRestoId,
                 this, restaurantRatingBar, mWorkmateViewModel, mUserViewModel);
-        utilsDetailActivity.setRatingIcon(/*DetailActivity.this,restaurantRatingBar,mWorkmateViewModel,
-        mUserViewModel*/);
+       // utilsDetailActivity.setRatingIcon(/*DetailActivity.this,restaurantRatingBar,mWorkmateViewModel,
+       // mUserViewModel*/);
         utilsDetailActivity.setIconStarColor(tvRestoLike, mUserViewModel);
         utilsDetailActivity.setfabColor(fbaRestoChoice, mUserViewModel);
+        float i = restaurantRating;
+        utilsDetailActivity.setRatingIcon1(restaurantRatingBar,(float) restaurantRating);
 
 
         tvRestoLike.setOnClickListener(new View.OnClickListener() {
@@ -115,7 +124,7 @@ public class DetailActivity extends AppCompatActivity {
                 //utilsDetailActivity.setRatingIcon(DetailActivity.this,restaurantRatingBar,mWorkmateViewModel,mUserViewModel);
 
                 utilsDetailActivity.clickOnButtonLike(userUid, tvRestoLike, restoName, mUserViewModel);
-                utilsDetailActivity.setRatingIcon();
+             //   utilsDetailActivity.setRatingIcon();
 
             }
         });
@@ -126,6 +135,19 @@ public class DetailActivity extends AppCompatActivity {
 
                 initRecyclerView();
                 
+            }
+        });
+        tvRestaurantPhoneNumber.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(DetailActivity.this, getString(R.string.no_phone_number), Toast.LENGTH_SHORT).show();
+            }
+        });
+        tvRestaurantWebsite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(DetailActivity.this, getString(R.string.no_web_site_link), Toast.LENGTH_SHORT).show();
+
             }
         });
 

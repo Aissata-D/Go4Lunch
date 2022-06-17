@@ -11,23 +11,29 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/resto_like_number_item_listview"
+        <RatingBar
+            android:id="@+id/list_view_item_rating_bar_star"
+            style="?android:attr/ratingBarStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
+            android:secondaryProgressTint="@color/yellow"
+            android:layout_marginStart="16dp"
+            android:isIndicator="true"
+            android:numStars="5"
+            android:stepSize="0.1"
+            android:progressTint="@color/yellow"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/resto_imageview_item_listview"
             app:drawableStartCompat="@drawable/ic_baseline_star_24_yellow" />
 
         <TextView
             android:id="@+id/resto_opening_hour_item_listview"
-            android:layout_width="220dp"
+            android:layout_width="180dp"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:text="@string/opening_hour"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/resto_like_number_item_listview"
             app:layout_constraintHorizontal_bias="0.085"
             app:layout_constraintStart_toStartOf="parent" />
 

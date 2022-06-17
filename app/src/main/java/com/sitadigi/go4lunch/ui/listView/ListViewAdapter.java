@@ -4,6 +4,7 @@ import static com.sitadigi.go4lunch.DetailActivity.RESTO_ID;
 import static com.sitadigi.go4lunch.DetailActivity.RESTO_NAME;
 import static com.sitadigi.go4lunch.DetailActivity.RESTO_OPENINGHOURS;
 import static com.sitadigi.go4lunch.DetailActivity.RESTO_PHOTO_URL;
+import static com.sitadigi.go4lunch.DetailActivity.RESTO_RATING;
 import static com.sitadigi.go4lunch.DetailActivity.RESTO_TYPE;
 import static com.sitadigi.go4lunch.DetailActivity.RESTO_ADRESSES;
 
@@ -13,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -24,8 +26,10 @@ import com.sitadigi.go4lunch.DetailActivity;
 import com.sitadigi.go4lunch.models.GoogleMapApiClass;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import com.sitadigi.go4lunch.R;
+import com.sitadigi.go4lunch.models.User;
 
 
 public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListViewHolder> {
@@ -36,20 +40,26 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
     String urlConcat = "";
 
     /**
-     * The list of restaurent adapter
+     * The list of restaurant adapter
      */
     @NonNull
-    private final List<GoogleMapApiClass.Result> mRestaurents ;
+    private final List<GoogleMapApiClass.Result> mRestaurants ;
     public int mPosition;
-
+    /**
+     * The list of All user using application
+     *
+     */
+    private final List<User> mUsers;
 
     /**
      * Instantiates a new RestaurentAdapter.
      *
-     * @param restaurents the list of tasks the adapter deals with to set
+     * @param restaurants the list of restaurant the adapter
      */
-    public ListViewAdapter(@NonNull final List<GoogleMapApiClass.Result> restaurents) {
-        this.mRestaurents = restaurents;
+    public ListViewAdapter(@NonNull final List<GoogleMapApiClass.Result> restaurants,
+                           List<User> mUsers) {
+        this.mRestaurants = restaurants;
+        this.mUsers = mUsers;
 
     }
 
@@ -67,13 +77,13 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
     @Override
     public void onBindViewHolder(@NonNull ListViewHolder listViewHolder, int position) {
 
-        listViewHolder.bind(mRestaurents.get(position));
+        listViewHolder.bind(mRestaurants.get(position));
         // Open DetailsActivity of restaurant clicked
         listViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mPosition = listViewHolder.getAdapterPosition();
-                GoogleMapApiClass.Result restaurant = mRestaurents.get(mPosition);
+                GoogleMapApiClass.Result restaurant = mRestaurants.get(mPosition);
                 Intent intentDetail = new Intent(v.getContext(), DetailActivity.class);
                 intentDetail.putExtra(RESTO_ID, restaurant.getPlaceId());
                 intentDetail.putExtra(RESTO_NAME, restaurant.getName());
@@ -87,9 +97,13 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
                     intentDetail.putExtra(RESTO_OPENINGHOURS, restaurant.getOpeningHours().getOpenNow());
                 }
                 if (restaurant.getPhotos() != null) {
-                    if (mRestaurents.get(mPosition).getPhotos().get(0).getPhotoReference() != null) {
+                    if (restaurant.getPhotos().get(0).getPhotoReference() != null) {
                         intentDetail.putExtra(RESTO_PHOTO_URL, restaurant.getPhotos().get(0).getPhotoReference());
                     }
+                }
+                if(restaurant.getRating()!=null){
+                    float rating =  restaurant.getRating().floatValue();
+                    intentDetail.putExtra(RESTO_RATING, rating);
                 }
                 v.getContext().startActivity(intentDetail);
             }
@@ -98,7 +112,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
 
     @Override
     public int getItemCount() {
-        return mRestaurents.size();
+        return mRestaurants.size();
     }
 
 
@@ -116,9 +130,10 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
         private final TextView restoTypeAdresse;
         private final TextView restoOpeningHour;
         private final TextView restoDistance;
-        private final TextView restoWorkmaterNumber;
-        private final TextView restoLikeNumber;
+        private final TextView restoWorkmateNumber;
         private final ImageView restoImageView;
+        private final RatingBar restaurantRatingBar;
+
 
         /**
          * Instantiates a new ListViewHolder.
@@ -132,9 +147,9 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
             restoTypeAdresse = itemView.findViewById(R.id.resto_type_adresse_item_listview);
             restoOpeningHour = itemView.findViewById(R.id.resto_opening_hour_item_listview);
             restoDistance = itemView.findViewById(R.id.distance_item_listview);
-            restoWorkmaterNumber = itemView.findViewById(R.id.resto_workmater_number_item_listview);
-            restoLikeNumber = itemView.findViewById(R.id.resto_like_number_item_listview);
+            restoWorkmateNumber = itemView.findViewById(R.id.resto_workmater_number_item_listview);
             restoImageView = itemView.findViewById(R.id.resto_imageview_item_listview);
+            restaurantRatingBar = itemView.findViewById(R.id.list_view_item_rating_bar_star);
         }
 
         /**
@@ -168,6 +183,28 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
                     restoOpeningHour.setText(R.string.resto_open_now);
                 }else {restoOpeningHour.setText(R.string.resto_close);}
             }else {restoOpeningHour.setText(R.string.restoopening_hour_unknow);}
+            if(restaurant.getRating()!=null){
+                float rating =  restaurant.getRating().floatValue();
+                restaurantRatingBar.setRating(rating);
+
+            }
+            //Filtred list workmate who eats in a same restaurant
+            List<User> workmateInSameRestaurant = new ArrayList<>();
+            for(User user : mUsers){
+                if(user.getUserRestoId().equals(restaurant.getPlaceId())){
+                        if (workmateInSameRestaurant.size()==0) {
+                            workmateInSameRestaurant.add(user);
+                        }else{
+                            for (User user1 : workmateInSameRestaurant){
+                                if (!user1.equals(user)){
+                                    workmateInSameRestaurant.add(user);
+                                }
+                            }
+                       }
+                }
+            }
+            String workmateNumber = "( "+ workmateInSameRestaurant.size()+" )";
+            restoWorkmateNumber.setText(workmateNumber);
         }
     }
 

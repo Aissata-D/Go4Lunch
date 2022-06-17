@@ -4,6 +4,7 @@ import static com.sitadigi.go4lunch.DetailActivity.RESTO_ID;
 import static com.sitadigi.go4lunch.DetailActivity.RESTO_NAME;
 import static com.sitadigi.go4lunch.DetailActivity.RESTO_OPENINGHOURS;
 import static com.sitadigi.go4lunch.DetailActivity.RESTO_PHOTO_URL;
+import static com.sitadigi.go4lunch.DetailActivity.RESTO_RATING;
 import static com.sitadigi.go4lunch.DetailActivity.RESTO_TYPE;
 import static com.sitadigi.go4lunch.DetailActivity.RESTO_ADRESSES;
 
@@ -136,6 +137,10 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
                     intentDetail.putExtra(RESTO_ADRESSES, restoAdresses);
                     String restoType = restaurant.getTypes().get(0);
                     intentDetail.putExtra(RESTO_TYPE, restoType);
+                }
+                if(restaurant.getRating()!=null){
+                    float rating =  restaurant.getRating().floatValue();
+                    intentDetail.putExtra(RESTO_RATING, rating);
                 }
                 intentDetail.putExtra(RESTO_ID, restaurant.getPlaceId());
                 startActivity(intentDetail);

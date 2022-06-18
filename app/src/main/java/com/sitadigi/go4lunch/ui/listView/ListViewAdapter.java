@@ -3,13 +3,16 @@ package com.sitadigi.go4lunch.ui.listView;
 import static com.sitadigi.go4lunch.DetailActivity.RESTO_ID;
 import static com.sitadigi.go4lunch.DetailActivity.RESTO_NAME;
 import static com.sitadigi.go4lunch.DetailActivity.RESTO_OPENINGHOURS;
+import static com.sitadigi.go4lunch.DetailActivity.RESTO_PHONE_NUMBER;
 import static com.sitadigi.go4lunch.DetailActivity.RESTO_PHOTO_URL;
 import static com.sitadigi.go4lunch.DetailActivity.RESTO_RATING;
 import static com.sitadigi.go4lunch.DetailActivity.RESTO_TYPE;
 import static com.sitadigi.go4lunch.DetailActivity.RESTO_ADRESSES;
+import static com.sitadigi.go4lunch.DetailActivity.RESTO_WEBSITE;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 import com.sitadigi.go4lunch.R;
 import com.sitadigi.go4lunch.models.User;
+import com.sitadigi.go4lunch.viewModel.MainViewViewModel;
 
 
 public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListViewHolder> {
@@ -50,6 +54,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
      *
      */
     private final List<User> mUsers;
+    private MainViewViewModel mMainViewViewModel;
 
     /**
      * Instantiates a new RestaurentAdapter.
@@ -57,9 +62,11 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
      * @param restaurants the list of restaurant the adapter
      */
     public ListViewAdapter(@NonNull final List<GoogleMapApiClass.Result> restaurants,
-                           List<User> mUsers) {
+                           List<User> mUsers, MainViewViewModel mainViewViewModel) {
         this.mRestaurants = restaurants;
         this.mUsers = mUsers;
+        this.mMainViewViewModel = mainViewViewModel;
+
 
     }
 
@@ -104,6 +111,26 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
                 if(restaurant.getRating()!=null){
                     float rating =  restaurant.getRating().floatValue();
                     intentDetail.putExtra(RESTO_RATING, rating);
+                }
+                List<String> restaurantNumberAndWebSite =mMainViewViewModel
+                        .loadRestaurantPhoneNumberAndWebSite(restaurant);
+                if(restaurantNumberAndWebSite.size() >=1){
+                    if(restaurantNumberAndWebSite.get(0) != null){
+                        String restaurantPhoneNumber = restaurantNumberAndWebSite.get(0);
+                        intentDetail.putExtra(RESTO_PHONE_NUMBER, restaurantPhoneNumber);
+                        Log.e("DETAIL", "onMarkerClick: Phone "+restaurantPhoneNumber );
+                    }
+                    if(restaurantNumberAndWebSite.size() >=2) {
+                        if (restaurantNumberAndWebSite.get(1) != null) {
+                            String restaurantWebSite = restaurantNumberAndWebSite.get(1);
+                            intentDetail.putExtra(RESTO_WEBSITE, restaurantWebSite);
+                        }
+                    }else{
+                        Log.e("DETAIL", "onMarkerClick: phone size<2 " );
+                    }
+                }   else{
+                    Log.e("DETAIL", "onMarkerClick: website size<1 " );
+
                 }
                 v.getContext().startActivity(intentDetail);
             }

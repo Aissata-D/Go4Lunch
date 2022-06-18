@@ -24,6 +24,7 @@ import java.util.List;
 public class ListViewFragment extends Fragment {
 
     List<GoogleMapApiClass.Result> listOfRestaurent = new ArrayList<>();
+    MainViewViewModel mainViewViewModel;
     String placeNameSelected;
     private FragmentListViewBinding binding;
     private RecyclerView mRecyclerView;
@@ -33,7 +34,7 @@ public class ListViewFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        MainViewViewModel mainViewViewModel =
+        mainViewViewModel =
                 new ViewModelProvider(requireActivity()).get(MainViewViewModel.class);
 
 
@@ -43,7 +44,7 @@ public class ListViewFragment extends Fragment {
         tvNoRestoFound = binding.noRestoFound;
         tvNoRestoFound.setVisibility(View.GONE);
 
-        mainViewViewModel.getRestaurent().observe(getViewLifecycleOwner(), RestaurentResponse -> {
+        mainViewViewModel.getRestaurant().observe(getViewLifecycleOwner(), RestaurentResponse -> {
             listOfRestaurent.clear();
             listOfRestaurent.addAll(RestaurentResponse);
             initRecyclerView();
@@ -78,13 +79,13 @@ public class ListViewFragment extends Fragment {
             } else {
                 tvNoRestoFound.setVisibility(View.GONE);
                 mRecyclerView.setVisibility(View.VISIBLE);
-                ListViewAdapter listViewAdapter = new ListViewAdapter(listOfRestaurentFiltered, mUsers);
+                ListViewAdapter listViewAdapter = new ListViewAdapter(listOfRestaurentFiltered, mUsers,mainViewViewModel);
                 mRecyclerView.setAdapter(listViewAdapter);
             }
         } else {
             tvNoRestoFound.setVisibility(View.GONE);
             mRecyclerView.setVisibility(View.VISIBLE);
-            ListViewAdapter listViewAdapter = new ListViewAdapter(listOfRestaurent, mUsers);
+            ListViewAdapter listViewAdapter = new ListViewAdapter(listOfRestaurent, mUsers,mainViewViewModel);
             mRecyclerView.setAdapter(listViewAdapter);
         }
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));

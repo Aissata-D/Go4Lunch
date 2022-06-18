@@ -3,10 +3,12 @@ package com.sitadigi.go4lunch.ui.mapView;
 import static com.sitadigi.go4lunch.DetailActivity.RESTO_ID;
 import static com.sitadigi.go4lunch.DetailActivity.RESTO_NAME;
 import static com.sitadigi.go4lunch.DetailActivity.RESTO_OPENINGHOURS;
+import static com.sitadigi.go4lunch.DetailActivity.RESTO_PHONE_NUMBER;
 import static com.sitadigi.go4lunch.DetailActivity.RESTO_PHOTO_URL;
 import static com.sitadigi.go4lunch.DetailActivity.RESTO_RATING;
 import static com.sitadigi.go4lunch.DetailActivity.RESTO_TYPE;
 import static com.sitadigi.go4lunch.DetailActivity.RESTO_ADRESSES;
+import static com.sitadigi.go4lunch.DetailActivity.RESTO_WEBSITE;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -23,6 +25,7 @@ import com.sitadigi.go4lunch.R;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -113,10 +116,13 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
 
     @Override
     public boolean onMarkerClick(@NonNull Marker marker) {
+
+
         resultList = mMapViewUtils.getNearRestaurantList();
         String markerName = marker.getTitle();
         LatLng markerPosition = marker.getPosition();
         for (GoogleMapApiClass.Result restaurant : resultList) {
+
             LatLng restoPosition = new LatLng(restaurant.getGeometry().getLocation().getLat(),
                     restaurant.getGeometry().getLocation().getLng());
             String restoName = restaurant.getName();
@@ -142,6 +148,27 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
                     float rating =  restaurant.getRating().floatValue();
                     intentDetail.putExtra(RESTO_RATING, rating);
                 }
+
+                List<String> restaurantNumberAndWebSite =mMainViewViewModel
+                        .loadRestaurantPhoneNumberAndWebSite(restaurant);
+                if(restaurantNumberAndWebSite.size() >=1){
+                    if(restaurantNumberAndWebSite.get(0) != null){
+                        String restaurantPhoneNumber = restaurantNumberAndWebSite.get(0);
+                        intentDetail.putExtra(RESTO_PHONE_NUMBER, restaurantPhoneNumber);
+                        Log.e("DETAIL", "onMarkerClick: Phone "+restaurantPhoneNumber );
+                    }
+                    if(restaurantNumberAndWebSite.size() >=2) {
+                        if (restaurantNumberAndWebSite.get(1) != null) {
+                            String restaurantWebSite = restaurantNumberAndWebSite.get(1);
+                            intentDetail.putExtra(RESTO_WEBSITE, restaurantWebSite);
+                        }
+                    }else{
+                        Log.e("DETAIL", "onMarkerClick: phone size<2 " );
+                    }
+                }   else{
+                         Log.e("DETAIL", "onMarkerClick: website size<1 " );
+
+                }
                 intentDetail.putExtra(RESTO_ID, restaurant.getPlaceId());
                 startActivity(intentDetail);
             }
@@ -164,10 +191,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         mMapViewUtils.updateLocationUI(this.googleMap);
     }
 
-   /* @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-    }*/
+
 
     @Override
     public void onResume() {

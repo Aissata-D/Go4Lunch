@@ -97,10 +97,10 @@ public class MapViewUtils {
                                         new LatLng(lastKnownLocation.getLatitude(),
                                                 lastKnownLocation.getLongitude()), DEFAULT_ZOOM));
                             });
-            if (mMainViewViewModel.getRestaurent() != null) {
+            if (mMainViewViewModel.getRestaurant() != null) {
 
                 // Call list of restaurant
-                mMainViewViewModel.getRestaurent().observe(mLifecycleOwner, RestaurentResponse -> {
+                mMainViewViewModel.getRestaurant().observe(mLifecycleOwner, RestaurentResponse -> {
                     listOfRestaurent.clear();
                     listOfRestaurent.addAll(RestaurentResponse);
 

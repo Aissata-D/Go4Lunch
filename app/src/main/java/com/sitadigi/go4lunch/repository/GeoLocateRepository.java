@@ -76,7 +76,7 @@ public class GeoLocateRepository {
                             location = lastKnownLocation.getLatitude() + "," + lastKnownLocation.getLongitude();
                             locationMutableLiveData.setValue(lastKnownLocation);
                             //moveCamera();
-                            mainViewViewModel.loadRestaurentData(location);
+                            mainViewViewModel.loadRestaurantData(location);
                         } else {
                             Log.e("TAG", "Exception: %s MainActivity", task.getException());
                         }

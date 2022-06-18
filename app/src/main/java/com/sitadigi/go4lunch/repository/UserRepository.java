@@ -132,6 +132,7 @@ DocumentReference messageRef = db
     public MutableLiveData<List<User>> getAllUser() {
 
         MutableLiveData<List<User>> listOfUserLiveData = new MutableLiveData<>();
+        List<User> usersUsingApp = new ArrayList<>();
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("users").addSnapshotListener(
@@ -145,18 +146,19 @@ DocumentReference messageRef = db
                             return;
                         }
                         if (value != null) {
-                            List<User> usersUsingApp = new ArrayList<>();
+                             usersUsingApp.clear();
                             for (DocumentSnapshot document : value) {
                                 String username = document.getString("username");
                                 String email = document.getString("email");
                                 String urlPicture = document.getString("urlPicture");
                                 String uid = document.getId();
-                                String restoId = document.getString("userRestoId");
-                                String restoName = document.getString("userRestoName");
-                                String restoType = document.getString("userRestoType");
+                                String restaurantId = document.getString("userRestoId");
+                                String restaurantName = document.getString("userRestoName");
+                                String restaurantType = document.getString("userRestoType");
 
-                                User userToGet = new User(uid, username, email, urlPicture, restoId, restoName, restoType);
-                                if(usersUsingApp.size()==0){
+                                User userToGet = new User(uid, username, email, urlPicture, restaurantId, restaurantName, restaurantType);
+                                usersUsingApp.add(userToGet);
+                                /*  if(usersUsingApp.size()==0){
                                     usersUsingApp.add(userToGet);
                                 }else{
                                 for(int i = 0; i<usersUsingApp.size();i++) {
@@ -165,7 +167,7 @@ DocumentReference messageRef = db
                                         Log.e("NEW", "i  " + i + "usersUsingApp " +usersUsingApp.size());
                                         usersUsingApp.add(userToGet);
                                     }}
-                                }
+                                }*/
 
                                 listOfUserLiveData.postValue(usersUsingApp);
                                 Log.e("NEW", "onEvent: " + userToGet.getUsername());

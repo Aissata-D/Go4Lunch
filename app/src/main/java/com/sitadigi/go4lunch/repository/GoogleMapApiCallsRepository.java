@@ -4,6 +4,7 @@ import android.os.Build;
 
 import androidx.annotation.RequiresApi;
 
+import com.sitadigi.go4lunch.models.GoogleDistanceMatrixClass;
 import com.sitadigi.go4lunch.models.GoogleMapApiClass;
 import com.sitadigi.go4lunch.models.GooglePlaceDetailApiClass;
 import com.sitadigi.go4lunch.utils.GoogleMapApiService;
@@ -35,6 +36,16 @@ public class GoogleMapApiCallsRepository {
         GoogleMapApiService googleMapApiService = GoogleMapApiService.retrofit
                 .create(GoogleMapApiService.class);
         return googleMapApiService.getRestaurantPhoneAndWebsite(restaurant.getPlaceId(),apiKey)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .timeout(10, TimeUnit.SECONDS);
+    }
+    // 1 - Create a stream that will get user infos on Github API
+    public static Observable<GoogleDistanceMatrixClass> streamFetchRestaurantDistance(
+            String destinations,String origins, String apiKey){
+        GoogleMapApiService googleMapApiService = GoogleMapApiService.retrofit
+                .create(GoogleMapApiService.class);
+        return googleMapApiService.getRestaurantDistance(destinations,origins,apiKey)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .timeout(10, TimeUnit.SECONDS);

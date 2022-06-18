@@ -9,6 +9,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.sitadigi.go4lunch.models.GoogleDistanceMatrixClass;
 import com.sitadigi.go4lunch.models.GoogleMapApiClass;
 import com.sitadigi.go4lunch.models.GooglePlaceDetailApiClass;
 import com.sitadigi.go4lunch.models.User;
@@ -34,14 +35,16 @@ public class MainViewViewModel extends ViewModel /*implements GoogleMapApiCallsR
     public MutableLiveData<Location> locationMutableLiveData;
     Disposable disposable;
     Disposable disposablePlaceDetail;
+    Disposable disposableDistance;
+    List<String> listOfPhoneAndWebSite = new ArrayList<>();
+    String distance;
     private String restaurantWebSiteUrl;
     private String restaurantPhoneNumber;
-    List<String> listOfPhoneAndWebSite = new ArrayList<>();
 
 
     public MainViewViewModel() {
         userRepository = UserRepository.getInstance();
-       // mGoogleMapApiCallsRepository = GoogleMapApiCallsRepository.getInstance();
+        // mGoogleMapApiCallsRepository = GoogleMapApiCallsRepository.getInstance();
         mGoogleMapApiCallsRepository = new GoogleMapApiCallsRepository();
 
         mGeoLocateRepository = new GeoLocateRepository();
@@ -53,30 +56,89 @@ public class MainViewViewModel extends ViewModel /*implements GoogleMapApiCallsR
 
     }
 
-    public List <String>loadRestaurantPhoneNumberAndWebSite(GoogleMapApiClass.Result restaurant){
+    public String getRestaurantDistance(String origins, String destinations) {
+        disposableDistance = GoogleMapApiCallsRepository.streamFetchRestaurantDistance(origins,
+                destinations, API_KEY).subscribeWith(new DisposableObserver<GoogleDistanceMatrixClass>() {
 
-         disposablePlaceDetail = GoogleMapApiCallsRepository.streamFetchRestaurantDetail(
-                 restaurant, API_KEY).subscribeWith(new DisposableObserver<GooglePlaceDetailApiClass>() {
+            @Override
+            public void onNext(GoogleDistanceMatrixClass googleDistanceMatrixClass) {
+                if(googleDistanceMatrixClass.getRows() == null){
+                    distance = "Not Response";
+                }
+                if(googleDistanceMatrixClass.getRows().size()>0){
+                    distance = "Not Response1";
+                }
+                if(googleDistanceMatrixClass.getRows().get(0)==null){
+                    distance = "Not Response2";
+                }
+                if(googleDistanceMatrixClass.getRows().get(0).getElements()== null){
+                    distance = "Not Response3";
+                }
+                if(googleDistanceMatrixClass.getRows().get(0).getElements().size()==0){
+                    distance = "Not Response4";
+                }
+                if(googleDistanceMatrixClass.getRows().get(0).getElements().get(0)==null){
+                    distance = "Not Response5";
+                }
+                if(googleDistanceMatrixClass.getRows().get(0).getElements().get(0).getDistance()==null){
+                    distance = "Not Response6";
+                }
+               // if(googleDistanceMatrixClass.getRows().get(0).getElements().get(0).getDistance().getText()==null){
+                 //   distance = "Not Response7";
+                //}
 
-             @Override
-             public void onNext(GooglePlaceDetailApiClass googlePlaceDetailApiClass) {
+                if(googleDistanceMatrixClass != null && googleDistanceMatrixClass.getRows() != null
+                && googleDistanceMatrixClass.getRows().size()>0 && googleDistanceMatrixClass.getRows()
+                        .get(0) != null && googleDistanceMatrixClass.getRows().get(0).getElements() != null
+                && googleDistanceMatrixClass.getRows().get(0).getElements().size() >0 &&
+                        googleDistanceMatrixClass.getRows().get(0).getElements().get(0).getDistance() != null
+                && googleDistanceMatrixClass.getRows().get(0).getElements().get(0).getDistance().getText() != null){
+
+                    distance = googleDistanceMatrixClass.getRows().get(0).getElements().get(0).getDistance().getText();
+
+                }else {distance = "not found NULL POINTER EX";}
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                distance = "not found ERROR";
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
+        return distance;
+
+    }
+
+    public List<String> loadRestaurantPhoneNumberAndWebSite(GoogleMapApiClass.Result restaurant) {
+
+        disposablePlaceDetail = GoogleMapApiCallsRepository.streamFetchRestaurantDetail(
+                restaurant, API_KEY).subscribeWith(new DisposableObserver<GooglePlaceDetailApiClass>() {
+
+            @Override
+            public void onNext(GooglePlaceDetailApiClass googlePlaceDetailApiClass) {
                 restaurantPhoneNumber = googlePlaceDetailApiClass.getResult().getInternationalPhoneNumber();
                 restaurantWebSiteUrl = googlePlaceDetailApiClass.getResult().getWebsite();
-               listOfPhoneAndWebSite.add(0,restaurantPhoneNumber);
-               listOfPhoneAndWebSite.add(1,restaurantWebSiteUrl);
+                listOfPhoneAndWebSite.add(0, restaurantPhoneNumber);
+                listOfPhoneAndWebSite.add(1, restaurantWebSiteUrl);
 
-             }
+            }
 
-             @Override
-             public void onError(Throwable e) {
-                 Log.e("TAG", "On Error getRestaurantPhoneNumberAndWebSite" + Log.getStackTraceString(e));
-             }
+            @Override
+            public void onError(Throwable e) {
+                listOfPhoneAndWebSite = new ArrayList<>();
+                Log.e("TAG", "On Error getRestaurantPhoneNumberAndWebSite" + Log.getStackTraceString(e));
+            }
 
-             @Override
-             public void onComplete() {
-                 Log.e("TAG", "On Complete !! getRestaurantPhoneNumberAndWebSite");
-             }
-         });
+            @Override
+            public void onComplete() {
+                Log.e("TAG", "On Complete !! getRestaurantPhoneNumberAndWebSite");
+            }
+        });
 
         return listOfPhoneAndWebSite;
     }
@@ -89,12 +151,10 @@ public class MainViewViewModel extends ViewModel /*implements GoogleMapApiCallsR
 
     public void loadRestaurantData(String location) {
 
-        // 1.2 - Execute the stream subscribing to Observable defined inside GithubStream
-       // String apiKey = "AIzaSyDsQUD7ukIhqdJYZIQxj535IvrDRrkrH08";
         //FOR DATA Disposable allow to avoid Memory Leaks
         this.disposable = GoogleMapApiCallsRepository.streamFetchListOfNearRestaurant(
                         location, 1500, "restaurant", API_KEY)
-                        .subscribeWith(new DisposableObserver<GoogleMapApiClass>() {
+                .subscribeWith(new DisposableObserver<GoogleMapApiClass>() {
 
                     @Override
                     public void onNext(GoogleMapApiClass googleMapApiClass) {
@@ -113,15 +173,9 @@ public class MainViewViewModel extends ViewModel /*implements GoogleMapApiCallsR
                         Log.e("TAG", "On Complete !! loadRestaurantData");
                     }
                 });
-
-
-
-        /* listOfRestaurent.setValue(mGoogleMapApiCallsRepository.fetchResultFollowing(/*this,*//*
-        location, 1500,
-                "restaurant", "AIzaSyDsQUD7ukIhqdJYZIQxj535IvrDRrkrH08"));*/
     }
 
-    public void disposeWhenDestroy(){
+    public void disposeWhenDestroy() {
         if (this.disposable != null && !this.disposable.isDisposed()) this.disposable.dispose();
     }
 
@@ -158,65 +212,4 @@ public class MainViewViewModel extends ViewModel /*implements GoogleMapApiCallsR
     public MutableLiveData<List<User>> getAllUser() {
         return userRepository.getAllUser();
     }
-  /*
-
-
-        // 1 - Execute our Stream
-    private void executeHttpRequestWithRetrofit(){
-        // 1.1 - Update UI
-        this.updateUIWhenStartingHTTPRequest();
-        // 1.2 - Execute the stream subscribing to Observable defined inside GithubStream
-        this.disposable = GithubStreams.streamFetchUserFollowing("JakeWharton").subscribeWith(new DisposableObserver<List<GithubUser>>() {
-            @Override
-            public void onNext(List<GithubUser> users) {
-                Log.e("TAG","On Next");
-                // 1.3 - Update UI with list of users
-                updateUIWithListOfUsers(users);
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                Log.e("TAG","On Error"+Log.getStackTraceString(e));
-            }
-
-            @Override
-            public void onComplete() {
-                Log.e("TAG","On Complete !!");
-            }
-        });
-    }
-
-    private void disposeWhenDestroy(){
-        if (this.disposable != null && !this.disposable.isDisposed()) this.disposable.dispose();
-    }
-
-    // -------------------
-    // UPDATE UI
-    // -------------------
-
-    private void updateUIWhenStartingHTTPRequest(){
-        this.textView.setText("Downloading...");
-    }
-
-    private void updateUIWhenStopingHTTPRequest(String response){
-        this.textView.setText(response);
-    }
-
-
-    @Override
-    public void onResponse(@Nullable GoogleMapApiClass results) {
-        listOfRestaurent.setValue(results.getResults());
-        Log.e("TAG", "onResponse: listeresto recupere"+listOfRestaurent.getValue() );
-    }
-
-    @Override
-    public void onFailure() {
-        Log.e("TAG", "onFailure: ");
-
-    }
-
-
-
-
-   */
 }

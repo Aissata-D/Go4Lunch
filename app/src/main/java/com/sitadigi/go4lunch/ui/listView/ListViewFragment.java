@@ -1,5 +1,6 @@
 package com.sitadigi.go4lunch.ui.listView;
 
+import android.location.Location;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +31,8 @@ public class ListViewFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private TextView tvNoRestoFound;
     List<User> mUsers = new ArrayList<>();
+    Location mLocation;
+    String mOrigineDistance;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -44,9 +47,15 @@ public class ListViewFragment extends Fragment {
         tvNoRestoFound = binding.noRestoFound;
         tvNoRestoFound.setVisibility(View.GONE);
 
-        mainViewViewModel.getRestaurant().observe(getViewLifecycleOwner(), RestaurentResponse -> {
+        mainViewViewModel.getLocationMutableLiveData().observe(getViewLifecycleOwner()
+                ,LocationMutableLiveData -> { mLocation = LocationMutableLiveData;
+                    mOrigineDistance = mLocation.getLatitude()+ "," +mLocation.getLongitude();
+                    initRecyclerView();
+                });
+
+        mainViewViewModel.getRestaurant().observe(getViewLifecycleOwner(), RestaurantResponse -> {
             listOfRestaurent.clear();
-            listOfRestaurent.addAll(RestaurentResponse);
+            listOfRestaurent.addAll(RestaurantResponse);
             initRecyclerView();
         });
 
@@ -79,13 +88,13 @@ public class ListViewFragment extends Fragment {
             } else {
                 tvNoRestoFound.setVisibility(View.GONE);
                 mRecyclerView.setVisibility(View.VISIBLE);
-                ListViewAdapter listViewAdapter = new ListViewAdapter(listOfRestaurentFiltered, mUsers,mainViewViewModel);
+                ListViewAdapter listViewAdapter = new ListViewAdapter(listOfRestaurentFiltered, mUsers,mainViewViewModel,mOrigineDistance);
                 mRecyclerView.setAdapter(listViewAdapter);
             }
         } else {
             tvNoRestoFound.setVisibility(View.GONE);
             mRecyclerView.setVisibility(View.VISIBLE);
-            ListViewAdapter listViewAdapter = new ListViewAdapter(listOfRestaurent, mUsers,mainViewViewModel);
+            ListViewAdapter listViewAdapter = new ListViewAdapter(listOfRestaurent, mUsers,mainViewViewModel,mOrigineDistance);
             mRecyclerView.setAdapter(listViewAdapter);
         }
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));

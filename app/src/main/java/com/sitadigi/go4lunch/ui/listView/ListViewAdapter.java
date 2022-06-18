@@ -49,6 +49,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
     @NonNull
     private final List<GoogleMapApiClass.Result> mRestaurants ;
     public int mPosition;
+    String mOrigineDistance;
     /**
      * The list of All user using application
      *
@@ -62,10 +63,11 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
      * @param restaurants the list of restaurant the adapter
      */
     public ListViewAdapter(@NonNull final List<GoogleMapApiClass.Result> restaurants,
-                           List<User> mUsers, MainViewViewModel mainViewViewModel) {
+                           List<User> mUsers, MainViewViewModel mainViewViewModel,String mOriginsDistance) {
         this.mRestaurants = restaurants;
         this.mUsers = mUsers;
         this.mMainViewViewModel = mainViewViewModel;
+        this.mOrigineDistance = mOriginsDistance;
 
 
     }
@@ -161,7 +163,6 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
         private final ImageView restoImageView;
         private final RatingBar restaurantRatingBar;
 
-
         /**
          * Instantiates a new ListViewHolder.
          *
@@ -219,19 +220,24 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
             List<User> workmateInSameRestaurant = new ArrayList<>();
             for(User user : mUsers){
                 if(user.getUserRestoId().equals(restaurant.getPlaceId())){
-                        if (workmateInSameRestaurant.size()==0) {
+                       // if (workmateInSameRestaurant.size()==0) {
                             workmateInSameRestaurant.add(user);
-                        }else{
-                            for (User user1 : workmateInSameRestaurant){
-                                if (!user1.equals(user)){
-                                    workmateInSameRestaurant.add(user);
-                                }
-                            }
-                       }
+                       // }else{
+                          //  for (User user1 : workmateInSameRestaurant){
+                          //      if (!user1.equals(user)){
+                            //        workmateInSameRestaurant.add(user);
+                             //   }
+                           // }
+                       //}
                 }
             }
             String workmateNumber = "( "+ workmateInSameRestaurant.size()+" )";
             restoWorkmateNumber.setText(workmateNumber);
+
+            String destination =  restaurant.getGeometry().getLocation().getLat()+ "," +restaurant.getGeometry().getLocation().getLng();
+            Log.e("TAG", "bind:destination "+destination );
+            String restaurantDistance = mMainViewViewModel.getRestaurantDistance(mOrigineDistance,destination);
+            restoDistance.setText(restaurantDistance);
         }
     }
 

@@ -26,7 +26,7 @@ public class WorkmateFragment extends Fragment {
 
     private FragmentWorkmatersBinding binding;
     private RecyclerView mRecyclerView;
-    private List<User> users = new ArrayList<>();
+    private List<User> users ;
     private String placeNameSelected;
     private TextView tvNoWorkmate;
 
@@ -40,14 +40,14 @@ public class WorkmateFragment extends Fragment {
         binding = FragmentWorkmatersBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        users = new ArrayList<>();
         mRecyclerView = binding.recyclerviewWorkmaters;
         tvNoWorkmate = binding.noWorkmateFound;
         tvNoWorkmate.setVisibility(View.GONE);
 
         workmateViewModel.getAllUser().observe(getViewLifecycleOwner(), usersLiveData -> {
-            List<User> mItems = usersLiveData;
             users.clear();
-            users.addAll(mItems);
+            users.addAll(usersLiveData);
             initRecyclerView();
         });
 

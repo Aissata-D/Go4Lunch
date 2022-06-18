@@ -10,8 +10,6 @@ import static com.sitadigi.go4lunch.DetailActivity.RESTO_TYPE;
 import static com.sitadigi.go4lunch.DetailActivity.RESTO_ADRESSES;
 import static com.sitadigi.go4lunch.DetailActivity.RESTO_WEBSITE;
 
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -24,6 +22,7 @@ import com.sitadigi.go4lunch.R;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -39,7 +38,6 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.sitadigi.go4lunch.databinding.FragmentMapViewBinding;
 import com.sitadigi.go4lunch.models.GoogleMapApiClass;
 import com.sitadigi.go4lunch.utils.MapViewUtils;
-import com.sitadigi.go4lunch.repository.GeoLocateRepository;
 import com.sitadigi.go4lunch.viewModel.MainViewViewModel;
 
 import java.util.ArrayList;
@@ -58,6 +56,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
     private LatLng latLngPlaceSelected;
     private ImageView mapViewPlaceHolder;
 
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
@@ -66,9 +65,8 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         View root = binding.getRoot();
         mapViewPlaceHolder = binding.mapViewPlaceholder;
         resultList = new ArrayList<>();
-        FusedLocationProviderClient fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
-        GeoLocateRepository geoLocateRepository = new GeoLocateRepository();
         googleMapView();
+
         return root;
     }
 

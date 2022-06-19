@@ -28,7 +28,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.sitadigi.go4lunch.databinding.ActivityMainBinding;
 import com.sitadigi.go4lunch.viewModel.MainViewViewModel;
-import com.sitadigi.go4lunch.utils.MapViewUtils;
+import com.sitadigi.go4lunch.utils.UtilsMapView;
 import com.sitadigi.go4lunch.utils.ShowSignOutDialogueAlertAndDetailActivity;
 import com.sitadigi.go4lunch.viewModel.UserViewModel;
 
@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
     CardView mCardViewAutocomplete;
     ImageView imgSearch;
 
-    MapViewUtils mMapViewUtils;
+    UtilsMapView mUtilsMapView;
     ShowSignOutDialogueAlertAndDetailActivity mShowSignOutDialogueAlertAndDetailActivity;
 
     @Override
@@ -177,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
 
     private  void initViewModel(){
         mMainViewViewModel = new ViewModelProvider(this).get(MainViewViewModel.class);
-        mMapViewUtils = new MapViewUtils(this.mMainViewViewModel, getApplicationContext(),
+        mUtilsMapView = new UtilsMapView(this.mMainViewViewModel, getApplicationContext(),
                 this.locationPermissionGranted, MainActivity.this);
         mMainViewViewModel.loadLocationMutableLiveData(getApplicationContext(),MainActivity.this, mMainViewViewModel);
         mMainViewViewModel.getLocationMutableLiveData();

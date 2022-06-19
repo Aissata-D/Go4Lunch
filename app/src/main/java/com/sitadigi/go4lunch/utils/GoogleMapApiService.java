@@ -58,8 +58,10 @@ public interface GoogleMapApiService {
 
 
 
-
+//requette google map
+//https://maps.googleapis.com/maps/api/place/nearbysearch/json?&location=45.76667%2C4.88333&radius=1500&type=restaurant&key=AIzaSyDsQUD7ukIhqdJYZIQxj535IvrDRrkrH08
 //Requette google place
 //https://maps.googleapis.com/maps/api/place/details/json ?& place_id=ChIJ2YnaRyDA9EcRxV9Np980tws&key=AIzaSyDsQUD7ukIhqdJYZIQxj535IvrDRrkrH08
 //Requette matrix
 //https://maps.googleapis.com/maps/api/distancematrix/json?destinations=45.764043%2C4.835659&origins=45.771944%2C4.8901709&key=AIzaSyDsQUD7ukIhqdJYZIQxj535IvrDRrkrH08
+//Requette avec

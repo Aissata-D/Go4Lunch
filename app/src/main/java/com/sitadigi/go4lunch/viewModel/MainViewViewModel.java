@@ -212,4 +212,15 @@ public class MainViewViewModel extends ViewModel /*implements GoogleMapApiCallsR
     public MutableLiveData<List<User>> getAllUser() {
         return userRepository.getAllUser();
     }
+
+    public boolean isRestaurantSelectedByOneWorkmate(String restaurantId, List<User> users){
+        boolean b = false;
+        for(User user : users){
+            if (user.getUserRestoId().equals(restaurantId)) {
+                b = true;
+                break;
+            }
+        }
+       return b;
+    }
 }

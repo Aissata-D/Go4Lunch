@@ -43,7 +43,10 @@ public class UtilsDetailActivity {
         this.mUserViewModel = mUserViewModel;
     }
     public void setRatingIcon1(RatingBar restaurantRatingBar, float rating) {
-        restaurantRatingBar.setRating(rating);
+        double rating1=  (rating*0.6);
+        float rating2 = (float) rating1;
+        restaurantRatingBar.setRating(rating2);
+        Log.e("RATING", "setRatingIcon1: "+rating2 );
     }
 
     public void setIconStarColor(TextView tvRestaurantLike, UserViewModel mUserViewModel) {

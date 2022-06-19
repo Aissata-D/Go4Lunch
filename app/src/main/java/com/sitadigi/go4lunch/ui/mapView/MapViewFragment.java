@@ -22,7 +22,6 @@ import com.sitadigi.go4lunch.R;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -37,7 +36,8 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.sitadigi.go4lunch.databinding.FragmentMapViewBinding;
 import com.sitadigi.go4lunch.models.GoogleMapApiClass;
-import com.sitadigi.go4lunch.utils.MapViewUtils;
+import com.sitadigi.go4lunch.models.User;
+import com.sitadigi.go4lunch.utils.UtilsMapView;
 import com.sitadigi.go4lunch.viewModel.MainViewViewModel;
 
 import java.util.ArrayList;
@@ -51,10 +51,11 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
     private GoogleMap googleMap;
     private List<GoogleMapApiClass.Result> resultList;
     private MainViewViewModel mMainViewViewModel;
-    private MapViewUtils mMapViewUtils;
+    private UtilsMapView mUtilsMapView;
     private FragmentMapViewBinding binding;
     private LatLng latLngPlaceSelected;
     private ImageView mapViewPlaceHolder;
+    private List<User> mUsers = new ArrayList<>();
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -66,6 +67,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         mapViewPlaceHolder = binding.mapViewPlaceholder;
         resultList = new ArrayList<>();
         googleMapView();
+
 
         return root;
     }
@@ -80,20 +82,27 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         // Get the SupportMapFragment and request notification when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
                 .findFragmentById(R.id.map_view_fragment);
+        assert mapFragment != null;
         mapFragment.getMapAsync(this);
     }
 
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         this.googleMap = googleMap;
-        mMapViewUtils = new MapViewUtils(this.mMainViewViewModel, this.getContext(),
+        mUtilsMapView = new UtilsMapView(this.mMainViewViewModel, this.getContext(),
                 this.locationPermissionGranted, this.getActivity());
 
-        mMapViewUtils.getLocationPermission();
+        mUtilsMapView.getLocationPermission();
         // Turn on the My Location layer and the related control on the map.
-        mMapViewUtils.updateLocationUI(this.googleMap);
+        mUtilsMapView.updateLocationUI(this.googleMap);
         // Get the current location of the device and set the position of the map.
-        mMapViewUtils.GeolocationOfDeviceAndUpdateGoogleMapView(this.googleMap, this.getViewLifecycleOwner(), mapViewPlaceHolder);
+        mMainViewViewModel.getAllUser().observe(getViewLifecycleOwner(),AllUsers ->{
+            mUsers.clear();
+            mUsers = AllUsers;
+            mUtilsMapView.GeolocationOfDeviceAndUpdateGoogleMapView(this.googleMap
+                    ,this.getViewLifecycleOwner(),mUsers);
+
+        });
         //Hint PlaceHolder
         //mapViewPlaceHolder.setVisibility(View.GONE);
         googleMap.setOnMarkerClickListener(this);
@@ -107,7 +116,14 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
                 );
             } else {
-                mMapViewUtils.GeolocationOfDeviceAndUpdateGoogleMapView(this.googleMap, this.getViewLifecycleOwner(), mapViewPlaceHolder);
+                mMainViewViewModel.getAllUser().observe(getViewLifecycleOwner(),AllUsers ->{
+                    mUsers.clear();
+                    mUsers = AllUsers;
+                    mUtilsMapView.GeolocationOfDeviceAndUpdateGoogleMapView(this.googleMap
+                            ,this.getViewLifecycleOwner(), mUsers);
+
+                });
+
             }
         });
     }
@@ -116,7 +132,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
     public boolean onMarkerClick(@NonNull Marker marker) {
 
 
-        resultList = mMapViewUtils.getNearRestaurantList();
+        resultList = mUtilsMapView.getNearRestaurantList();
         String markerName = marker.getTitle();
         LatLng markerPosition = marker.getPosition();
         for (GoogleMapApiClass.Result restaurant : resultList) {
@@ -186,7 +202,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         } else {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
-        mMapViewUtils.updateLocationUI(this.googleMap);
+        mUtilsMapView.updateLocationUI(this.googleMap);
     }
 
 

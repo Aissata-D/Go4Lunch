@@ -64,6 +64,7 @@ public class ListViewFragment extends Fragment {
             initRecyclerView();
         });
         mainViewViewModel.getAllUser().observe(getViewLifecycleOwner(),AllUsers ->{
+            mUsers.clear();
             mUsers = AllUsers;
             initRecyclerView();
 

@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 import com.sitadigi.go4lunch.R;
 import com.sitadigi.go4lunch.models.User;
+import com.sitadigi.go4lunch.utils.UtilsDetailActivity;
 import com.sitadigi.go4lunch.viewModel.MainViewViewModel;
 
 
@@ -56,6 +57,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
      */
     private final List<User> mUsers;
     private MainViewViewModel mMainViewViewModel;
+    private UtilsDetailActivity utilsDetailActivity;
 
     /**
      * Instantiates a new RestaurentAdapter.
@@ -68,8 +70,6 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
         this.mUsers = mUsers;
         this.mMainViewViewModel = mainViewViewModel;
         this.mOrigineDistance = mOriginsDistance;
-
-
     }
 
     /**
@@ -212,7 +212,9 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
                 }else {restoOpeningHour.setText(R.string.resto_close);}
             }else {restoOpeningHour.setText(R.string.restoopening_hour_unknow);}
             if(restaurant.getRating()!=null){
-                float rating =  restaurant.getRating().floatValue();
+                double ratingOld = restaurant.getRating()*0.6;
+                float rating =  (float)ratingOld;
+               // utilsDetailActivity.setRatingIcon1(restaurantRatingBar, rating);
                 restaurantRatingBar.setRating(rating);
 
             }

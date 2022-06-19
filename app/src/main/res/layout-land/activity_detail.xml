@@ -37,7 +37,22 @@
             android:text="@string/name_resto"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:drawableEndCompat="@drawable/ic_baseline_star_24_gray" />
+             />
+        <RatingBar
+            android:id="@+id/rating_bar_star"
+            style="?android:attr/ratingBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:secondaryProgressTint="@color/yellow"
+            android:layout_marginStart="16dp"
+            android:isIndicator="true"
+            android:numStars="3"
+            android:stepSize="0.1"
+            android:progressTint="@color/yellow"
+            app:layout_constraintBottom_toBottomOf="@+id/resto_name_detail_activity"
+            app:layout_constraintStart_toEndOf="@+id/resto_name_detail_activity"
+            app:layout_constraintTop_toTopOf="@+id/resto_name_detail_activity" />
 
         <TextView
             android:id="@+id/resto_type_detail_detail_activity"

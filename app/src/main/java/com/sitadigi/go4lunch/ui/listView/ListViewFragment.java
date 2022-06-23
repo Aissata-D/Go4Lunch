@@ -15,8 +15,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.sitadigi.go4lunch.databinding.FragmentListViewBinding;
+import com.sitadigi.go4lunch.factory.MainViewModelFactory;
 import com.sitadigi.go4lunch.models.GoogleMapApiClass;
 import com.sitadigi.go4lunch.models.User;
+import com.sitadigi.go4lunch.repository.GoogleMapApiCallsRepository;
 import com.sitadigi.go4lunch.viewModel.MainViewViewModel;
 
 import java.util.ArrayList;
@@ -37,8 +39,8 @@ public class ListViewFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        mainViewViewModel =
-                new ViewModelProvider(requireActivity()).get(MainViewViewModel.class);
+        GoogleMapApiCallsRepository googleMapApiCallsRepository = new GoogleMapApiCallsRepository();
+        mainViewViewModel = new ViewModelProvider(requireActivity(),new MainViewModelFactory(googleMapApiCallsRepository)).get(MainViewViewModel.class);
 
 
         binding = FragmentListViewBinding.inflate(inflater, container, false);

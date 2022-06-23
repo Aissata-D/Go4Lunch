@@ -30,6 +30,10 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    testOptions {
+        unitTests.returnDefaultValues = true
+        unitTests.includeAndroidResources = true
+    }
     buildFeatures {
         viewBinding true
     }
@@ -46,9 +50,10 @@ dependencies {
     implementation 'androidx.navigation:navigation-ui:2.4.2'
     implementation 'com.google.firebase:firebase-firestore:24.1.2'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.test:monitor:1.4.0'
     testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.4-alpha07'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0-alpha07'
     // Import the Firebase BoM
     implementation platform('com.google.firebase:firebase-bom:30.0.0')
     // Add the dependency for the Firebase SDK for Google Analytics
@@ -61,6 +66,7 @@ dependencies {
     implementation 'com.facebook.android:facebook-android-sdk:12.3.0'
     //GLIDE
     implementation 'com.github.bumptech.glide:glide:4.13.0'
+    androidTestImplementation 'androidx.test:rules:1.4.1-alpha07'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.13.0'
     //FIRESTORE
     implementation 'com.google.firebase:firebase-firestore'
@@ -89,14 +95,28 @@ dependencies {
     // Include all the Twitter APIs
     implementation 'com.twitter.sdk.android:twitter:3.1.1'
     // (Optional) Monetize using mopub
-   implementation 'com.twitter.sdk.android:twitter-mopub:3.1.1'
-
+    implementation 'com.twitter.sdk.android:twitter-mopub:3.1.1'
     implementation 'com.twitter.sdk.android:twitter-core:3.2.0'
     implementation 'com.twitter.sdk.android:tweet-ui:3.1.1'
     implementation'com.twitter.sdk.android:tweet-composer:3.1.1'
     implementation 'com.twitter.sdk.android:twitter-mopub:3.1.1'
     //NOTIFICATION MESSAGE FIREBASE
     implementation 'com.google.firebase:firebase-messaging'
+    //Unit test Mockito
+    testImplementation 'org.mockito:mockito-core:3.3.3'
+    implementation group: 'org.mockito', name: 'mockito-core', version: '3.3.3'
+    testImplementation 'org.mockito:mockito-inline:2.13.0'
+    testImplementation "androidx.arch.core:core-testing:2.1.0"
 
+    androidTestImplementation 'androidx.test.ext:junit:1.1.4-alpha07'
+    testImplementation 'org.robolectric:robolectric:4.4'
+    testImplementation 'androidx.test:core:1.4.0'
+//Powermokito
+   // testImplementation 'org.mockito:mockito-all:1.10.19'
+
+   // testImplementation "org.powermock:powermock-module-junit4:2.0.7"
+    //testImplementation "org.powermock:powermock-module-junit4-rule:2.0.7"
+    //testImplementation "org.powermock:powermock-api-mockito2:2.0.7"
+    //testImplementation "org.powermock:powermock-classloading-xstream:1.6.6"
 
 }

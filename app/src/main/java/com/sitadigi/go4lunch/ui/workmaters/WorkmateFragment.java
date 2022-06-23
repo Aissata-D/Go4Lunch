@@ -16,7 +16,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.sitadigi.go4lunch.databinding.FragmentWorkmatersBinding;
 
+import com.sitadigi.go4lunch.factory.MainViewModelFactory;
+import com.sitadigi.go4lunch.models.GoogleMapApiClass;
 import com.sitadigi.go4lunch.models.User;
+import com.sitadigi.go4lunch.repository.GoogleMapApiCallsRepository;
 import com.sitadigi.go4lunch.viewModel.MainViewViewModel;
 
 import java.util.ArrayList;
@@ -27,20 +30,24 @@ public class WorkmateFragment extends Fragment {
     private FragmentWorkmatersBinding binding;
     private RecyclerView mRecyclerView;
     private List<User> users ;
+    private List<GoogleMapApiClass.Result> allRestaurant;
     private String placeNameSelected;
     private TextView tvNoWorkmate;
+    MainViewViewModel mainViewViewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         WorkmateViewModel workmateViewModel =
                 new ViewModelProvider(this).get(WorkmateViewModel.class);
-        MainViewViewModel mainViewViewModel =
-                new ViewModelProvider(requireActivity()).get(MainViewViewModel.class);
+
+        GoogleMapApiCallsRepository googleMapApiCallsRepository = new GoogleMapApiCallsRepository();
+        mainViewViewModel = new ViewModelProvider(requireActivity(),new MainViewModelFactory(googleMapApiCallsRepository)).get(MainViewViewModel.class);
 
         binding = FragmentWorkmatersBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         users = new ArrayList<>();
+        allRestaurant = new ArrayList<>();
         mRecyclerView = binding.recyclerviewWorkmaters;
         tvNoWorkmate = binding.noWorkmateFound;
         tvNoWorkmate.setVisibility(View.GONE);
@@ -55,6 +62,11 @@ public class WorkmateFragment extends Fragment {
             placeNameSelected = PlaceNameResponse;
             initRecyclerView();
 
+        });
+        mainViewViewModel.getRestaurant().observe(getViewLifecycleOwner(),Restaurants->{
+            allRestaurant.clear();
+            allRestaurant.addAll(Restaurants);
+            initRecyclerView();
         });
         return root;
     }
@@ -75,14 +87,15 @@ public class WorkmateFragment extends Fragment {
             } else {
                 tvNoWorkmate.setVisibility(View.GONE);
                 mRecyclerView.setVisibility(View.VISIBLE);
-                WorkmateAdapter workmateAdapter = new WorkmateAdapter(listOfUserFiltered);
+                WorkmateAdapter workmateAdapter = new WorkmateAdapter(listOfUserFiltered
+                        ,mainViewViewModel,allRestaurant);
                 mRecyclerView.setAdapter(workmateAdapter);
             }
 
         } else {
             tvNoWorkmate.setVisibility(View.GONE);
             mRecyclerView.setVisibility(View.VISIBLE);
-            WorkmateAdapter workmateAdapter = new WorkmateAdapter(users);
+            WorkmateAdapter workmateAdapter = new WorkmateAdapter(users,mainViewViewModel,allRestaurant);
             mRecyclerView.setAdapter(workmateAdapter);
 
         }

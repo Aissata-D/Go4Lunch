@@ -27,12 +27,11 @@ public final class UserRepository {
 
     //----FIRESTORE FIELD-------------
     private static final String COLLECTION_NAME = "users";
-    private static final String COLLECTION_RESTAURANT_LIKE_NAME = "restaurantLike";
     private static final String USERNAME_FIELD = "username";
     private static volatile UserRepository instance;
-    String userRestoId = "restoIdCreated";
-    String userRestoName = "restoNameCreated";
-    String userRestoType = "restoTypeCreated";
+    String userRestaurantId = "restoIdCreated";
+    String userRestaurantName = "restoNameCreated";
+    String userRestaurantType = "restoTypeCreated";
     User userToCreate;
 
     public UserRepository() {
@@ -84,7 +83,7 @@ public final class UserRepository {
             String username = user.getDisplayName();
             String useremail = user.getEmail();
             String uid = user.getUid();
-            userToCreate = new User(uid, username, useremail, urlPicture, userRestoId, userRestoName, userRestoType);
+            userToCreate = new User(uid, username, useremail, urlPicture, userRestaurantId, userRestaurantName, userRestaurantType);
 
             DocumentReference userDocumentRef = getUsersCollection().document(uid);
             userDocumentRef.get().addOnSuccessListener(documentSnapshot -> {
@@ -97,11 +96,7 @@ public final class UserRepository {
         else {
         }
     }
-/*
-DocumentReference messageRef = db
-    .collection("rooms").document("roomA")
-    .collection("messages").document("message1");
- */
+
     // Get UID of current user
     private String getCurrentUserUID() {
         FirebaseUser user = getCurrentUser();

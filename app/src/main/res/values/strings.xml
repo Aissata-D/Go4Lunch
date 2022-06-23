@@ -55,6 +55,7 @@
     <string name="img_restaurant">image restaurant</string>
     <string name="img_workmate">image workmate</string>
     <string name="mane_is_eating_french">Name is eating french</string>
+    <string name="debug_long_string" translatable="false">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla odio diam, egestas eget quam in.</string>
     <string name="user_name">user name</string>
     <string name="img_search_bar">image search bar</string>
     <string name="no_resto_found">NO RESTO FOUND</string>

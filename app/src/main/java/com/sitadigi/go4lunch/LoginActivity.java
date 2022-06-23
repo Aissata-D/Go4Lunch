@@ -3,11 +3,9 @@ package com.sitadigi.go4lunch;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Button;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
@@ -26,7 +24,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private UserViewModel mUserViewModel;
     private FirebaseAuth mFirebaseAuth;
-    private FirebaseAuth.AuthStateListener mAuthStateListner;
+    private FirebaseAuth.AuthStateListener mAuthStateListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +39,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void setupListeners() {
 
-        mAuthStateListner = new FirebaseAuth.AuthStateListener() {
+        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             // @SuppressLint("ResourceType")
             @Override
             // we are calling method for on authentication state changed ==> if user changed
@@ -89,14 +87,14 @@ public class LoginActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         // we are calling our auth listener method on app resume.
-        mFirebaseAuth.addAuthStateListener(mAuthStateListner);
+        mFirebaseAuth.addAuthStateListener(mAuthStateListener);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         // here we are calling remove auth listener method on stop.
-        mFirebaseAuth.removeAuthStateListener(mAuthStateListner);
+        mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
     }
 
     @Override

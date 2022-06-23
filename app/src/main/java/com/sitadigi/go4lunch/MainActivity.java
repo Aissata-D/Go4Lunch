@@ -27,6 +27,8 @@ import com.google.android.libraries.places.widget.listener.PlaceSelectionListene
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.sitadigi.go4lunch.databinding.ActivityMainBinding;
+import com.sitadigi.go4lunch.factory.MainViewModelFactory;
+import com.sitadigi.go4lunch.repository.GoogleMapApiCallsRepository;
 import com.sitadigi.go4lunch.viewModel.MainViewViewModel;
 import com.sitadigi.go4lunch.utils.UtilsMapView;
 import com.sitadigi.go4lunch.utils.ShowSignOutDialogueAlertAndDetailActivity;
@@ -43,8 +45,8 @@ public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration mAppBarConfiguration;
     private MainViewViewModel mMainViewViewModel;
     private boolean locationPermissionGranted;
-    private String restoName;
-    LatLng restoLatLng;
+    private String restaurantName;
+    LatLng restaurantLatLng;
     CardView mCardViewAutocomplete;
     ImageView imgSearch;
 
@@ -103,10 +105,10 @@ public class MainActivity extends AppCompatActivity {
             public void onPlaceSelected(@NonNull Place place) {
                 // TODO: Get info about the selected place.
                 Log.e("TAG", "Place: " + place.getName() + ", placeID : " + place.getId());
-                restoName = place.getName();
-                restoLatLng = place.getLatLng();
-                mMainViewViewModel.setSearchLatLngMutableLiveData(restoLatLng);
-                mMainViewViewModel.setSearchPlaceNameMutableLiveData(restoName);
+                restaurantName = place.getName();
+                restaurantLatLng = place.getLatLng();
+                mMainViewViewModel.setSearchLatLngMutableLiveData(restaurantLatLng);
+                mMainViewViewModel.setSearchPlaceNameMutableLiveData(restaurantName);
                 }
 
             @Override
@@ -122,10 +124,10 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         autocompleteFragment.setText("");
-                                    restoName = null;
-                                    restoLatLng = null;
-                                    mMainViewViewModel.setSearchLatLngMutableLiveData(restoLatLng);
-                                    mMainViewViewModel.setSearchPlaceNameMutableLiveData(restoName);
+                                    restaurantName = null;
+                                    restaurantLatLng = null;
+                                    mMainViewViewModel.setSearchLatLngMutableLiveData(restaurantLatLng);
+                                    mMainViewViewModel.setSearchPlaceNameMutableLiveData(restaurantName);
                                     mCardViewAutocomplete.setVisibility(View.GONE);
                                     imgSearch.setVisibility(View.VISIBLE);
                     }
@@ -146,12 +148,9 @@ public class MainActivity extends AppCompatActivity {
         View header;
         // View header = navigationView1.inflateHeaderView(R.layout.nav_header_main);
         int i = navigationView.getHeaderCount();
-        if (i > 0) {
-            // avoid NPE by first checking if there is at least one Header View available
+        if (i > 0) {  // avoid NPE by first checking if there is at least one Header View available
             header = navigationView.getHeaderView(0);
-        } else {
-            header = navigationView.inflateHeaderView(R.layout.nav_header_main);
-        }
+        } else {header = navigationView.inflateHeaderView(R.layout.nav_header_main);}
         navigationView.getMenu().findItem(R.id.nav_slideshow  ).setOnMenuItemClickListener(menuItem -> {
             mShowSignOutDialogueAlertAndDetailActivity.showAlertDialogSinOut(this);
             return true;
@@ -161,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
             mShowSignOutDialogueAlertAndDetailActivity.showDetailActivity(mMainViewViewModel, this,this);
             return true;
         });
-        //Instanciate views
+        //Instantiate views
         userName = (TextView) header.findViewById(R.id.name_user);
         userEmail = (TextView) header.findViewById(R.id.email_user);
         userPhoto = (ImageView) header.findViewById(R.id.img_user);
@@ -176,7 +175,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private  void initViewModel(){
-        mMainViewViewModel = new ViewModelProvider(this).get(MainViewViewModel.class);
+        GoogleMapApiCallsRepository googleMapApiCallsRepository = new GoogleMapApiCallsRepository();
+        mMainViewViewModel = new ViewModelProvider(this,new MainViewModelFactory(googleMapApiCallsRepository) ).get(MainViewViewModel.class);
         mUtilsMapView = new UtilsMapView(this.mMainViewViewModel, getApplicationContext(),
                 this.locationPermissionGranted, MainActivity.this);
         mMainViewViewModel.loadLocationMutableLiveData(getApplicationContext(),MainActivity.this, mMainViewViewModel);

@@ -115,9 +115,9 @@ public class UtilsMapView {
             if (mMainViewViewModel.getRestaurant() != null) {
 
                 // Call list of restaurant
-                mMainViewViewModel.getRestaurant().observe(mLifecycleOwner, RestaurentResponse -> {
+                mMainViewViewModel.getRestaurant().observe(mLifecycleOwner, RestaurantResponse -> {
                     listOfRestaurant.clear();
-                    listOfRestaurant.addAll(RestaurentResponse);
+                    listOfRestaurant.addAll(RestaurantResponse);
 
                     //  When getting response, we update UI
                     if (listOfRestaurant != null) {

@@ -235,7 +235,7 @@ public class Photo {
 }
 //-----------------------------------com.example.Result.java-----------------------------------
 
- public class Result {
+ public static class Result {
 
     @SerializedName("business_status")
     @Expose

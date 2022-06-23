@@ -35,8 +35,10 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.maps.SupportMapFragment;
 import com.sitadigi.go4lunch.databinding.FragmentMapViewBinding;
+import com.sitadigi.go4lunch.factory.MainViewModelFactory;
 import com.sitadigi.go4lunch.models.GoogleMapApiClass;
 import com.sitadigi.go4lunch.models.User;
+import com.sitadigi.go4lunch.repository.GoogleMapApiCallsRepository;
 import com.sitadigi.go4lunch.utils.UtilsMapView;
 import com.sitadigi.go4lunch.viewModel.MainViewViewModel;
 
@@ -60,8 +62,9 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+        GoogleMapApiCallsRepository googleMapApiCallsRepository = new GoogleMapApiCallsRepository();
 
-        mMainViewViewModel = new ViewModelProvider(requireActivity()).get(MainViewViewModel.class);
+        mMainViewViewModel = new ViewModelProvider(requireActivity(),new MainViewModelFactory(googleMapApiCallsRepository)).get(MainViewViewModel.class);
         binding = FragmentMapViewBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
         mapViewPlaceHolder = binding.mapViewPlaceholder;

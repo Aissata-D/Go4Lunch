@@ -78,18 +78,18 @@ public class ShowSignOutDialogueAlertAndDetailActivity {
 
     public void showDetailActivity(MainViewViewModel mainViewViewModel, Activity activity, LifecycleOwner lifecycleOwner) {
         Log.e("TAG", "showDetailActivity: ATTEINT");
-        final String[] userLastRestoId = {""};
-        final String[] userRestoName = {""};
+        final String[] userLastRestaurantId = {""};
+        final String[] userRestaurantName = {""};
         List<GoogleMapApiClass.Result> resultList = new ArrayList<>();
-        List<GoogleMapApiClass.Result> listOfRestaurent = new ArrayList<>();
+        List<GoogleMapApiClass.Result> listOfRestaurant = new ArrayList<>();
 
-        mainViewViewModel.getRestaurant().observe(lifecycleOwner, RestaurentResponse -> {
-            listOfRestaurent.clear();
-            listOfRestaurent.addAll(RestaurentResponse);
+        mainViewViewModel.getRestaurant().observe(lifecycleOwner, RestaurantResponse -> {
+            listOfRestaurant.clear();
+            listOfRestaurant.addAll(RestaurantResponse);
 
             //  When getting response, we update UI
-            if (listOfRestaurent != null) {
-                for (GoogleMapApiClass.Result restaurant : listOfRestaurent) {
+            if (listOfRestaurant != null) {
+                for (GoogleMapApiClass.Result restaurant : listOfRestaurant) {
                     if (!resultList.contains(restaurant)) {
                         resultList.add(restaurant);
                     }
@@ -103,19 +103,15 @@ public class ShowSignOutDialogueAlertAndDetailActivity {
                         if (task.isSuccessful()) {
                             DocumentSnapshot document = task.getResult();
                             if (document != null) {
-                                userLastRestoId[0] = document.getString("userRestoId");
-                                userRestoName[0] = document.getString("userRestoName");
+                                userLastRestaurantId[0] = document.getString("userRestoId");
+                                userRestaurantName[0] = document.getString("userRestoName");
 
-                                if ((!userLastRestoId[0].equals("restoIdCreated"))
-                                        && (!userRestoName[0].equals("restoNameCreated"))) {
-
-
+                                if ((!userLastRestaurantId[0].equals("restoIdCreated"))
+                                        && (!userRestaurantName[0].equals("restoNameCreated"))) {
                                     for (GoogleMapApiClass.Result restaurant : resultList) {
-                                        // LatLng restoPosition = new LatLng(restaurant.getGeometry().getLocation().getLat(),
-                                        //    restaurant.getGeometry().getLocation().getLng());
                                         String restoName = restaurant.getName();
                                         String restoId = restaurant.getPlaceId();
-                                        if ((restoName.equals(userRestoName[0])) && (restoId.equals(userLastRestoId[0]))) {
+                                        if ((restoName.equals(userRestaurantName[0])) && (restoId.equals(userLastRestaurantId[0]))) {
                                             Intent intentDetail = new Intent(activity, DetailActivity.class);
                                             intentDetail.putExtra(RESTO_ID, restaurant.getPlaceId());
                                             intentDetail.putExtra(RESTO_NAME, restoName);

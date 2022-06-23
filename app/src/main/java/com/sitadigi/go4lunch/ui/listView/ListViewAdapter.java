@@ -50,7 +50,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
     @NonNull
     private final List<GoogleMapApiClass.Result> mRestaurants ;
     public int mPosition;
-    String mOrigineDistance;
+    String mOriginDistance;
     /**
      * The list of All user using application
      *
@@ -60,7 +60,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
     private UtilsDetailActivity utilsDetailActivity;
 
     /**
-     * Instantiates a new RestaurentAdapter.
+     * Instantiates a new RestaurantAdapter.
      *
      * @param restaurants the list of restaurant the adapter
      */
@@ -69,7 +69,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
         this.mRestaurants = restaurants;
         this.mUsers = mUsers;
         this.mMainViewViewModel = mainViewViewModel;
-        this.mOrigineDistance = mOriginsDistance;
+        this.mOriginDistance = mOriginsDistance;
     }
 
     /**
@@ -155,12 +155,12 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
         /**
          * The TextView displaying the name of the restaurent
          */
-        private final TextView restoName;
-        private final TextView restoTypeAdresse;
-        private final TextView restoOpeningHour;
-        private final TextView restoDistance;
-        private final TextView restoWorkmateNumber;
-        private final ImageView restoImageView;
+        private final TextView restaurantName;
+        private final TextView restaurantTypeAddress;
+        private final TextView restaurantOpeningHour;
+        private final TextView restaurantDistance;
+        private final TextView restaurantWorkmateNumber;
+        private final ImageView restaurantImageView;
         private final RatingBar restaurantRatingBar;
 
         /**
@@ -171,12 +171,12 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
         ListViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            restoName = itemView.findViewById(R.id.resto_name_item_listview);
-            restoTypeAdresse = itemView.findViewById(R.id.resto_type_adresse_item_listview);
-            restoOpeningHour = itemView.findViewById(R.id.resto_opening_hour_item_listview);
-            restoDistance = itemView.findViewById(R.id.distance_item_listview);
-            restoWorkmateNumber = itemView.findViewById(R.id.resto_workmater_number_item_listview);
-            restoImageView = itemView.findViewById(R.id.resto_imageview_item_listview);
+            restaurantName = itemView.findViewById(R.id.resto_name_item_listview);
+            restaurantTypeAddress = itemView.findViewById(R.id.resto_type_adresse_item_listview);
+            restaurantOpeningHour = itemView.findViewById(R.id.resto_opening_hour_item_listview);
+            restaurantDistance = itemView.findViewById(R.id.distance_item_listview);
+            restaurantWorkmateNumber = itemView.findViewById(R.id.resto_workmater_number_item_listview);
+            restaurantImageView = itemView.findViewById(R.id.resto_imageview_item_listview);
             restaurantRatingBar = itemView.findViewById(R.id.list_view_item_rating_bar_star);
         }
 
@@ -195,22 +195,24 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
             urlPart3 = "&key=AIzaSyDsQUD7ukIhqdJYZIQxj535IvrDRrkrH08";
             urlConcat = urlPart1 + urlPart2 + urlPart3;
             //GLIDE TO SHOW PHOTO
-            Glide.with(restoImageView.getContext())
+            Glide.with(restaurantImageView.getContext())
                     .load(getUrl(urlConcat))
                     .apply(RequestOptions.noTransformation())
                     .centerCrop()
                     .placeholder(R.drawable.img_resto_placeholder)
-                    .into(restoImageView);
+                    .into(restaurantImageView);
 
-            restoName.setText(restaurant.getName());
-            String restoAdressesAndType = restaurant.getTypes().get(0) +" - "
+            restaurantName.setText(restaurant.getName());
+            String restaurantAddressAndType = restaurant.getTypes().get(0) +" - "
                     +restaurant.getVicinity();
-            restoTypeAdresse.setText(restoAdressesAndType);
+            restaurantTypeAddress.setText(restaurantAddressAndType);
             if(restaurant.getOpeningHours() != null && restaurant.getOpeningHours().getOpenNow() != null){
                 if(restaurant.getOpeningHours().getOpenNow()){
-                    restoOpeningHour.setText(R.string.resto_open_now);
-                }else {restoOpeningHour.setText(R.string.resto_close);}
-            }else {restoOpeningHour.setText(R.string.restoopening_hour_unknow);}
+                    restaurantOpeningHour.setText(R.string.resto_open_now);
+                }else {
+                    restaurantOpeningHour.setText(R.string.resto_close);}
+            }else {
+                restaurantOpeningHour.setText(R.string.restoopening_hour_unknow);}
             if(restaurant.getRating()!=null){
                 double ratingOld = restaurant.getRating()*0.6;
                 float rating =  (float)ratingOld;
@@ -218,7 +220,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
                 restaurantRatingBar.setRating(rating);
 
             }
-            //Filtred list workmate who eats in a same restaurant
+            //Filtered list workmate who eats in a same restaurant
             List<User> workmateInSameRestaurant = new ArrayList<>();
             for(User user : mUsers){
                 if(user.getUserRestoId().equals(restaurant.getPlaceId())){
@@ -234,12 +236,12 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
                 }
             }
             String workmateNumber = "( "+ workmateInSameRestaurant.size()+" )";
-            restoWorkmateNumber.setText(workmateNumber);
+            restaurantWorkmateNumber.setText(workmateNumber);
 
             String destination =  restaurant.getGeometry().getLocation().getLat()+ "," +restaurant.getGeometry().getLocation().getLng();
             Log.e("TAG", "bind:destination "+destination );
-            String restaurantDistance = mMainViewViewModel.getRestaurantDistance(mOrigineDistance,destination);
-            restoDistance.setText(restaurantDistance);
+            String restaurantDistance = mMainViewViewModel.getRestaurantDistance(mOriginDistance,destination);
+            this.restaurantDistance.setText(restaurantDistance);
         }
     }
 

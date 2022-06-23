@@ -114,7 +114,7 @@ public class GoogleDistanceMatrixClass {
 
     //----------------------------Element.java-----------------------------------
 
-    public class Element {
+    public static class Element {
 
         @SerializedName("distance")
         @Expose
@@ -154,7 +154,7 @@ public class GoogleDistanceMatrixClass {
 
 //---------------------------Row.java-----------------------------------
 
-    public class Row {
+    public  class Row {
 
         @SerializedName("elements")
         @Expose

@@ -17,6 +17,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.sitadigi.go4lunch.R;
 import com.sitadigi.go4lunch.models.RestaurantLike;
 import com.sitadigi.go4lunch.ui.workmaters.WorkmateViewModel;
+import com.sitadigi.go4lunch.viewModel.MainViewViewModel;
 import com.sitadigi.go4lunch.viewModel.UserViewModel;
 
 public class UtilsDetailActivity {
@@ -25,29 +26,19 @@ public class UtilsDetailActivity {
     Activity mActivity;
     String mUserLastRestaurantId;
     String restaurantId;
-    LifecycleOwner lifecycleOwner;
-    RatingBar restaurantRatingBar;
-    WorkmateViewModel mWorkmateViewModel;
-    UserViewModel mUserViewModel;
 
-
-    public UtilsDetailActivity(Activity activity, String restaurantId, String userLastRestaurantId,
-                               LifecycleOwner lifecycleOwner, RatingBar restaurantRatingBar,
-                               WorkmateViewModel mWorkmateViewModel, UserViewModel mUserViewModel) {
+    public UtilsDetailActivity(Activity activity, String restaurantId, String userLastRestaurantId) {
         mActivity = activity;
         this.restaurantId = restaurantId;
         mUserLastRestaurantId = userLastRestaurantId;
-        this.lifecycleOwner = lifecycleOwner;
-        this.restaurantRatingBar = restaurantRatingBar;
-        this.mWorkmateViewModel = mWorkmateViewModel;
-        this.mUserViewModel = mUserViewModel;
+
     }
 
-    public void setRatingIcon1(RatingBar restaurantRatingBar, float rating) {
+    public void setRatingIcon(RatingBar restaurantRatingBar, float rating) {
         double rating1 = (rating * 0.6);
         float rating2 = (float) rating1;
         restaurantRatingBar.setRating(rating2);
-        Log.e("RATING", "setRatingIcon1: " + rating2);
+        Log.e("RATING", "setRatingIcon: " + rating2);
     }
 
     public void setIconStarColor(TextView tvRestaurantLike, UserViewModel mUserViewModel) {
@@ -70,7 +61,7 @@ public class UtilsDetailActivity {
         });
     }
 
-    public void setfabColor(FloatingActionButton fbaRestoChoice, UserViewModel mUserViewModel) {
+    public void setFabColor(FloatingActionButton fbaRestaurantChoice, UserViewModel mUserViewModel) {
         // Get uid of user on logged
         String userUid = mUserViewModel.getCurrentUser().getUid();
         // Get userRestaurantId on firebaseFirestore
@@ -84,11 +75,11 @@ public class UtilsDetailActivity {
                         mUserLastRestaurantId = document.getString("userRestaurantId");
                         if (mUserLastRestaurantId.equals(restaurantId))// It is a same restaurant
                         {//Set fab icon color gray
-                            fbaRestoChoice.setImageTintList(ColorStateList.valueOf(mActivity.getApplicationContext()
+                            fbaRestaurantChoice.setImageTintList(ColorStateList.valueOf(mActivity.getApplicationContext()
                                     .getResources().getColor(R.color.fab_green)));
                         } else {//It is not a same restaurant
                             //Set fab icon color green
-                            fbaRestoChoice.setImageTintList(ColorStateList.valueOf(mActivity.getApplicationContext()
+                            fbaRestaurantChoice.setImageTintList(ColorStateList.valueOf(mActivity.getApplicationContext()
                                     .getResources().getColor(R.color.fab_gray)));
                         }
                     }

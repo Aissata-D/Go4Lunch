@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -29,7 +30,9 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.sitadigi.go4lunch.DetailActivity;
 import com.sitadigi.go4lunch.LoginActivity;
 import com.sitadigi.go4lunch.R;
+import com.sitadigi.go4lunch.factory.UserViewModelFactory;
 import com.sitadigi.go4lunch.models.GoogleMapApiClass;
+import com.sitadigi.go4lunch.repository.UserRepository;
 import com.sitadigi.go4lunch.viewModel.MainViewViewModel;
 import com.sitadigi.go4lunch.viewModel.UserViewModel;
 
@@ -42,7 +45,9 @@ public class ShowSignOutDialogueAlertAndDetailActivity {
     private UserViewModel mUserViewModel;
 
     public ShowSignOutDialogueAlertAndDetailActivity() {
-        mUserViewModel = UserViewModel.getInstance();
+
+        UserRepository userRepository = new UserRepository();
+        mUserViewModel = new UserViewModel(userRepository);
     }
 
     public void showAlertDialogSinOut(Context mContext) {

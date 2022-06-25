@@ -66,11 +66,8 @@ public class ListViewFragment extends Fragment {
             listOfRestaurant.clear();
             listOfRestaurant.addAll(RestaurantResponse);
             listOfRestaurantSort = new ArrayList<>();
-            //for(GoogleMapApiClass.Result restaurant : listOfRestaurant) {
-            //    getRestaurantDistance(restaurant);
-          //  }
-                listOfRestaurantSort.addAll(listOfRestaurant);
-                Collections.sort(listOfRestaurantSort, ComparatorRestaurantDistance);
+            listOfRestaurantSort.addAll(listOfRestaurant);
+            Collections.sort(listOfRestaurantSort, ComparatorRestaurantDistance);
             Log.e("NEW", "onCreateView: " +listOfRestaurantSort );
             initRecyclerView();
         });

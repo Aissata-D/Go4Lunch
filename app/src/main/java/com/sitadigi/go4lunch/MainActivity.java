@@ -29,7 +29,9 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.sitadigi.go4lunch.databinding.ActivityMainBinding;
 import com.sitadigi.go4lunch.factory.MainViewModelFactory;
+import com.sitadigi.go4lunch.factory.UserViewModelFactory;
 import com.sitadigi.go4lunch.repository.GoogleMapApiCallsRepository;
+import com.sitadigi.go4lunch.repository.UserRepository;
 import com.sitadigi.go4lunch.utils.ShowSignOutDialogueAlertAndDetailActivity;
 import com.sitadigi.go4lunch.utils.UtilsMapView;
 import com.sitadigi.go4lunch.viewModel.MainViewViewModel;
@@ -63,7 +65,9 @@ public class MainActivity extends AppCompatActivity {
         mCardViewAutocomplete = binding.appBarMain.autocompleteCardview;
         imgSearch = binding.appBarMain.toolbarSearchBar;
         mCardViewAutocomplete.setVisibility(View.GONE);
-        mUserViewModel = UserViewModel.getInstance();
+        UserRepository userRepository = new UserRepository();
+        mUserViewModel = new ViewModelProvider(this, new UserViewModelFactory(userRepository)).get(UserViewModel.class);
+
         mShowSignOutDialogueAlertAndDetailActivity = new ShowSignOutDialogueAlertAndDetailActivity();
         getWindow().setStatusBarColor(Color.TRANSPARENT);
         initViewModel();

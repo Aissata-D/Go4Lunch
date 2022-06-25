@@ -23,7 +23,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class UserRepository {
+public final class UserRepository implements UserRepositoryInterface{
 
     //----FIRESTORE FIELD-------------
     private static final String COLLECTION_NAME = "users";
@@ -49,21 +49,21 @@ public final class UserRepository {
             return instance;
         }
     }
-
+    @Override
     @Nullable
     public FirebaseAuth getCurrentInstance() {
         return FirebaseAuth.getInstance();
     }
-
+    @Override
     @Nullable
     public FirebaseUser getCurrentUser() {
         return FirebaseAuth.getInstance().getCurrentUser();
     }
-
+    @Override
     public Task<Void> signOut(Context context) {
         return AuthUI.getInstance().signOut(context);
     }
-
+    @Override
     public Task<Void> deleteUser(Context context) {
         return AuthUI.getInstance().delete(context);
     }
@@ -71,11 +71,13 @@ public final class UserRepository {
 
     //----------------------FIRESTORE---------------------------------
     // Get the Collection Reference
+    @Override
     public CollectionReference getUsersCollection() {
         return FirebaseFirestore.getInstance().collection(COLLECTION_NAME);
     }
 
     // Create User in Firestore
+    @Override
     public void createUser() {
         FirebaseUser user = getCurrentUser();
         if (user != null) {
@@ -99,12 +101,14 @@ public final class UserRepository {
     }
 
     // Get UID of current user
-    private String getCurrentUserUID() {
+    @Override
+    public String getCurrentUserUID() {
         FirebaseUser user = getCurrentUser();
         return (user != null) ? user.getUid() : null;
     }
 
     // Update User Username
+    @Override
     public Task<Void> updateUsername(String username) {
         String uid = this.getCurrentUserUID();
         if (uid != null) {
@@ -115,6 +119,7 @@ public final class UserRepository {
     }
 
     // Delete the User from Firestore
+    @Override
     public void deleteUserFromFirestore() {
         String uid = this.getCurrentUserUID();
         if (uid != null) {
@@ -125,6 +130,7 @@ public final class UserRepository {
     /*
      *getAllUser method return users using this app in real time
      */
+    @Override
     public MutableLiveData<List<User>> getAllUser() {
 
         MutableLiveData<List<User>> listOfUserLiveData = new MutableLiveData<>();
@@ -163,6 +169,7 @@ public final class UserRepository {
         return listOfUserLiveData;
     }
 
+    @Override
     public List<User> getAllUserForNotificationPush() {
 
         List<User> usersUsingApp1 =new ArrayList<>();
@@ -184,9 +191,9 @@ public final class UserRepository {
                                 String email = document.getString("email");
                                 String urlPicture = document.getString("urlPicture");
                                 String uid = document.getId();
-                                String restaurantId = document.getString("userRestoId");
-                                String restaurantName = document.getString("userRestoName");
-                                String restaurantType = document.getString("userRestoType");
+                                String restaurantId = document.getString("userRestaurantId");
+                                String restaurantName = document.getString("userRestaurantName");
+                                String restaurantType = document.getString("userRestaurantType");
 
                                 User userToGet = new User(uid, username, email, urlPicture, restaurantId, restaurantName, restaurantType);
                                 if (!usersUsingApp.contains(userToGet)) {

@@ -17,7 +17,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.sitadigi.go4lunch.R;
 import com.sitadigi.go4lunch.models.GoogleMapApiClass;
+import com.sitadigi.go4lunch.models.User;
 import com.sitadigi.go4lunch.repository.UserRepository;
+import com.sitadigi.go4lunch.repository.UserRepositoryInterface;
 
 import java.util.List;
 
@@ -26,11 +28,11 @@ public class UserViewModel extends ViewModel {
     private final UserRepository userRepository;
     private MutableLiveData<List<GoogleMapApiClass.Result>> listOfRestaurant;
 
-    public UserViewModel() {
+    public UserViewModel(UserRepositoryInterface userRepositoryInterface) {
         userRepository = UserRepository.getInstance();
     }
 
-    public static UserViewModel getInstance() {
+    /*public static UserViewModel getInstance() {
         UserViewModel result = instance;
         if (result != null) {
             return result;
@@ -41,16 +43,16 @@ public class UserViewModel extends ViewModel {
             }
             return instance;
         }
-    }
+    }*/
 
     public CollectionReference getUsersCollection() {
         return userRepository.getUsersCollection();
 
     }
 
-    public FirebaseAuth getCurrentInstance() {
+    /*public FirebaseAuth getCurrentInstance() {
         return userRepository.getCurrentInstance();
-    }
+    }*/
 
     public FirebaseUser getCurrentUser() {
         return userRepository.getCurrentUser();
@@ -68,7 +70,7 @@ public class UserViewModel extends ViewModel {
 
         // Delete the user account from the Auth
         return userRepository.deleteUser(context).addOnCompleteListener(task -> {
-            // Once done, delete the user datas from Firestore
+            // Once done, delete the user data from Firestore
             userRepository.deleteUserFromFirestore();
         });
     }
@@ -103,9 +105,13 @@ public class UserViewModel extends ViewModel {
         }
     }
 
-    public MutableLiveData<List<GoogleMapApiClass.Result>> getRestaurant() {
-        Log.e("TAG", "getRestaurent: " + listOfRestaurant);
-        return listOfRestaurant;
+    public List<User> getAllUserForNotificationPush() {
+        return userRepository.getAllUserForNotificationPush();
     }
+
+    /*public MutableLiveData<List<GoogleMapApiClass.Result>> getRestaurant() {
+        Log.e("TAG", "getRestaurant: " + listOfRestaurant);
+        return listOfRestaurant;
+    }*/
 
 }

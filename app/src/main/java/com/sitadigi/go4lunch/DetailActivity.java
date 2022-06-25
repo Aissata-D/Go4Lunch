@@ -9,7 +9,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -25,9 +24,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.sitadigi.go4lunch.factory.MainViewModelFactory;
+import com.sitadigi.go4lunch.factory.UserViewModelFactory;
 import com.sitadigi.go4lunch.models.User;
-import com.sitadigi.go4lunch.ui.workmaters.WorkmateViewModel;
+import com.sitadigi.go4lunch.repository.GoogleMapApiCallsRepository;
+import com.sitadigi.go4lunch.repository.UserRepository;
 import com.sitadigi.go4lunch.utils.UtilsDetailActivity;
+import com.sitadigi.go4lunch.viewModel.MainViewViewModel;
 import com.sitadigi.go4lunch.viewModel.UserViewModel;
 
 import java.util.ArrayList;
@@ -66,11 +69,12 @@ public class DetailActivity extends AppCompatActivity {
     UtilsDetailActivity utilsDetailActivity;
     UserViewModel mUserViewModel;
     RecyclerView mRecyclerView;
-    WorkmateViewModel mWorkmateViewModel;
+   // WorkmateViewModel mWorkmateViewModel;
     DetailActivityAdapter detailActivityAdapter;
     LinearLayoutManager linearLayoutManager;
     float restaurantRating;
     private String restaurantType;
+    private MainViewViewModel mMainViewViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,8 +82,11 @@ public class DetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail);
         Objects.requireNonNull(this.getSupportActionBar()).hide();
         // Get uid of user on logged
-        mWorkmateViewModel = new ViewModelProvider(this).get(WorkmateViewModel.class);
-        mUserViewModel = new UserViewModel();
+        GoogleMapApiCallsRepository googleMapApiCallsRepository = new GoogleMapApiCallsRepository();
+        mMainViewViewModel = new ViewModelProvider(this, new MainViewModelFactory(googleMapApiCallsRepository)).get(MainViewViewModel.class);
+        UserRepository userRepository = new UserRepository();
+        mUserViewModel = new ViewModelProvider(this, new UserViewModelFactory(userRepository)).get(UserViewModel.class);
+
         userUid = mUserViewModel.getCurrentUser().getUid();
         restaurantId = getIntent().getStringExtra(RESTAURANT_ID);
         restaurantName = getIntent().getStringExtra(RESTAURANT_NAME);
@@ -105,12 +112,11 @@ public class DetailActivity extends AppCompatActivity {
         String urlPart3 = getString(R.string.url_google_place_photo_part3);
         urlConcat = urlPart1 + urlPart2 + urlPart3;
 
-        utilsDetailActivity = new UtilsDetailActivity(this, restaurantId, userLastRestaurantId,
-                this, restaurantRatingBar, mWorkmateViewModel, mUserViewModel);
+        utilsDetailActivity = new UtilsDetailActivity(this, restaurantId, userLastRestaurantId);
         utilsDetailActivity.setIconStarColor(tvRestaurantLike, mUserViewModel);
-        utilsDetailActivity.setfabColor(fbaRestaurantChoice, mUserViewModel);
+        utilsDetailActivity.setFabColor(fbaRestaurantChoice, mUserViewModel);
         float i = restaurantRating;
-        utilsDetailActivity.setRatingIcon1(restaurantRatingBar, (float) restaurantRating);
+        utilsDetailActivity.setRatingIcon(restaurantRatingBar, (float) restaurantRating);
         tvRestaurantLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -173,7 +179,7 @@ public class DetailActivity extends AppCompatActivity {
 
     public void initRecyclerView() {
 
-        mWorkmateViewModel.getAllUser().observe(this, usersLiveData -> {
+        mMainViewViewModel.getAllUser().observe(this, usersLiveData -> {
             mRecyclerView.getRecycledViewPool().clear();
             mRecyclerView.setAdapter(null);
             mRecyclerView.setLayoutManager(null);

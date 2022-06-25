@@ -24,6 +24,7 @@ import androidx.core.app.NotificationCompat;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.sitadigi.go4lunch.MainActivity;
+import com.sitadigi.go4lunch.factory.UserViewModelFactory;
 import com.sitadigi.go4lunch.models.User;
 import com.sitadigi.go4lunch.repository.UserRepository;
 import com.sitadigi.go4lunch.viewModel.UserViewModel;
@@ -33,7 +34,8 @@ import java.util.List;
 public class NotificationsService extends FirebaseMessagingService {
 
     UserRepository mUserRepository;
-    UserViewModel mUserViewModel = new UserViewModel();
+    UserRepository userRepository = new UserRepository();
+    UserViewModel mUserViewModel = new UserViewModel(userRepository);
     String userRestaurantName;
     String workmateName = "";
 

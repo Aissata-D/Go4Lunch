@@ -39,6 +39,7 @@ import com.sitadigi.go4lunch.factory.MainViewModelFactory;
 import com.sitadigi.go4lunch.models.GoogleMapApiClass;
 import com.sitadigi.go4lunch.models.User;
 import com.sitadigi.go4lunch.repository.GoogleMapApiCallsRepository;
+import com.sitadigi.go4lunch.utils.OpenDetailActivityUtils;
 import com.sitadigi.go4lunch.utils.UtilsMapView;
 import com.sitadigi.go4lunch.viewModel.MainViewViewModel;
 
@@ -140,49 +141,9 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
                     restaurant.getGeometry().getLocation().getLng());
             String restaurantName = restaurant.getName();
             if ((restaurantName.equals(markerName)) && (restaurantPosition.equals(markerPosition))) {
-                Intent intentDetail = new Intent(this.getActivity(), DetailActivity.class);
-                intentDetail.putExtra(RESTAURANT_ID, restaurant.getPlaceId());
-                intentDetail.putExtra(RESTAURANT_NAME, restaurantName);
-                if ((restaurant.getOpeningHours() != null) && (restaurant.getOpeningHours().getOpenNow()) != null) {
-                    intentDetail.putExtra(RESTAURANT_OPENINGHOURS, restaurant.getOpeningHours().getOpenNow());
-                }
-                if (restaurant.getPhotos() != null) {
-                    if (restaurant.getPhotos().get(0).getPhotoReference() != null) {
-                        intentDetail.putExtra(RESTAURANT_PHOTO_URL, restaurant.getPhotos().get(0).getPhotoReference());
-                    }
-                }
-                if ((restaurant.getTypes()) != null && (restaurant.getTypes().get(0)) != null) {
-                    String restaurantAddresses = restaurant.getVicinity();
-                    intentDetail.putExtra(RESTAURANT_ADDRESS, restaurantAddresses);
-                    String restaurantType = restaurant.getTypes().get(0);
-                    intentDetail.putExtra(RESTAURANT_TYPE, restaurantType);
-                }
-                if (restaurant.getRating() != null) {
-                    float rating = restaurant.getRating().floatValue();
-                    intentDetail.putExtra(RESTAURANT_RATING, rating);
-                }
-
-                List<String> restaurantNumberAndWebSite = mMainViewViewModel
-                        .loadRestaurantPhoneNumberAndWebSite(restaurant);
-                if (restaurantNumberAndWebSite.size() >= 1) {
-                    if (restaurantNumberAndWebSite.get(0) != null) {
-                        String restaurantPhoneNumber = restaurantNumberAndWebSite.get(0);
-                        intentDetail.putExtra(RESTAURANT_PHONE_NUMBER, restaurantPhoneNumber);
-                    }
-                    if (restaurantNumberAndWebSite.size() >= 2) {
-                        if (restaurantNumberAndWebSite.get(1) != null) {
-                            String restaurantWebSite = restaurantNumberAndWebSite.get(1);
-                            intentDetail.putExtra(RESTAURANT_WEBSITE, restaurantWebSite);
-                        }
-                    } else {
-                        Log.e("DETAIL", "onMarkerClick: phone size<2 ");
-                    }
-                } else {
-                    Log.e("DETAIL", "onMarkerClick: website size<1 ");
-
-                }
-                intentDetail.putExtra(RESTAURANT_ID, restaurant.getPlaceId());
-                startActivity(intentDetail);
+                OpenDetailActivityUtils openDetailActivityUtils = new OpenDetailActivityUtils();
+                openDetailActivityUtils.clickOnOpenDetailActivityInMapviewFragment(restaurant,
+                        getContext(),mMainViewViewModel,restaurantName);
             }
         }
         return true;

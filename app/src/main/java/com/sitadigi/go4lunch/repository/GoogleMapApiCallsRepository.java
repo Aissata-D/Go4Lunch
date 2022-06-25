@@ -13,10 +13,11 @@ import io.reactivex.schedulers.Schedulers;
 
 public class GoogleMapApiCallsRepository implements GoogleMapApiCallsInterface {
     @Override
-    public Observable<GoogleMapApiClass> streamFetchListOfNearRestaurant(String location, int radius, String type, String key) {
+    public Observable<GoogleMapApiClass> streamFetchListOfNearRestaurant(String location, int radius
+            , String type, String key,String rankBy) {
         GoogleMapApiService googleMapApiService = GoogleMapApiService.retrofit
                 .create(GoogleMapApiService.class);
-        return googleMapApiService.getRestaurent(location, radius, type, key)
+        return googleMapApiService.getRestaurent(location, radius, type, key, rankBy)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .timeout(10, TimeUnit.SECONDS);
@@ -42,36 +43,4 @@ public class GoogleMapApiCallsRepository implements GoogleMapApiCallsInterface {
                 .timeout(10, TimeUnit.SECONDS);
     }
 
-/*
-    public  Observable<GoogleMapApiClass> streamFetchListOfNearRestaurant(String location, int radius,
-                                                                                String type, String key) {
-        GoogleMapApiService googleMapApiService = GoogleMapApiService.retrofit
-                .create(GoogleMapApiService.class);
-        return googleMapApiService.getRestaurent(location, radius, type, key)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .timeout(10, TimeUnit.SECONDS);
-    }
-
-    // 1 - Create a stream that will get user info on Github API
-    public  Observable<GooglePlaceDetailApiClass> streamFetchRestaurantDetail(
-            GoogleMapApiClass.Result restaurant, String apiKey){
-        GoogleMapApiService googleMapApiService = GoogleMapApiService.retrofit
-                .create(GoogleMapApiService.class);
-        return googleMapApiService.getRestaurantPhoneAndWebsite(restaurant.getPlaceId(),apiKey)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .timeout(10, TimeUnit.SECONDS);
-    }
-    // 1 - Create a stream that will get user infos on Github API
-    public  Observable<GoogleDistanceMatrixClass> streamFetchRestaurantDistance(
-            String destinations,String origins, String apiKey){
-        GoogleMapApiService googleMapApiService = GoogleMapApiService.retrofit
-                .create(GoogleMapApiService.class);
-        return googleMapApiService.getRestaurantDistance(destinations,origins,apiKey)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .timeout(10, TimeUnit.SECONDS);
-    }
-    */
 }

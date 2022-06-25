@@ -22,9 +22,7 @@ public class LunchFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        HomeViewModel homeViewModel =
-                new ViewModelProvider(this).get(HomeViewModel.class);
-        MainViewViewModel mainViewViewModel = new ViewModelProvider(this).get(MainViewViewModel.class);
+
 
         binding = FragmentLunchBinding.inflate(inflater, container, false);
         View root = binding.getRoot();

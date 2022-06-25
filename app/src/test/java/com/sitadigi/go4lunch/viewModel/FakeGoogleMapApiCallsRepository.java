@@ -17,7 +17,8 @@ import io.reactivex.Observer;
 
 public class FakeGoogleMapApiCallsRepository implements GoogleMapApiCallsInterface {
     @Override
-    public Observable<GoogleMapApiClass> streamFetchListOfNearRestaurant(String location, int radius, String type, String key) {
+    public Observable<GoogleMapApiClass> streamFetchListOfNearRestaurant(String location, int radius
+            , String type, String key,String rankBy) {
         Log.e("FAKE", "streamFetchListOfNearRestaurant: " );
         GoogleMapApiClass.Result result1 = new GoogleMapApiClass.Result();
         result1.setName("nameOfResult1");

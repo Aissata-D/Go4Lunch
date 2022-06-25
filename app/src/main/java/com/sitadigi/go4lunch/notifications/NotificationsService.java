@@ -11,14 +11,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
 import android.os.Build;
-import android.util.Log;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import  com.sitadigi.go4lunch.R;
+import com.sitadigi.go4lunch.R;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
@@ -36,25 +34,21 @@ public class NotificationsService extends FirebaseMessagingService {
 
     UserRepository mUserRepository;
     UserViewModel mUserViewModel = new UserViewModel();
-    String userRestoName;
+    String userRestaurantName;
     String workmateName = "";
-
 
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
-        // super.onMessageReceived(remoteMessage);
-        String statusNotification = getSharedPreferences(SHARED_PREF_USER_INFO, MODE_PRIVATE).getString(SHARED_PREF_USER_INFO_NOTIFICATION, null);
-        Log.e("TAG", "onMessageReceived: statusNotification " + statusNotification);
+
+        String statusNotification = getSharedPreferences(SHARED_PREF_USER_INFO, MODE_PRIVATE)
+                .getString(SHARED_PREF_USER_INFO_NOTIFICATION, null);
         if (statusNotification.equals(NO)) {
-           // FirebaseInstanceId.getInstance().deleteInstanceId();
-            Log.e("TAG", "onMessageReceived: statusNotification NO " + statusNotification);
             //Do nothing
         } else {
-            Log.e("TAG", "onMessageReceived: statusNotification YES" + statusNotification);
             mUserRepository = UserRepository.getInstance();
             List<User> users = mUserRepository.getAllUserForNotificationPush();
             String userUid = mUserViewModel.getCurrentUser().getUid();
-            // Get userRestoId on firebaseFirestore
+            // Get userRestaurantId on firebaseFirestore
             DocumentReference userDocumentRef = mUserViewModel.getUsersCollection().document(userUid);
             userDocumentRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
@@ -62,10 +56,10 @@ public class NotificationsService extends FirebaseMessagingService {
                     if (task.isSuccessful()) {
                         DocumentSnapshot document = task.getResult();
                         if (document != null) {
-                            userRestoName = document.getString("userRestoName");
-                            for (User userWithSameRestoName : users) {
-                                if (userWithSameRestoName.getUserRestoName().equals(userRestoName)) {
-                                    workmateName = workmateName + " , " + userWithSameRestoName.getUsername();
+                            userRestaurantName = document.getString("userRestoName");
+                            for (User userWithSameRestaurantName : users) {
+                                if (userWithSameRestaurantName.getUserRestaurantName().equals(userRestaurantName)) {
+                                    workmateName = workmateName + " , " + userWithSameRestaurantName.getUsername();
                                 }
                             }
                             if (remoteMessage.getNotification() != null) {
@@ -82,19 +76,18 @@ public class NotificationsService extends FirebaseMessagingService {
 
     private void sendVisualNotification(RemoteMessage.Notification notification) {
 
-        Log.e("TAG", "sendVisualNotification: sendNotification" );
         // Create an Intent that will be shown when user will click on the Notification
         Intent intent = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
         // Create a Channel (Android 8)
         String channelId = getString(R.string.default_notification_channel_id);
-        String notificationMessage =  " avec "+ workmateName;
+        String notificationMessage = " avec " + workmateName;
         // Build a Notification object
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(this, channelId)
                         .setSmallIcon(R.drawable.fond_d_ecran)
-                        .setContentTitle(  " Vous mangez au: " +userRestoName )//notification.getTitle()
-                        .setContentText(notificationMessage)/*notification.getBody()*/
+                        .setContentTitle(" Vous mangez au: " + userRestaurantName)
+                        .setContentText(notificationMessage)
                         .setAutoCancel(true)
                         .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                         .setContentIntent(pendingIntent);

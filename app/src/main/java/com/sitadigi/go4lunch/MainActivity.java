@@ -1,5 +1,6 @@
 package com.sitadigi.go4lunch;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -29,9 +30,9 @@ import com.google.android.material.navigation.NavigationView;
 import com.sitadigi.go4lunch.databinding.ActivityMainBinding;
 import com.sitadigi.go4lunch.factory.MainViewModelFactory;
 import com.sitadigi.go4lunch.repository.GoogleMapApiCallsRepository;
-import com.sitadigi.go4lunch.viewModel.MainViewViewModel;
-import com.sitadigi.go4lunch.utils.UtilsMapView;
 import com.sitadigi.go4lunch.utils.ShowSignOutDialogueAlertAndDetailActivity;
+import com.sitadigi.go4lunch.utils.UtilsMapView;
+import com.sitadigi.go4lunch.viewModel.MainViewViewModel;
 import com.sitadigi.go4lunch.viewModel.UserViewModel;
 
 import java.util.Arrays;
@@ -41,17 +42,16 @@ public class MainActivity extends AppCompatActivity {
     TextView userName;
     TextView userEmail;
     ImageView userPhoto;
+    LatLng restaurantLatLng;
+    CardView mCardViewAutocomplete;
+    ImageView imgSearch;
+    UtilsMapView mUtilsMapView;
+    ShowSignOutDialogueAlertAndDetailActivity mShowSignOutDialogueAlertAndDetailActivity;
     private UserViewModel mUserViewModel;
     private AppBarConfiguration mAppBarConfiguration;
     private MainViewViewModel mMainViewViewModel;
     private boolean locationPermissionGranted;
     private String restaurantName;
-    LatLng restaurantLatLng;
-    CardView mCardViewAutocomplete;
-    ImageView imgSearch;
-
-    UtilsMapView mUtilsMapView;
-    ShowSignOutDialogueAlertAndDetailActivity mShowSignOutDialogueAlertAndDetailActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         mCardViewAutocomplete.setVisibility(View.GONE);
         mUserViewModel = UserViewModel.getInstance();
         mShowSignOutDialogueAlertAndDetailActivity = new ShowSignOutDialogueAlertAndDetailActivity();
-        
+        getWindow().setStatusBarColor(Color.TRANSPARENT);
         initViewModel();
         imgSearch.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,19 +79,19 @@ public class MainActivity extends AppCompatActivity {
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
         BottomNavigationView bottomNavigation = binding.bottomNavigation;
-        
+
         //////////////////////////API PLACE AUTOCOMPLETE//////////////////////////////////
         // Create a RectangularBounds object.
         RectangularBounds bounds = RectangularBounds.newInstance(
-                new LatLng(45.7714678,4.8901636),
-                new LatLng(45.7714678,4.8901636));
-        if(!Places.isInitialized()){
+                new LatLng(45.7714678, 4.8901636),
+                new LatLng(45.7714678, 4.8901636));
+        if (!Places.isInitialized()) {
             Places.initialize(getApplicationContext(), getString(R.string.google_map_api_key));
         }
         // Initialize the AutocompleteSupportFragment.
         AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
                 getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
-        //Set search contry
+        //Set search country
         assert autocompleteFragment != null;
         autocompleteFragment.setCountry("fr");
         autocompleteFragment.setTypeFilter(TypeFilter.ESTABLISHMENT);
@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
                 restaurantLatLng = place.getLatLng();
                 mMainViewViewModel.setSearchLatLngMutableLiveData(restaurantLatLng);
                 mMainViewViewModel.setSearchPlaceNameMutableLiveData(restaurantName);
-                }
+            }
 
             @Override
             public void onError(@NonNull Status status) {
@@ -124,12 +124,12 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         autocompleteFragment.setText("");
-                                    restaurantName = null;
-                                    restaurantLatLng = null;
-                                    mMainViewViewModel.setSearchLatLngMutableLiveData(restaurantLatLng);
-                                    mMainViewViewModel.setSearchPlaceNameMutableLiveData(restaurantName);
-                                    mCardViewAutocomplete.setVisibility(View.GONE);
-                                    imgSearch.setVisibility(View.VISIBLE);
+                        restaurantName = null;
+                        restaurantLatLng = null;
+                        mMainViewViewModel.setSearchLatLngMutableLiveData(restaurantLatLng);
+                        mMainViewViewModel.setSearchPlaceNameMutableLiveData(restaurantName);
+                        mCardViewAutocomplete.setVisibility(View.GONE);
+                        imgSearch.setVisibility(View.VISIBLE);
                     }
                 });
         // Passing each menu ID as a set of Ids because each // menu should be considered as top level destinations.
@@ -150,14 +150,16 @@ public class MainActivity extends AppCompatActivity {
         int i = navigationView.getHeaderCount();
         if (i > 0) {  // avoid NPE by first checking if there is at least one Header View available
             header = navigationView.getHeaderView(0);
-        } else {header = navigationView.inflateHeaderView(R.layout.nav_header_main);}
-        navigationView.getMenu().findItem(R.id.nav_slideshow  ).setOnMenuItemClickListener(menuItem -> {
+        } else {
+            header = navigationView.inflateHeaderView(R.layout.nav_header_main);
+        }
+        navigationView.getMenu().findItem(R.id.nav_slideshow).setOnMenuItemClickListener(menuItem -> {
             mShowSignOutDialogueAlertAndDetailActivity.showAlertDialogSinOut(this);
             return true;
         });
         navigationView.getMenu().findItem(R.id.nav_home).setOnMenuItemClickListener(menuItem -> {
-            Log.e("TAG", "onCreate: R.id.nav_home clicked" );
-            mShowSignOutDialogueAlertAndDetailActivity.showDetailActivity(mMainViewViewModel, this,this);
+            Log.e("TAG", "onCreate: R.id.nav_home clicked");
+            mShowSignOutDialogueAlertAndDetailActivity.showDetailActivity(mMainViewViewModel, this, this);
             return true;
         });
         //Instantiate views
@@ -169,17 +171,18 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onSupportNavigateUp() {
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+        NavController navController = Navigation.findNavController(this
+                , R.id.nav_host_fragment_content_main);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
     }
 
-    private  void initViewModel(){
+    private void initViewModel() {
         GoogleMapApiCallsRepository googleMapApiCallsRepository = new GoogleMapApiCallsRepository();
-        mMainViewViewModel = new ViewModelProvider(this,new MainViewModelFactory(googleMapApiCallsRepository) ).get(MainViewViewModel.class);
+        mMainViewViewModel = new ViewModelProvider(this, new MainViewModelFactory(googleMapApiCallsRepository)).get(MainViewViewModel.class);
         mUtilsMapView = new UtilsMapView(this.mMainViewViewModel, getApplicationContext(),
                 this.locationPermissionGranted, MainActivity.this);
-        mMainViewViewModel.loadLocationMutableLiveData(getApplicationContext(),MainActivity.this, mMainViewViewModel);
+        mMainViewViewModel.loadLocationMutableLiveData(getApplicationContext(), MainActivity.this, mMainViewViewModel);
         mMainViewViewModel.getLocationMutableLiveData();
     }
 }

@@ -24,12 +24,10 @@ import java.util.List;
 public class UserViewModel extends ViewModel {
     private static volatile UserViewModel instance;
     private final UserRepository userRepository;
-    private MutableLiveData<List<GoogleMapApiClass.Result>> listOfRestaurent;
-
+    private MutableLiveData<List<GoogleMapApiClass.Result>> listOfRestaurant;
 
     public UserViewModel() {
         userRepository = UserRepository.getInstance();
-
     }
 
     public static UserViewModel getInstance() {
@@ -37,7 +35,7 @@ public class UserViewModel extends ViewModel {
         if (result != null) {
             return result;
         }
-        synchronized(UserRepository.class) {
+        synchronized (UserRepository.class) {
             if (instance == null) {
                 instance = new UserViewModel();
             }
@@ -45,26 +43,28 @@ public class UserViewModel extends ViewModel {
         }
     }
 
-    public CollectionReference getUsersCollection(){
-       return userRepository.getUsersCollection();
+    public CollectionReference getUsersCollection() {
+        return userRepository.getUsersCollection();
 
     }
-    public FirebaseAuth getCurrentInstance(){
+
+    public FirebaseAuth getCurrentInstance() {
         return userRepository.getCurrentInstance();
     }
 
-    public FirebaseUser getCurrentUser(){
+    public FirebaseUser getCurrentUser() {
         return userRepository.getCurrentUser();
     }
 
-    public Boolean isCurrentUserLogged(){
+    public Boolean isCurrentUserLogged() {
         return (this.getCurrentUser() != null);
     }
-    public Task<Void> signOut(Context context){
+
+    public Task<Void> signOut(Context context) {
         return userRepository.signOut(context);
     }
 
-    public Task<Void> deleteUser(Context context){
+    public Task<Void> deleteUser(Context context) {
 
         // Delete the user account from the Auth
         return userRepository.deleteUser(context).addOnCompleteListener(task -> {
@@ -74,22 +74,20 @@ public class UserViewModel extends ViewModel {
     }
 
 
-    public void createUser(){
+    public void createUser() {
         userRepository.createUser();
     }
 
 
-    public Task<Void> updateUsername(String username){
+    public Task<Void> updateUsername(String username) {
         return userRepository.updateUsername(username);
     }
 
-
     public void updateUIWithUserData(Context context, TextView userName,
-                                     TextView userEmail, ImageView userPhoto){
-        if(isCurrentUserLogged()){
+                                     TextView userEmail, ImageView userPhoto) {
+        if (isCurrentUserLogged()) {
             FirebaseUser user = getCurrentUser();
-
-            if(user.getPhotoUrl() != null){
+            if (user.getPhotoUrl() != null) {
                 //Set user profilphoto
                 Glide.with(context)
                         .load(user.getPhotoUrl())
@@ -104,10 +102,10 @@ public class UserViewModel extends ViewModel {
             userEmail.setText(email);
         }
     }
-    public MutableLiveData<List<GoogleMapApiClass.Result>> getRestaurent() {
 
-        Log.e("TAG", "getRestaurent: " +listOfRestaurent );
-        return listOfRestaurent;
+    public MutableLiveData<List<GoogleMapApiClass.Result>> getRestaurant() {
+        Log.e("TAG", "getRestaurent: " + listOfRestaurant);
+        return listOfRestaurant;
     }
 
 }

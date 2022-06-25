@@ -1,15 +1,15 @@
 package com.sitadigi.go4lunch.utils;
 
 
-import static com.sitadigi.go4lunch.DetailActivity.RESTO_ADRESSES;
-import static com.sitadigi.go4lunch.DetailActivity.RESTO_ID;
-import static com.sitadigi.go4lunch.DetailActivity.RESTO_NAME;
-import static com.sitadigi.go4lunch.DetailActivity.RESTO_OPENINGHOURS;
-import static com.sitadigi.go4lunch.DetailActivity.RESTO_PHONE_NUMBER;
-import static com.sitadigi.go4lunch.DetailActivity.RESTO_PHOTO_URL;
-import static com.sitadigi.go4lunch.DetailActivity.RESTO_RATING;
-import static com.sitadigi.go4lunch.DetailActivity.RESTO_TYPE;
-import static com.sitadigi.go4lunch.DetailActivity.RESTO_WEBSITE;
+import static com.sitadigi.go4lunch.DetailActivity.RESTAURANT_ADDRESS;
+import static com.sitadigi.go4lunch.DetailActivity.RESTAURANT_ID;
+import static com.sitadigi.go4lunch.DetailActivity.RESTAURANT_NAME;
+import static com.sitadigi.go4lunch.DetailActivity.RESTAURANT_OPENINGHOURS;
+import static com.sitadigi.go4lunch.DetailActivity.RESTAURANT_PHONE_NUMBER;
+import static com.sitadigi.go4lunch.DetailActivity.RESTAURANT_PHOTO_URL;
+import static com.sitadigi.go4lunch.DetailActivity.RESTAURANT_RATING;
+import static com.sitadigi.go4lunch.DetailActivity.RESTAURANT_TYPE;
+import static com.sitadigi.go4lunch.DetailActivity.RESTAURANT_WEBSITE;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -52,7 +52,7 @@ public class ShowSignOutDialogueAlertAndDetailActivity {
                 .setMessage(mContext.getString(R.string.sign_out_message))
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                                mUserViewModel.signOut(mContext)
+                        mUserViewModel.signOut(mContext)
                                 // after sign out is executed we are redirecting on LoginActivity
                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                     public void onComplete(@NonNull Task<Void> task) {
@@ -86,91 +86,86 @@ public class ShowSignOutDialogueAlertAndDetailActivity {
         mainViewViewModel.getRestaurant().observe(lifecycleOwner, RestaurantResponse -> {
             listOfRestaurant.clear();
             listOfRestaurant.addAll(RestaurantResponse);
-
             //  When getting response, we update UI
-            if (listOfRestaurant != null) {
-                for (GoogleMapApiClass.Result restaurant : listOfRestaurant) {
-                    if (!resultList.contains(restaurant)) {
-                        resultList.add(restaurant);
-                    }
+            for (GoogleMapApiClass.Result restaurant : listOfRestaurant) {
+                if (!resultList.contains(restaurant)) {
+                    resultList.add(restaurant);
                 }
-                String userUid = mUserViewModel.getCurrentUser().getUid();
-                // Get userRestoId on firebaseFirestore
-                DocumentReference userDocumentRef = mUserViewModel.getUsersCollection().document(userUid);
-                userDocumentRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot document = task.getResult();
-                            if (document != null) {
-                                userLastRestaurantId[0] = document.getString("userRestoId");
-                                userRestaurantName[0] = document.getString("userRestoName");
+            }
+            String userUid = mUserViewModel.getCurrentUser().getUid();
+            // Get userRestaurantId on firebaseFirestore
+            DocumentReference userDocumentRef = mUserViewModel.getUsersCollection().document(userUid);
+            userDocumentRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document != null) {
+                            userLastRestaurantId[0] = document.getString("userRestaurantId");
+                            userRestaurantName[0] = document.getString("userRestaurantName");
 
-                                if ((!userLastRestaurantId[0].equals("restoIdCreated"))
-                                        && (!userRestaurantName[0].equals("restoNameCreated"))) {
-                                    for (GoogleMapApiClass.Result restaurant : resultList) {
-                                        String restoName = restaurant.getName();
-                                        String restoId = restaurant.getPlaceId();
-                                        if ((restoName.equals(userRestaurantName[0])) && (restoId.equals(userLastRestaurantId[0]))) {
-                                            Intent intentDetail = new Intent(activity, DetailActivity.class);
-                                            intentDetail.putExtra(RESTO_ID, restaurant.getPlaceId());
-                                            intentDetail.putExtra(RESTO_NAME, restoName);
-                                            if ((restaurant.getOpeningHours() != null) && (restaurant.getOpeningHours().getOpenNow()) != null) {
-                                                intentDetail.putExtra(RESTO_OPENINGHOURS, restaurant.getOpeningHours().getOpenNow());
-                                            }
-                                            if (restaurant.getPhotos() != null) {
-                                                if (restaurant.getPhotos().get(0).getPhotoReference() != null) {
-                                                    intentDetail.putExtra(RESTO_PHOTO_URL, restaurant.getPhotos().get(0).getPhotoReference());
-                                                }
-                                            }
-                                            if ((restaurant.getTypes()) != null && (restaurant.getTypes().get(0)) != null) {
-                                                String restoAdresses = restaurant.getVicinity();
-                                                intentDetail.putExtra(RESTO_ADRESSES, restoAdresses);
-                                                String restoType = restaurant.getTypes().get(0);
-                                                intentDetail.putExtra(RESTO_TYPE, restoType);
-                                            }
-                                            if(restaurant.getRating()!=null){
-                                                float rating =  restaurant.getRating().floatValue();
-                                                intentDetail.putExtra(RESTO_RATING, rating);
-                                            }
-                                            List<String> restaurantNumberAndWebSite =mainViewViewModel
-                                                    .loadRestaurantPhoneNumberAndWebSite(restaurant);
-                                            if(restaurantNumberAndWebSite.size() >=1){
-                                                if(restaurantNumberAndWebSite.get(0) != null){
-                                                    String restaurantPhoneNumber = restaurantNumberAndWebSite.get(0);
-                                                    intentDetail.putExtra(RESTO_PHONE_NUMBER, restaurantPhoneNumber);
-                                                    Log.e("DETAIL", "onMarkerClick: Phone "+restaurantPhoneNumber );
-                                                }
-                                                if(restaurantNumberAndWebSite.size() >=2) {
-                                                    if (restaurantNumberAndWebSite.get(1) != null) {
-                                                        String restaurantWebSite = restaurantNumberAndWebSite.get(1);
-                                                        intentDetail.putExtra(RESTO_WEBSITE, restaurantWebSite);
-                                                    }
-                                                }else{
-                                                    Log.e("DETAIL", "onMarkerClick: phone size<2 " );
-                                                }
-                                            }   else{
-                                                Log.e("DETAIL", "onMarkerClick: website size<1 " );
-
-                                            }
-
-                                            intentDetail.putExtra(RESTO_ID, restaurant.getPlaceId());
-                                            activity.startActivity(intentDetail);
+                            if ((!userLastRestaurantId[0].equals("restaurantIdCreated"))
+                                    && (!userRestaurantName[0].equals("restaurantNameCreated"))) {
+                                for (GoogleMapApiClass.Result restaurant : resultList) {
+                                    String restaurantName = restaurant.getName();
+                                    String restaurantId = restaurant.getPlaceId();
+                                    if ((restaurantName.equals(userRestaurantName[0])) && (restaurantId.equals(userLastRestaurantId[0]))) {
+                                        Intent intentDetail = new Intent(activity, DetailActivity.class);
+                                        intentDetail.putExtra(RESTAURANT_ID, restaurant.getPlaceId());
+                                        intentDetail.putExtra(RESTAURANT_NAME, restaurantName);
+                                        if ((restaurant.getOpeningHours() != null) && (restaurant.getOpeningHours().getOpenNow()) != null) {
+                                            intentDetail.putExtra(RESTAURANT_OPENINGHOURS, restaurant.getOpeningHours().getOpenNow());
                                         }
-                                    }
-                                } else {
-                                    Log.e("TAG", "onComplete: Vous n'avez choisit aucun restaurent");
-                                    Toast.makeText(activity.getApplicationContext(), "Vous n'avez choisit aucun restaurent", Toast.LENGTH_SHORT).show();
-                                    // textView.setText("Vous n'avez choisit aucun restaurent");
+                                        if (restaurant.getPhotos() != null) {
+                                            if (restaurant.getPhotos().get(0).getPhotoReference() != null) {
+                                                intentDetail.putExtra(RESTAURANT_PHOTO_URL,
+                                                        restaurant.getPhotos().get(0).getPhotoReference());
+                                            }
+                                        }
+                                        if ((restaurant.getTypes()) != null && (restaurant.getTypes().get(0)) != null) {
+                                            String restaurantAddress = restaurant.getVicinity();
+                                            intentDetail.putExtra(RESTAURANT_ADDRESS, restaurantAddress);
+                                            String restaurantType = restaurant.getTypes().get(0);
+                                            intentDetail.putExtra(RESTAURANT_TYPE, restaurantType);
+                                        }
+                                        if (restaurant.getRating() != null) {
+                                            float rating = restaurant.getRating().floatValue();
+                                            intentDetail.putExtra(RESTAURANT_RATING, rating);
+                                        }
+                                        List<String> restaurantNumberAndWebSite = mainViewViewModel
+                                                .loadRestaurantPhoneNumberAndWebSite(restaurant);
+                                        if (restaurantNumberAndWebSite.size() >= 1) {
+                                            if (restaurantNumberAndWebSite.get(0) != null) {
+                                                String restaurantPhoneNumber = restaurantNumberAndWebSite.get(0);
+                                                intentDetail.putExtra(RESTAURANT_PHONE_NUMBER, restaurantPhoneNumber);
+                                            }
+                                            if (restaurantNumberAndWebSite.size() >= 2) {
+                                                if (restaurantNumberAndWebSite.get(1) != null) {
+                                                    String restaurantWebSite = restaurantNumberAndWebSite.get(1);
+                                                    intentDetail.putExtra(RESTAURANT_WEBSITE, restaurantWebSite);
+                                                }
+                                            } else {
+                                                Log.e("DETAIL", "onMarkerClick: phone size<2 ");
+                                            }
+                                        } else {
+                                            Log.e("DETAIL", "onMarkerClick: website size<1 ");
 
+                                        }
+
+                                        intentDetail.putExtra(RESTAURANT_ID, restaurant.getPlaceId());
+                                        activity.startActivity(intentDetail);
+                                    }
                                 }
+                            } else {
+                                Log.e("TAG", "onComplete: Vous n'avez choisit aucun restaurant");
+                                Toast.makeText(activity.getApplicationContext(),
+                                        "Vous n'avez choisit aucun restaurant", Toast.LENGTH_SHORT).show();
                             }
                         }
                     }
-                });
-            }
+                }
+            });
         });
-
     }
 
 

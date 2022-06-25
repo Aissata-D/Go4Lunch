@@ -13,14 +13,12 @@ import com.sitadigi.go4lunch.databinding.FragmentSignOutBinding;
 import com.sitadigi.go4lunch.viewModel.UserViewModel;
 
 public class SignOutFragment extends Fragment {
-    private final UserViewModel mUserViewModel = UserViewModel.getInstance();
 
     private FragmentSignOutBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        SlideshowViewModel slideshowViewModel =
-                new ViewModelProvider(this).get(SlideshowViewModel.class);
+
 
         binding = FragmentSignOutBinding.inflate(inflater, container, false);
         View root = binding.getRoot();

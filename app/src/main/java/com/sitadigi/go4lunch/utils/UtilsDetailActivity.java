@@ -42,11 +42,12 @@ public class UtilsDetailActivity {
         this.mWorkmateViewModel = mWorkmateViewModel;
         this.mUserViewModel = mUserViewModel;
     }
+
     public void setRatingIcon1(RatingBar restaurantRatingBar, float rating) {
-        double rating1=  (rating*0.6);
+        double rating1 = (rating * 0.6);
         float rating2 = (float) rating1;
         restaurantRatingBar.setRating(rating2);
-        Log.e("RATING", "setRatingIcon1: "+rating2 );
+        Log.e("RATING", "setRatingIcon1: " + rating2);
     }
 
     public void setIconStarColor(TextView tvRestaurantLike, UserViewModel mUserViewModel) {
@@ -72,7 +73,7 @@ public class UtilsDetailActivity {
     public void setfabColor(FloatingActionButton fbaRestoChoice, UserViewModel mUserViewModel) {
         // Get uid of user on logged
         String userUid = mUserViewModel.getCurrentUser().getUid();
-        // Get userRestoId on firebaseFirestore
+        // Get userRestaurantId on firebaseFirestore
         DocumentReference userDocumentRef = mUserViewModel.getUsersCollection().document(userUid);
         userDocumentRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -80,7 +81,7 @@ public class UtilsDetailActivity {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document != null) {
-                        mUserLastRestaurantId = document.getString("userRestoId");
+                        mUserLastRestaurantId = document.getString("userRestaurantId");
                         if (mUserLastRestaurantId.equals(restaurantId))// It is a same restaurant
                         {//Set fab icon color gray
                             fbaRestoChoice.setImageTintList(ColorStateList.valueOf(mActivity.getApplicationContext()
@@ -98,31 +99,31 @@ public class UtilsDetailActivity {
         });
     }
 
-    public void clickOnButtonLike(String userUid, TextView tvRestoLike, String restoName
+    public void clickOnButtonLike(String userUid, TextView tvRestaurantLike, String restaurantName
             , UserViewModel mUserViewModel) {
-        // Get userRestoLike on firebaseFirestore
+        // Get userRestaurantLike on firebaseFirestore
         DocumentReference userRestaurantLikeRef = mUserViewModel.getUsersCollection().document(userUid)
                 .collection(COLLECTION_RESTAURANT_LIKE_NAME).document(restaurantId);
         userRestaurantLikeRef.get().addOnSuccessListener(documentSnapshot -> {
             if (!documentSnapshot.exists()) {
-                RestaurantLike restaurantLike = new RestaurantLike(restoName);
+                RestaurantLike restaurantLike = new RestaurantLike(restaurantName);
                 mUserViewModel.getUsersCollection().document(userUid)
                         .collection(COLLECTION_RESTAURANT_LIKE_NAME).document(restaurantId).set(restaurantLike);
                 // set color of like button and set ratingBar
-                tvRestoLike.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_baseline_star_24_yellow, 0, 0);
+                tvRestaurantLike.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_baseline_star_24_yellow, 0, 0);
             } else {
                 //  delete document
                 userRestaurantLikeRef.delete();
                 // set color of like button and set ratingBar
-                tvRestoLike.setCompoundDrawablesWithIntrinsicBounds(0,
+                tvRestaurantLike.setCompoundDrawablesWithIntrinsicBounds(0,
                         R.drawable.ic_baseline_star_24_gray, 0, 0);
             }
         });
     }
 
-    public void clickOnButtonFab(UserViewModel mUserViewModel, String userUid, FloatingActionButton fbaRestoChoice
-            , String restoName, String restoType) {
-        // Get userRestoId on firebaseFirestore
+    public void clickOnButtonFab(UserViewModel mUserViewModel, String userUid, FloatingActionButton fbaRestaurantChoice
+            , String restaurantName, String restaurantType) {
+        // Get userRestaurantId on firebaseFirestore
         DocumentReference userDocumentRef = mUserViewModel.getUsersCollection().document(userUid);
         userDocumentRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -130,31 +131,30 @@ public class UtilsDetailActivity {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document != null) {
-                        mUserLastRestaurantId = document.getString("userRestoId");
+                        mUserLastRestaurantId = document.getString("userRestaurantId");
                         if (mUserLastRestaurantId == null) {
                             //Set fab icon color green
-                            fbaRestoChoice.setImageTintList(ColorStateList.valueOf(mActivity.getApplicationContext()
+                            fbaRestaurantChoice.setImageTintList(ColorStateList.valueOf(mActivity.getApplicationContext()
                                     .getResources().getColor(R.color.fab_green)));
-                            //Set restoId with actual restoIdChoice
-                            userDocumentRef.update("userRestoId", restaurantId);
-                            userDocumentRef.update("userRestoName", restoName);
-                            userDocumentRef.update("userRestoType", restoType);
-                        } else {//restoId != null
+                            //Set restaurantId with actual restaurantIdChoice
+                            userDocumentRef.update("userRestaurantId", restaurantId);
+                            userDocumentRef.update("userRestaurantName", restaurantName);
+                            userDocumentRef.update("userRestaurantType", restaurantType);
+                        } else {//restaurantId != null
                             if (mUserLastRestaurantId.equals(restaurantId)) { // It is a same restaurant)
                                 //Set fab icon color gray
-                                fbaRestoChoice.setImageTintList(ColorStateList.valueOf(mActivity.getApplicationContext()
+                                fbaRestaurantChoice.setImageTintList(ColorStateList.valueOf(mActivity.getApplicationContext()
                                         .getResources().getColor(R.color.fab_gray)));
-                                // usersInter.remove(firebaseUser);
-                                userDocumentRef.update("userRestoId", "NoRestoChoice");
-                                userDocumentRef.update("userRestoName", "restoNameCreated");
-                                userDocumentRef.update("userRestoType", "restoTypeCreated");
+                                userDocumentRef.update("userRestaurantId", "restaurantIdCreated");
+                                userDocumentRef.update("userRestaurantName", "restaurantNameCreated");
+                                userDocumentRef.update("userRestaurantType", "restaurantTypeCreated");
                             } else {//It is not a same restaurant
                                 //Set fab icon color green
-                                fbaRestoChoice.setImageTintList(ColorStateList.valueOf(mActivity.getApplicationContext()
+                                fbaRestaurantChoice.setImageTintList(ColorStateList.valueOf(mActivity.getApplicationContext()
                                         .getResources().getColor(R.color.fab_green)));
-                                userDocumentRef.update("userRestoId", restaurantId);
-                                userDocumentRef.update("userRestoName", restoName);
-                                userDocumentRef.update("userRestoType", restoType);
+                                userDocumentRef.update("userRestaurantId", restaurantId);
+                                userDocumentRef.update("userRestaurantName", restaurantName);
+                                userDocumentRef.update("userRestaurantType", restaurantType);
                             }
                         }
                     }

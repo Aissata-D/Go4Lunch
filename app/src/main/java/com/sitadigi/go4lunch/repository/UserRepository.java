@@ -29,9 +29,9 @@ public final class UserRepository {
     private static final String COLLECTION_NAME = "users";
     private static final String USERNAME_FIELD = "username";
     private static volatile UserRepository instance;
-    String userRestaurantId = "restoIdCreated";
-    String userRestaurantName = "restoNameCreated";
-    String userRestaurantType = "restoTypeCreated";
+    String userRestaurantId = "restaurantIdCreated";
+    String userRestaurantName = "restaurantNameCreated";
+    String userRestaurantType = "restaurantTypeCreated";
     User userToCreate;
 
     public UserRepository() {
@@ -70,7 +70,7 @@ public final class UserRepository {
 
 
     //----------------------FIRESTORE---------------------------------
-// Get the Collection Reference
+    // Get the Collection Reference
     public CollectionReference getUsersCollection() {
         return FirebaseFirestore.getInstance().collection(COLLECTION_NAME);
     }
@@ -83,8 +83,8 @@ public final class UserRepository {
             String username = user.getDisplayName();
             String useremail = user.getEmail();
             String uid = user.getUid();
-            userToCreate = new User(uid, username, useremail, urlPicture, userRestaurantId, userRestaurantName, userRestaurantType);
-
+            userToCreate = new User(uid, username, useremail, urlPicture, userRestaurantId
+                    , userRestaurantName, userRestaurantType);
             DocumentReference userDocumentRef = getUsersCollection().document(uid);
             userDocumentRef.get().addOnSuccessListener(documentSnapshot -> {
                 if(!documentSnapshot.exists()){
@@ -92,8 +92,9 @@ public final class UserRepository {
                     }
                 });
 
-        }// TODO Gerer les cas d'erreur
+        }
         else {
+            // TODO Gerer les cas d'erreur
         }
     }
 
@@ -128,7 +129,6 @@ public final class UserRepository {
 
         MutableLiveData<List<User>> listOfUserLiveData = new MutableLiveData<>();
         List<User> usersUsingApp = new ArrayList<>();
-
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("users").addSnapshotListener(
                 new EventListener<QuerySnapshot>() {
@@ -147,26 +147,13 @@ public final class UserRepository {
                                 String email = document.getString("email");
                                 String urlPicture = document.getString("urlPicture");
                                 String uid = document.getId();
-                                String restaurantId = document.getString("userRestoId");
-                                String restaurantName = document.getString("userRestoName");
-                                String restaurantType = document.getString("userRestoType");
-
+                                String restaurantId = document.getString("userRestaurantId");
+                                String restaurantName = document.getString("userRestaurantName");
+                                String restaurantType = document.getString("userRestaurantType");
+                                // Get user
                                 User userToGet = new User(uid, username, email, urlPicture, restaurantId, restaurantName, restaurantType);
                                 usersUsingApp.add(userToGet);
-                                /*  if(usersUsingApp.size()==0){
-                                    usersUsingApp.add(userToGet);
-                                }else{
-                                for(int i = 0; i<usersUsingApp.size();i++) {
-                                    if (usersUsingApp.get(i) != userToGet) {
-                                        Log.e("NEW", "ADD " + userToGet.getUsername());
-                                        Log.e("NEW", "i  " + i + "usersUsingApp " +usersUsingApp.size());
-                                        usersUsingApp.add(userToGet);
-                                    }}
-                                }*/
-
                                 listOfUserLiveData.postValue(usersUsingApp);
-                                Log.e("NEW", "onEvent: " + userToGet.getUsername());
-                                Log.e("NEW", "i  "  + "usersUsingApp " +usersUsingApp.size());
 
                             }
                         }
@@ -178,7 +165,6 @@ public final class UserRepository {
 
     public List<User> getAllUserForNotificationPush() {
 
-        MutableLiveData<List<User>> listOfUserLiveData = new MutableLiveData<>();
         List<User> usersUsingApp1 =new ArrayList<>();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("users").addSnapshotListener(
@@ -198,20 +184,16 @@ public final class UserRepository {
                                 String email = document.getString("email");
                                 String urlPicture = document.getString("urlPicture");
                                 String uid = document.getId();
-                                String restoId = document.getString("userRestoId");
-                                String restoName = document.getString("userRestoName");
-                                String restoType = document.getString("userRestoType");
+                                String restaurantId = document.getString("userRestoId");
+                                String restaurantName = document.getString("userRestoName");
+                                String restaurantType = document.getString("userRestoType");
 
-                                User userToGet = new User(uid, username, email, urlPicture, restoId, restoName, restoType);
+                                User userToGet = new User(uid, username, email, urlPicture, restaurantId, restaurantName, restaurantType);
                                 if (!usersUsingApp.contains(userToGet)) {
                                     usersUsingApp.add(userToGet);
                                 }
-                               // listOfUserLiveData.setValue(usersUsingApp);
                                 usersUsingApp1.clear();
                                 usersUsingApp1.addAll(usersUsingApp);
-                                Log.e("NEW", "onEvent:STATIC " + userToGet.getUsername());
-                                Log.e("NEW", "onEvent: STATIC TAILLE usersUsingApp1 " + usersUsingApp1.size());
-
                             }
                         }
                     }

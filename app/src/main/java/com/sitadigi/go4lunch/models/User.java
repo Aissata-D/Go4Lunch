@@ -9,12 +9,11 @@ public class User {
     private String email;
     @Nullable
     private String urlPicture;
-    private String userRestoId;
-    private String userRestoName;
-    private  String userRestoType;
+    private String userRestaurantId;
+    private String userRestaurantName;
+    private  String userRestaurantType;
 
-   // public User() {
-    //}
+
 
     public User(String uid, String username, String email,
                 @Nullable String urlPicture) {
@@ -22,18 +21,18 @@ public class User {
         this.username = username;
         this.email = email;
         this.urlPicture = urlPicture;
-        this.userRestoId = "NoRestoChoice";
+        this.userRestaurantId = "NoRestoChoice";
     }
 
     public User(String uid, String username, String email, @Nullable String urlPicture,
-                String userRestoId, String userRestoName, String userRestoType) {
+                String userRestaurantId, String userRestaurantName, String userRestaurantType) {
         this.uid = uid;
         this.username = username;
         this.email = email;
         this.urlPicture = urlPicture;
-        this.userRestoId = userRestoId;
-        this.userRestoName = userRestoName;
-        this.userRestoType = userRestoType;
+        this.userRestaurantId = userRestaurantId;
+        this.userRestaurantName = userRestaurantName;
+        this.userRestaurantType = userRestaurantType;
     }
 //-------------------GETTER----------------------------------------
 
@@ -54,16 +53,16 @@ public class User {
         return urlPicture;
     }
 
-    public String getUserRestoId() {
-        return userRestoId;
+    public String getUserRestaurantId() {
+        return userRestaurantId;
     }
 
-    public String getUserRestoName() {
-        return userRestoName;
+    public String getUserRestaurantName() {
+        return userRestaurantName;
     }
 
-    public String getUserRestoType() {
-        return userRestoType;
+    public String getUserRestaurantType() {
+        return userRestaurantType;
     }
     //------------------SETTER----------------------------------------
 
@@ -83,15 +82,15 @@ public class User {
         this.urlPicture = urlPicture;
     }
 
-    public void setUserRestoId(String userRestoId) {
-        this.userRestoId = userRestoId;
+    public void setUserRestaurantId(String userRestaurantId) {
+        this.userRestaurantId = userRestaurantId;
     }
 
-    public void setUserRestoName(String userRestoName) {
-        this.userRestoName = userRestoName;
+    public void setUserRestaurantName(String userRestaurantName) {
+        this.userRestaurantName = userRestaurantName;
     }
 
-    public void setUserRestoType(String userRestoType) {
-        this.userRestoType = userRestoType;
+    public void setUserRestaurantType(String userRestaurantType) {
+        this.userRestaurantType = userRestaurantType;
     }
 }

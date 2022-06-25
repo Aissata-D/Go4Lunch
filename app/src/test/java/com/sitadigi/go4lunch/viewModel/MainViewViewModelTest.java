@@ -81,7 +81,7 @@ public class MainViewViewModelTest  {
     @Test
     public void testGetRestaurantDistance() {
 
-        String restaurantDistance = "restaurantDistance";
+        int restaurantDistance = 123;
         //Result wanted
         when(mockViewModel.getRestaurantDistance(origins,destinations))
                 .thenReturn(restaurantDistance);
@@ -136,7 +136,8 @@ public class MainViewViewModelTest  {
         googleMapApiClassMutable.setValue(googleMapApiClass);
         //Assemble
         when(fakeMock.streamFetchListOfNearRestaurant(
-                location, 1500, "restaurant","AIzaSyDsQUD7ukIhqdJYZIQxj535IvrDRrkrH08")
+                location, 1500, "restaurant","AIzaSyDsQUD7ukIhqdJYZIQxj535IvrDRrkrH08",
+                "google.maps.places.RankBy.DISTANCE")
         ).thenReturn(Observable.just(googleMapApiClass));
         //Act
         mMainViewViewModel.getSearchData().observeForever(dataObserver);
@@ -154,7 +155,7 @@ public class MainViewViewModelTest  {
         MutableLiveData<Location> locationMutableLiveData = new MutableLiveData<>();
         Location location = new Location("");
         location.setLatitude(45.76667);
-        location.setLatitude(46.76667);
+        location.setLongitude(46.76667);
         locationMutableLiveData.setValue(location);
         //Result wanted
         when(mockViewModel.getLocationMutableLiveData()).thenReturn(locationMutableLiveData);

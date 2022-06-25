@@ -1,14 +1,14 @@
 package com.sitadigi.go4lunch.ui.workmaters;
 
-import static com.sitadigi.go4lunch.DetailActivity.RESTO_ADRESSES;
-import static com.sitadigi.go4lunch.DetailActivity.RESTO_ID;
-import static com.sitadigi.go4lunch.DetailActivity.RESTO_NAME;
-import static com.sitadigi.go4lunch.DetailActivity.RESTO_OPENINGHOURS;
-import static com.sitadigi.go4lunch.DetailActivity.RESTO_PHONE_NUMBER;
-import static com.sitadigi.go4lunch.DetailActivity.RESTO_PHOTO_URL;
-import static com.sitadigi.go4lunch.DetailActivity.RESTO_RATING;
-import static com.sitadigi.go4lunch.DetailActivity.RESTO_TYPE;
-import static com.sitadigi.go4lunch.DetailActivity.RESTO_WEBSITE;
+import static com.sitadigi.go4lunch.DetailActivity.RESTAURANT_ADDRESS;
+import static com.sitadigi.go4lunch.DetailActivity.RESTAURANT_ID;
+import static com.sitadigi.go4lunch.DetailActivity.RESTAURANT_NAME;
+import static com.sitadigi.go4lunch.DetailActivity.RESTAURANT_OPENINGHOURS;
+import static com.sitadigi.go4lunch.DetailActivity.RESTAURANT_PHONE_NUMBER;
+import static com.sitadigi.go4lunch.DetailActivity.RESTAURANT_PHOTO_URL;
+import static com.sitadigi.go4lunch.DetailActivity.RESTAURANT_RATING;
+import static com.sitadigi.go4lunch.DetailActivity.RESTAURANT_TYPE;
+import static com.sitadigi.go4lunch.DetailActivity.RESTAURANT_WEBSITE;
 
 import android.content.Intent;
 import android.util.Log;
@@ -32,14 +32,13 @@ import com.sitadigi.go4lunch.viewModel.MainViewViewModel;
 import java.util.List;
 
 public class WorkmateAdapter extends RecyclerView.Adapter<WorkmateAdapter.WorkmateViewHolder> {
-
     /**
      * The list of restaurant adapter
      */
     @NonNull
     private final List<User> mUsers;
-    MainViewViewModel mMainViewViewModel;
     public int mPosition;
+    MainViewViewModel mMainViewViewModel;
     List<GoogleMapApiClass.Result> mRestaurants;
 
     /**
@@ -49,7 +48,7 @@ public class WorkmateAdapter extends RecyclerView.Adapter<WorkmateAdapter.Workma
      */
 
     public WorkmateAdapter(@NonNull List<User> users, MainViewViewModel mainViewViewModel
-            ,List<GoogleMapApiClass.Result> restaurants) {
+            , List<GoogleMapApiClass.Result> restaurants) {
         mUsers = users;
         mMainViewViewModel = mainViewViewModel;
         mRestaurants = restaurants;
@@ -70,54 +69,52 @@ public class WorkmateAdapter extends RecyclerView.Adapter<WorkmateAdapter.Workma
             @Override
             public void onClick(View v) {
                 mPosition = holder.getAdapterPosition();
-                //GoogleMapApiClass.Result restaurant = mRestaurants.get(mPosition);
-                for(GoogleMapApiClass.Result result : mRestaurants){
-                    if(result.getPlaceId().equals(mUsers.get(mPosition).getUserRestoId())
-                            && result.getName().equals(mUsers.get(mPosition).getUserRestoName())){
+                for (GoogleMapApiClass.Result result : mRestaurants) {
+                    if (result.getPlaceId().equals(mUsers.get(mPosition).getUserRestaurantId())
+                            && result.getName().equals(mUsers.get(mPosition).getUserRestaurantName())) {
                         GoogleMapApiClass.Result restaurant = result;
-                Intent intentDetail = new Intent(v.getContext(), DetailActivity.class);
-                intentDetail.putExtra(RESTO_ID, restaurant.getPlaceId());
-                intentDetail.putExtra(RESTO_NAME, restaurant.getName());
-                if((restaurant.getTypes()) != null && (restaurant.getTypes().get(0))!=null) {
-                    String restoAdresses = restaurant.getVicinity();
-                    intentDetail.putExtra(RESTO_ADRESSES, restoAdresses);
-                    String restoType = restaurant.getTypes().get(0);
-                    intentDetail.putExtra(RESTO_TYPE, restoType);
-                }
-                if(restaurant.getOpeningHours() != null && restaurant.getOpeningHours().getOpenNow() != null) {
-                    intentDetail.putExtra(RESTO_OPENINGHOURS, restaurant.getOpeningHours().getOpenNow());
-                }
-                if (restaurant.getPhotos() != null) {
-                    if (restaurant.getPhotos().get(0).getPhotoReference() != null) {
-                        intentDetail.putExtra(RESTO_PHOTO_URL, restaurant.getPhotos().get(0).getPhotoReference());
-                    }
-                }
-                if(restaurant.getRating()!=null){
-                    float rating =  restaurant.getRating().floatValue();
-                    intentDetail.putExtra(RESTO_RATING, rating);
-                }
-                List<String> restaurantNumberAndWebSite =mMainViewViewModel
-                        .loadRestaurantPhoneNumberAndWebSite(restaurant);
-                if(restaurantNumberAndWebSite.size() >=1){
-                    if(restaurantNumberAndWebSite.get(0) != null){
-                        String restaurantPhoneNumber = restaurantNumberAndWebSite.get(0);
-                        intentDetail.putExtra(RESTO_PHONE_NUMBER, restaurantPhoneNumber);
-                        Log.e("DETAIL", "onMarkerClick: Phone "+restaurantPhoneNumber );
-                    }
-                    if(restaurantNumberAndWebSite.size() >=2) {
-                        if (restaurantNumberAndWebSite.get(1) != null) {
-                            String restaurantWebSite = restaurantNumberAndWebSite.get(1);
-                            intentDetail.putExtra(RESTO_WEBSITE, restaurantWebSite);
+                        Intent intentDetail = new Intent(v.getContext(), DetailActivity.class);
+                        intentDetail.putExtra(RESTAURANT_ID, restaurant.getPlaceId());
+                        intentDetail.putExtra(RESTAURANT_NAME, restaurant.getName());
+                        if ((restaurant.getTypes()) != null && (restaurant.getTypes().get(0)) != null) {
+                            String restaurantAddresses = restaurant.getVicinity();
+                            intentDetail.putExtra(RESTAURANT_ADDRESS, restaurantAddresses);
+                            String restaurantType = restaurant.getTypes().get(0);
+                            intentDetail.putExtra(RESTAURANT_TYPE, restaurantType);
                         }
-                    }else{
-                        Log.e("DETAIL", "onMarkerClick: phone size<2 " );
-                    }
-                }   else{
-                    Log.e("DETAIL", "onMarkerClick: website size<1 " );
+                        if (restaurant.getOpeningHours() != null && restaurant.getOpeningHours().getOpenNow() != null) {
+                            intentDetail.putExtra(RESTAURANT_OPENINGHOURS, restaurant.getOpeningHours().getOpenNow());
+                        }
+                        if (restaurant.getPhotos() != null) {
+                            if (restaurant.getPhotos().get(0).getPhotoReference() != null) {
+                                intentDetail.putExtra(RESTAURANT_PHOTO_URL, restaurant.getPhotos().get(0).getPhotoReference());
+                            }
+                        }
+                        if (restaurant.getRating() != null) {
+                            float rating = restaurant.getRating().floatValue();
+                            intentDetail.putExtra(RESTAURANT_RATING, rating);
+                        }
+                        List<String> restaurantNumberAndWebSite = mMainViewViewModel
+                                .loadRestaurantPhoneNumberAndWebSite(restaurant);
+                        if (restaurantNumberAndWebSite.size() >= 1) {
+                            if (restaurantNumberAndWebSite.get(0) != null) {
+                                String restaurantPhoneNumber = restaurantNumberAndWebSite.get(0);
+                                intentDetail.putExtra(RESTAURANT_PHONE_NUMBER, restaurantPhoneNumber);
+                            }
+                            if (restaurantNumberAndWebSite.size() >= 2) {
+                                if (restaurantNumberAndWebSite.get(1) != null) {
+                                    String restaurantWebSite = restaurantNumberAndWebSite.get(1);
+                                    intentDetail.putExtra(RESTAURANT_WEBSITE, restaurantWebSite);
+                                }
+                            } else {
+                                Log.e("DETAIL", "onMarkerClick: phone size<2 ");
+                            }
+                        } else {
+                            Log.e("DETAIL", "onMarkerClick: website size<1 ");
 
-                }
-                v.getContext().startActivity(intentDetail);
-            }
+                        }
+                        v.getContext().startActivity(intentDetail);
+                    }
                 }
             }
         });
@@ -129,14 +126,12 @@ public class WorkmateAdapter extends RecyclerView.Adapter<WorkmateAdapter.Workma
         return mUsers.size();
     }
 
-
     /**
      * <p>ViewHolder for task items in the tasks list</p>
      *
      * @author Gaëtan HERFRAY
      */
     class WorkmateViewHolder extends RecyclerView.ViewHolder {
-
         /**
          * The TextView displaying the name of the restaurent
          */
@@ -163,9 +158,9 @@ public class WorkmateAdapter extends RecyclerView.Adapter<WorkmateAdapter.Workma
         void bind(User users) {
             String userText = users.getUsername() + " hasn't decided yet";
             ;
-            if (!users.getUserRestoId().equals("NoRestoChoice")) {
-                if (!users.getUserRestoName().equals("restoNameCreated"))
-                    userText = users.getUsername() + " is eating " + users.getUserRestoType() + " " + "(" + users.getUserRestoName() + ")";
+            if (!users.getUserRestaurantId().equals("NoRestoChoice")) {
+                if (!users.getUserRestaurantName().equals("restoNameCreated"))
+                    userText = users.getUsername() + " is eating " + users.getUserRestaurantType() + " " + "(" + users.getUserRestaurantName() + ")";
             }
             tvUser.setText(userText);
             //GLIDE TO SHOW PHOTO

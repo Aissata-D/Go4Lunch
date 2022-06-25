@@ -1,14 +1,14 @@
 package com.sitadigi.go4lunch.ui.mapView;
 
-import static com.sitadigi.go4lunch.DetailActivity.RESTO_ID;
-import static com.sitadigi.go4lunch.DetailActivity.RESTO_NAME;
-import static com.sitadigi.go4lunch.DetailActivity.RESTO_OPENINGHOURS;
-import static com.sitadigi.go4lunch.DetailActivity.RESTO_PHONE_NUMBER;
-import static com.sitadigi.go4lunch.DetailActivity.RESTO_PHOTO_URL;
-import static com.sitadigi.go4lunch.DetailActivity.RESTO_RATING;
-import static com.sitadigi.go4lunch.DetailActivity.RESTO_TYPE;
-import static com.sitadigi.go4lunch.DetailActivity.RESTO_ADRESSES;
-import static com.sitadigi.go4lunch.DetailActivity.RESTO_WEBSITE;
+import static com.sitadigi.go4lunch.DetailActivity.RESTAURANT_ID;
+import static com.sitadigi.go4lunch.DetailActivity.RESTAURANT_NAME;
+import static com.sitadigi.go4lunch.DetailActivity.RESTAURANT_OPENINGHOURS;
+import static com.sitadigi.go4lunch.DetailActivity.RESTAURANT_PHONE_NUMBER;
+import static com.sitadigi.go4lunch.DetailActivity.RESTAURANT_PHOTO_URL;
+import static com.sitadigi.go4lunch.DetailActivity.RESTAURANT_RATING;
+import static com.sitadigi.go4lunch.DetailActivity.RESTAURANT_TYPE;
+import static com.sitadigi.go4lunch.DetailActivity.RESTAURANT_ADDRESS;
+import static com.sitadigi.go4lunch.DetailActivity.RESTAURANT_WEBSITE;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -64,13 +64,13 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
                              ViewGroup container, Bundle savedInstanceState) {
         GoogleMapApiCallsRepository googleMapApiCallsRepository = new GoogleMapApiCallsRepository();
 
-        mMainViewViewModel = new ViewModelProvider(requireActivity(),new MainViewModelFactory(googleMapApiCallsRepository)).get(MainViewViewModel.class);
+        mMainViewViewModel = new ViewModelProvider(requireActivity()
+                , new MainViewModelFactory(googleMapApiCallsRepository)).get(MainViewViewModel.class);
         binding = FragmentMapViewBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
         mapViewPlaceHolder = binding.mapViewPlaceholder;
         resultList = new ArrayList<>();
         googleMapView();
-
 
         return root;
     }
@@ -99,15 +99,14 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         // Turn on the My Location layer and the related control on the map.
         mUtilsMapView.updateLocationUI(this.googleMap);
         // Get the current location of the device and set the position of the map.
-        mMainViewViewModel.getAllUser().observe(getViewLifecycleOwner(),AllUsers ->{
+        mMainViewViewModel.getAllUser().observe(getViewLifecycleOwner(), AllUsers -> {
             mUsers.clear();
             mUsers = AllUsers;
             mUtilsMapView.GeolocationOfDeviceAndUpdateGoogleMapView(this.googleMap
-                    ,this.getViewLifecycleOwner(),mUsers);
+                    , this.getViewLifecycleOwner(), mUsers);
 
         });
-        //Hint PlaceHolder
-        //mapViewPlaceHolder.setVisibility(View.GONE);
+
         googleMap.setOnMarkerClickListener(this);
         mMainViewViewModel.getResultSearchLatLng().observe(getViewLifecycleOwner(), LatLngPlaceResponse -> {
             latLngPlaceSelected = LatLngPlaceResponse;
@@ -119,14 +118,12 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
                 );
             } else {
-                mMainViewViewModel.getAllUser().observe(getViewLifecycleOwner(),AllUsers ->{
+                mMainViewViewModel.getAllUser().observe(getViewLifecycleOwner(), AllUsers -> {
                     mUsers.clear();
                     mUsers = AllUsers;
                     mUtilsMapView.GeolocationOfDeviceAndUpdateGoogleMapView(this.googleMap
-                            ,this.getViewLifecycleOwner(), mUsers);
-
+                            , this.getViewLifecycleOwner(), mUsers);
                 });
-
             }
         });
     }
@@ -134,59 +131,57 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public boolean onMarkerClick(@NonNull Marker marker) {
 
-
         resultList = mUtilsMapView.getNearRestaurantList();
         String markerName = marker.getTitle();
         LatLng markerPosition = marker.getPosition();
         for (GoogleMapApiClass.Result restaurant : resultList) {
 
-            LatLng restoPosition = new LatLng(restaurant.getGeometry().getLocation().getLat(),
+            LatLng restaurantPosition = new LatLng(restaurant.getGeometry().getLocation().getLat(),
                     restaurant.getGeometry().getLocation().getLng());
-            String restoName = restaurant.getName();
-            if ((restoName.equals(markerName)) && (restoPosition.equals(markerPosition))) {
+            String restaurantName = restaurant.getName();
+            if ((restaurantName.equals(markerName)) && (restaurantPosition.equals(markerPosition))) {
                 Intent intentDetail = new Intent(this.getActivity(), DetailActivity.class);
-                intentDetail.putExtra(RESTO_ID, restaurant.getPlaceId());
-                intentDetail.putExtra(RESTO_NAME, restoName);
+                intentDetail.putExtra(RESTAURANT_ID, restaurant.getPlaceId());
+                intentDetail.putExtra(RESTAURANT_NAME, restaurantName);
                 if ((restaurant.getOpeningHours() != null) && (restaurant.getOpeningHours().getOpenNow()) != null) {
-                    intentDetail.putExtra(RESTO_OPENINGHOURS, restaurant.getOpeningHours().getOpenNow());
+                    intentDetail.putExtra(RESTAURANT_OPENINGHOURS, restaurant.getOpeningHours().getOpenNow());
                 }
                 if (restaurant.getPhotos() != null) {
                     if (restaurant.getPhotos().get(0).getPhotoReference() != null) {
-                        intentDetail.putExtra(RESTO_PHOTO_URL, restaurant.getPhotos().get(0).getPhotoReference());
+                        intentDetail.putExtra(RESTAURANT_PHOTO_URL, restaurant.getPhotos().get(0).getPhotoReference());
                     }
                 }
                 if ((restaurant.getTypes()) != null && (restaurant.getTypes().get(0)) != null) {
-                    String restoAdresses = restaurant.getVicinity();
-                    intentDetail.putExtra(RESTO_ADRESSES, restoAdresses);
-                    String restoType = restaurant.getTypes().get(0);
-                    intentDetail.putExtra(RESTO_TYPE, restoType);
+                    String restaurantAddresses = restaurant.getVicinity();
+                    intentDetail.putExtra(RESTAURANT_ADDRESS, restaurantAddresses);
+                    String restaurantType = restaurant.getTypes().get(0);
+                    intentDetail.putExtra(RESTAURANT_TYPE, restaurantType);
                 }
-                if(restaurant.getRating()!=null){
-                    float rating =  restaurant.getRating().floatValue();
-                    intentDetail.putExtra(RESTO_RATING, rating);
+                if (restaurant.getRating() != null) {
+                    float rating = restaurant.getRating().floatValue();
+                    intentDetail.putExtra(RESTAURANT_RATING, rating);
                 }
 
-                List<String> restaurantNumberAndWebSite =mMainViewViewModel
+                List<String> restaurantNumberAndWebSite = mMainViewViewModel
                         .loadRestaurantPhoneNumberAndWebSite(restaurant);
-                if(restaurantNumberAndWebSite.size() >=1){
-                    if(restaurantNumberAndWebSite.get(0) != null){
+                if (restaurantNumberAndWebSite.size() >= 1) {
+                    if (restaurantNumberAndWebSite.get(0) != null) {
                         String restaurantPhoneNumber = restaurantNumberAndWebSite.get(0);
-                        intentDetail.putExtra(RESTO_PHONE_NUMBER, restaurantPhoneNumber);
-                        Log.e("DETAIL", "onMarkerClick: Phone "+restaurantPhoneNumber );
+                        intentDetail.putExtra(RESTAURANT_PHONE_NUMBER, restaurantPhoneNumber);
                     }
-                    if(restaurantNumberAndWebSite.size() >=2) {
+                    if (restaurantNumberAndWebSite.size() >= 2) {
                         if (restaurantNumberAndWebSite.get(1) != null) {
                             String restaurantWebSite = restaurantNumberAndWebSite.get(1);
-                            intentDetail.putExtra(RESTO_WEBSITE, restaurantWebSite);
+                            intentDetail.putExtra(RESTAURANT_WEBSITE, restaurantWebSite);
                         }
-                    }else{
-                        Log.e("DETAIL", "onMarkerClick: phone size<2 " );
+                    } else {
+                        Log.e("DETAIL", "onMarkerClick: phone size<2 ");
                     }
-                }   else{
-                         Log.e("DETAIL", "onMarkerClick: website size<1 " );
+                } else {
+                    Log.e("DETAIL", "onMarkerClick: website size<1 ");
 
                 }
-                intentDetail.putExtra(RESTO_ID, restaurant.getPlaceId());
+                intentDetail.putExtra(RESTAURANT_ID, restaurant.getPlaceId());
                 startActivity(intentDetail);
             }
         }
@@ -207,7 +202,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         }
         mUtilsMapView.updateLocationUI(this.googleMap);
     }
-
 
 
     @Override

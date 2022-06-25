@@ -1,14 +1,14 @@
 package com.sitadigi.go4lunch.ui.listView;
 
-import static com.sitadigi.go4lunch.DetailActivity.RESTO_ID;
-import static com.sitadigi.go4lunch.DetailActivity.RESTO_NAME;
-import static com.sitadigi.go4lunch.DetailActivity.RESTO_OPENINGHOURS;
-import static com.sitadigi.go4lunch.DetailActivity.RESTO_PHONE_NUMBER;
-import static com.sitadigi.go4lunch.DetailActivity.RESTO_PHOTO_URL;
-import static com.sitadigi.go4lunch.DetailActivity.RESTO_RATING;
-import static com.sitadigi.go4lunch.DetailActivity.RESTO_TYPE;
-import static com.sitadigi.go4lunch.DetailActivity.RESTO_ADRESSES;
-import static com.sitadigi.go4lunch.DetailActivity.RESTO_WEBSITE;
+import static com.sitadigi.go4lunch.DetailActivity.RESTAURANT_ID;
+import static com.sitadigi.go4lunch.DetailActivity.RESTAURANT_NAME;
+import static com.sitadigi.go4lunch.DetailActivity.RESTAURANT_OPENINGHOURS;
+import static com.sitadigi.go4lunch.DetailActivity.RESTAURANT_PHONE_NUMBER;
+import static com.sitadigi.go4lunch.DetailActivity.RESTAURANT_PHOTO_URL;
+import static com.sitadigi.go4lunch.DetailActivity.RESTAURANT_RATING;
+import static com.sitadigi.go4lunch.DetailActivity.RESTAURANT_TYPE;
+import static com.sitadigi.go4lunch.DetailActivity.RESTAURANT_ADDRESS;
+import static com.sitadigi.go4lunch.DetailActivity.RESTAURANT_WEBSITE;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -31,6 +31,7 @@ import com.sitadigi.go4lunch.models.GoogleMapApiClass;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import com.sitadigi.go4lunch.R;
 import com.sitadigi.go4lunch.models.User;
 import com.sitadigi.go4lunch.utils.UtilsDetailActivity;
@@ -39,23 +40,21 @@ import com.sitadigi.go4lunch.viewModel.MainViewViewModel;
 
 public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListViewHolder> {
 
-    String urlPart1 ="";
-    String urlPart2 = "";
-    String urlPart3 = "";
-    String urlConcat = "";
-
     /**
      * The list of restaurant adapter
      */
     @NonNull
-    private final List<GoogleMapApiClass.Result> mRestaurants ;
-    public int mPosition;
-    String mOriginDistance;
+    private final List<GoogleMapApiClass.Result> mRestaurants;
     /**
      * The list of All user using application
-     *
      */
     private final List<User> mUsers;
+    public int mPosition;
+    String urlPart1 = "";
+    String urlPart2 = "";
+    String urlPart3 = "";
+    String urlConcat = "";
+    String mOriginDistance;
     private MainViewViewModel mMainViewViewModel;
     private UtilsDetailActivity utilsDetailActivity;
 
@@ -65,7 +64,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
      * @param restaurants the list of restaurant the adapter
      */
     public ListViewAdapter(@NonNull final List<GoogleMapApiClass.Result> restaurants,
-                           List<User> mUsers, MainViewViewModel mainViewViewModel,String mOriginsDistance) {
+                           List<User> mUsers, MainViewViewModel mainViewViewModel, String mOriginsDistance) {
         this.mRestaurants = restaurants;
         this.mUsers = mUsers;
         this.mMainViewViewModel = mainViewViewModel;
@@ -94,44 +93,44 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
                 mPosition = listViewHolder.getAdapterPosition();
                 GoogleMapApiClass.Result restaurant = mRestaurants.get(mPosition);
                 Intent intentDetail = new Intent(v.getContext(), DetailActivity.class);
-                intentDetail.putExtra(RESTO_ID, restaurant.getPlaceId());
-                intentDetail.putExtra(RESTO_NAME, restaurant.getName());
-                if((restaurant.getTypes()) != null && (restaurant.getTypes().get(0))!=null) {
-                    String restoAdresses = restaurant.getVicinity();
-                    intentDetail.putExtra(RESTO_ADRESSES, restoAdresses);
-                    String restoType = restaurant.getTypes().get(0);
-                    intentDetail.putExtra(RESTO_TYPE, restoType);
+                intentDetail.putExtra(RESTAURANT_ID, restaurant.getPlaceId());
+                intentDetail.putExtra(RESTAURANT_NAME, restaurant.getName());
+                if ((restaurant.getTypes()) != null && (restaurant.getTypes().get(0)) != null) {
+                    String restaurantAddress = restaurant.getVicinity();
+                    intentDetail.putExtra(RESTAURANT_ADDRESS, restaurantAddress);
+                    String restaurantType = restaurant.getTypes().get(0);
+                    intentDetail.putExtra(RESTAURANT_TYPE, restaurantType);
                 }
-                if(restaurant.getOpeningHours() != null && restaurant.getOpeningHours().getOpenNow() != null) {
-                    intentDetail.putExtra(RESTO_OPENINGHOURS, restaurant.getOpeningHours().getOpenNow());
+                if (restaurant.getOpeningHours() != null && restaurant.getOpeningHours().getOpenNow() != null) {
+                    intentDetail.putExtra(RESTAURANT_OPENINGHOURS, restaurant.getOpeningHours().getOpenNow());
                 }
                 if (restaurant.getPhotos() != null) {
                     if (restaurant.getPhotos().get(0).getPhotoReference() != null) {
-                        intentDetail.putExtra(RESTO_PHOTO_URL, restaurant.getPhotos().get(0).getPhotoReference());
+                        intentDetail.putExtra(RESTAURANT_PHOTO_URL, restaurant.getPhotos().get(0).getPhotoReference());
                     }
                 }
-                if(restaurant.getRating()!=null){
-                    float rating =  restaurant.getRating().floatValue();
-                    intentDetail.putExtra(RESTO_RATING, rating);
+                if (restaurant.getRating() != null) {
+                    float rating = restaurant.getRating().floatValue();
+                    intentDetail.putExtra(RESTAURANT_RATING, rating);
                 }
-                List<String> restaurantNumberAndWebSite =mMainViewViewModel
+                List<String> restaurantNumberAndWebSite = mMainViewViewModel
                         .loadRestaurantPhoneNumberAndWebSite(restaurant);
-                if(restaurantNumberAndWebSite.size() >=1){
-                    if(restaurantNumberAndWebSite.get(0) != null){
+                if (restaurantNumberAndWebSite.size() >= 1) {
+                    if (restaurantNumberAndWebSite.get(0) != null) {
                         String restaurantPhoneNumber = restaurantNumberAndWebSite.get(0);
-                        intentDetail.putExtra(RESTO_PHONE_NUMBER, restaurantPhoneNumber);
-                        Log.e("DETAIL", "onMarkerClick: Phone "+restaurantPhoneNumber );
+                        intentDetail.putExtra(RESTAURANT_PHONE_NUMBER, restaurantPhoneNumber);
+                        Log.e("DETAIL", "onMarkerClick: Phone " + restaurantPhoneNumber);
                     }
-                    if(restaurantNumberAndWebSite.size() >=2) {
+                    if (restaurantNumberAndWebSite.size() >= 2) {
                         if (restaurantNumberAndWebSite.get(1) != null) {
                             String restaurantWebSite = restaurantNumberAndWebSite.get(1);
-                            intentDetail.putExtra(RESTO_WEBSITE, restaurantWebSite);
+                            intentDetail.putExtra(RESTAURANT_WEBSITE, restaurantWebSite);
                         }
-                    }else{
-                        Log.e("DETAIL", "onMarkerClick: phone size<2 " );
+                    } else {
+                        Log.e("DETAIL", "onMarkerClick: phone size<2 ");
                     }
-                }   else{
-                    Log.e("DETAIL", "onMarkerClick: website size<1 " );
+                } else {
+                    Log.e("DETAIL", "onMarkerClick: website size<1 ");
 
                 }
                 v.getContext().startActivity(intentDetail);
@@ -144,6 +143,12 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
         return mRestaurants.size();
     }
 
+    /**
+     * get URL of restaurant image.
+     */
+    Uri getUrl(String base) {
+        return Uri.parse(base);
+    }
 
     /**
      * <p>ViewHolder for task items in the tasks list</p>
@@ -181,12 +186,13 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
         }
 
         /**
-         * Binds a restaurent to the item view.
+         * Binds a restaurant to the item view.
+         *
          * @param restaurant the task to bind in the item view
          */
         void bind(GoogleMapApiClass.Result restaurant) {
 
-            if(restaurant.getPhotos() != null) {
+            if (restaurant.getPhotos() != null) {
                 if (restaurant.getPhotos().get(0).getPhotoReference() != null) {
                     urlPart2 = restaurant.getPhotos().get(0).getPhotoReference();
                 }
@@ -203,54 +209,39 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
                     .into(restaurantImageView);
 
             restaurantName.setText(restaurant.getName());
-            String restaurantAddressAndType = restaurant.getTypes().get(0) +" - "
-                    +restaurant.getVicinity();
+            String restaurantAddressAndType = restaurant.getTypes().get(0) + " - "
+                    + restaurant.getVicinity();
             restaurantTypeAddress.setText(restaurantAddressAndType);
-            if(restaurant.getOpeningHours() != null && restaurant.getOpeningHours().getOpenNow() != null){
-                if(restaurant.getOpeningHours().getOpenNow()){
+            if (restaurant.getOpeningHours() != null && restaurant.getOpeningHours().getOpenNow() != null) {
+                if (restaurant.getOpeningHours().getOpenNow()) {
                     restaurantOpeningHour.setText(R.string.resto_open_now);
-                }else {
-                    restaurantOpeningHour.setText(R.string.resto_close);}
-            }else {
-                restaurantOpeningHour.setText(R.string.restoopening_hour_unknow);}
-            if(restaurant.getRating()!=null){
-                double ratingOld = restaurant.getRating()*0.6;
-                float rating =  (float)ratingOld;
-               // utilsDetailActivity.setRatingIcon1(restaurantRatingBar, rating);
+                } else {
+                    restaurantOpeningHour.setText(R.string.resto_close);
+                }
+            } else {
+                restaurantOpeningHour.setText(R.string.restoopening_hour_unknow);
+            }
+            if (restaurant.getRating() != null) {
+                double ratingOld = restaurant.getRating() * 0.6;
+                float rating = (float) ratingOld;
+                // utilsDetailActivity.setRatingIcon1(restaurantRatingBar, rating);
                 restaurantRatingBar.setRating(rating);
 
             }
             //Filtered list workmate who eats in a same restaurant
             List<User> workmateInSameRestaurant = new ArrayList<>();
-            for(User user : mUsers){
-                if(user.getUserRestoId().equals(restaurant.getPlaceId())){
-                       // if (workmateInSameRestaurant.size()==0) {
-                            workmateInSameRestaurant.add(user);
-                       // }else{
-                          //  for (User user1 : workmateInSameRestaurant){
-                          //      if (!user1.equals(user)){
-                            //        workmateInSameRestaurant.add(user);
-                             //   }
-                           // }
-                       //}
+            for (User user : mUsers) {
+                if (user.getUserRestaurantId().equals(restaurant.getPlaceId())) {
+                    workmateInSameRestaurant.add(user);
                 }
             }
-            String workmateNumber = "( "+ workmateInSameRestaurant.size()+" )";
+            String workmateNumber = "( " + workmateInSameRestaurant.size() + " )";
             restaurantWorkmateNumber.setText(workmateNumber);
+            String destination = restaurant.getGeometry().getLocation().getLat() + "," + restaurant.getGeometry().getLocation().getLng();
+            int restaurantDistance = mMainViewViewModel.getRestaurantDistance(mOriginDistance, destination);
+            String restaurantDistanceText = (restaurantDistance)  +" m";
+            this.restaurantDistance.setText(restaurantDistanceText);
 
-            String destination =  restaurant.getGeometry().getLocation().getLat()+ "," +restaurant.getGeometry().getLocation().getLng();
-            Log.e("TAG", "bind:destination "+destination );
-            String restaurantDistance = mMainViewViewModel.getRestaurantDistance(mOriginDistance,destination);
-            this.restaurantDistance.setText(restaurantDistance);
         }
-    }
-
-    /**
-     * get URL of restaurant image.
-     *
-     */
-    Uri getUrl(String base){
-        Uri uri = Uri.parse( base );
-        return uri;
     }
 }

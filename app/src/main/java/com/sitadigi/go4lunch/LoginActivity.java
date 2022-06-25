@@ -1,12 +1,12 @@
 package com.sitadigi.go4lunch;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
@@ -40,7 +40,6 @@ public class LoginActivity extends AppCompatActivity {
     private void setupListeners() {
 
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
-            // @SuppressLint("ResourceType")
             @Override
             // we are calling method for on authentication state changed ==> if user changed
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -78,7 +77,6 @@ public class LoginActivity extends AppCompatActivity {
                         .setTheme(R.style.LoginTheme)
                         .setAvailableProviders(providers)
                         .setIsSmartLockEnabled(false, true)
-                        //.setLogo(R.drawable.fond_d_ecran)
                         .build(),
                 RC_SIGN_IN);
     }

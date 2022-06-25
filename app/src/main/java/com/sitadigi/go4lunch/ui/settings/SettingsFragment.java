@@ -23,15 +23,15 @@ public class SettingsFragment extends Fragment {
 
     public static final String YES = "YES";
     public static final String NO = "NO";
+    public static final String SHARED_PREF_USER_INFO_NOTIFICATION = "SHARED_PREF_USER_INFO_NOTIFICATION";
+    public static final String SHARED_PREF_USER_INFO = "SHARED_PREF_USER_INFO";
     RadioGroup mRadioGroup;
     RadioButton btnRadioYes;
     RadioButton btnRadioNo;
     TextView textView;
-    private FragmentSettingsBinding binding;
-    public static final String SHARED_PREF_USER_INFO_NOTIFICATION = "SHARED_PREF_USER_INFO_NOTIFICATION" ;
-    public static final String SHARED_PREF_USER_INFO = "SHARED_PREF_USER_INFO";
-    private String decision="";
     String statusNotification = "";
+    private FragmentSettingsBinding binding;
+    private String decision = "";
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -43,7 +43,7 @@ public class SettingsFragment extends Fragment {
         mRadioGroup = binding.viewRadioGroup;
         btnRadioYes = binding.radioYes;
         btnRadioNo = binding.radioNo;
-        statusNotification = getActivity().getSharedPreferences(SHARED_PREF_USER_INFO, MODE_PRIVATE).getString(SHARED_PREF_USER_INFO_NOTIFICATION, null);
+        statusNotification = getActivity().getSharedPreferences(SHARED_PREF_USER_INFO, MODE_PRIVATE).getString(SHARED_PREF_USER_INFO_NOTIFICATION, YES);
 
         if (statusNotification.equals(YES)) {
             btnRadioYes.setChecked(true);
@@ -65,7 +65,7 @@ public class SettingsFragment extends Fragment {
                 final int yes = R.id.radio_yes;
                 final int no = R.id.radio_no;
 
-                switch(idChecked) {
+                switch (idChecked) {
                     case yes:
                         decision = YES;
                         editor.putString(SHARED_PREF_USER_INFO_NOTIFICATION, decision);
@@ -84,7 +84,6 @@ public class SettingsFragment extends Fragment {
             }
         });
     }
-
 
     @Override
     public void onDestroyView() {

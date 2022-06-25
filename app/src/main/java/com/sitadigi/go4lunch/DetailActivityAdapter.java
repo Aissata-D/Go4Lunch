@@ -51,32 +51,16 @@ public class DetailActivityAdapter extends RecyclerView.Adapter<DetailActivityAd
         return mUsers.size();
     }
 
-    /**
-     * Updates the list of tasks the adapter deals with.
-     *
-     * @param users the list of tasks the adapter deals with to set
-     */
-    void updateUsers(@NonNull final List<User> users) {
-        // this.mUsers.clear();
-        this.mUsers.addAll(users);
-        notifyDataSetChanged();
-    }
-
-    /**
-     * <p>ViewHolder for task items in the tasks list</p>
-     *
-     * @author Gaëtan HERFRAY
-     */
     class DetailActivityViewHolder extends RecyclerView.ViewHolder {
 
         /**
-         * The TextView displaying the name of the restaurent
+         * The TextView displaying the name of the restaurant
          */
         ImageView imgUserDetailActivity;
         TextView tvUserDetailActivity;
 
         /**
-         * Instantiates a new ListViewHolder.
+         * Instantiates a new  DetailActivityViewHolder.
          *
          * @param itemView the view of the task item
          */
@@ -88,9 +72,9 @@ public class DetailActivityAdapter extends RecyclerView.Adapter<DetailActivityAd
         }
 
         /**
-         * Binds a restaurent to the item view.
+         * Binds a restaurant to the item view.
          *
-         * @param users the task to bind in the item view
+         * @param users the user to bind in the item view
          */
         void bind(User users) {
             String userIsJoining = users.getUsername() + " is joining!";

@@ -27,22 +27,20 @@ import java.util.List;
 
 public class WorkmateFragment extends Fragment {
 
+    MainViewViewModel mainViewViewModel;
     private FragmentWorkmatersBinding binding;
     private RecyclerView mRecyclerView;
-    private List<User> users ;
+    private List<User> users;
     private List<GoogleMapApiClass.Result> allRestaurant;
     private String placeNameSelected;
     private TextView tvNoWorkmate;
-    MainViewViewModel mainViewViewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        WorkmateViewModel workmateViewModel =
-                new ViewModelProvider(this).get(WorkmateViewModel.class);
 
         GoogleMapApiCallsRepository googleMapApiCallsRepository = new GoogleMapApiCallsRepository();
-        mainViewViewModel = new ViewModelProvider(requireActivity(),new MainViewModelFactory(googleMapApiCallsRepository)).get(MainViewViewModel.class);
-
+        mainViewViewModel = new ViewModelProvider(requireActivity(), new MainViewModelFactory(
+                googleMapApiCallsRepository)).get(MainViewViewModel.class);
         binding = FragmentWorkmatersBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
@@ -52,7 +50,7 @@ public class WorkmateFragment extends Fragment {
         tvNoWorkmate = binding.noWorkmateFound;
         tvNoWorkmate.setVisibility(View.GONE);
 
-        workmateViewModel.getAllUser().observe(getViewLifecycleOwner(), usersLiveData -> {
+        mainViewViewModel.getAllUser().observe(getViewLifecycleOwner(), usersLiveData -> {
             users.clear();
             users.addAll(usersLiveData);
             initRecyclerView();
@@ -63,7 +61,7 @@ public class WorkmateFragment extends Fragment {
             initRecyclerView();
 
         });
-        mainViewViewModel.getRestaurant().observe(getViewLifecycleOwner(),Restaurants->{
+        mainViewViewModel.getRestaurant().observe(getViewLifecycleOwner(), Restaurants -> {
             allRestaurant.clear();
             allRestaurant.addAll(Restaurants);
             initRecyclerView();
@@ -77,7 +75,7 @@ public class WorkmateFragment extends Fragment {
         List<User> listOfUserFiltered = new ArrayList<>();
         if (placeNameSelected != null) {
             for (User filter : users) {
-                if (filter.getUserRestoName().equals(placeNameSelected)) {
+                if (filter.getUserRestaurantName().equals(placeNameSelected)) {
                     listOfUserFiltered.add(filter);
                 }
             }
@@ -88,14 +86,14 @@ public class WorkmateFragment extends Fragment {
                 tvNoWorkmate.setVisibility(View.GONE);
                 mRecyclerView.setVisibility(View.VISIBLE);
                 WorkmateAdapter workmateAdapter = new WorkmateAdapter(listOfUserFiltered
-                        ,mainViewViewModel,allRestaurant);
+                        , mainViewViewModel, allRestaurant);
                 mRecyclerView.setAdapter(workmateAdapter);
             }
 
         } else {
             tvNoWorkmate.setVisibility(View.GONE);
             mRecyclerView.setVisibility(View.VISIBLE);
-            WorkmateAdapter workmateAdapter = new WorkmateAdapter(users,mainViewViewModel,allRestaurant);
+            WorkmateAdapter workmateAdapter = new WorkmateAdapter(users, mainViewViewModel, allRestaurant);
             mRecyclerView.setAdapter(workmateAdapter);
 
         }

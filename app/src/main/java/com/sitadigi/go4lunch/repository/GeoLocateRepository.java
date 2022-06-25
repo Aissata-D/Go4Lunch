@@ -21,10 +21,10 @@ import com.sitadigi.go4lunch.viewModel.MainViewViewModel;
 public class GeoLocateRepository {
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1234;
     public boolean locationPermissionGranted;
-    public Location lastKnownLocation;
+    public Location lastKnownLocation = new Location("");
     public FusedLocationProviderClient fusedLocationProviderClient;
     public MutableLiveData<Location> locationMutableLiveData;
-    String location;
+    String location = "45.76667,46.76667";
 
     public GeoLocateRepository() {
         locationMutableLiveData = new MutableLiveData<>();
@@ -52,6 +52,8 @@ public class GeoLocateRepository {
          * Get the best and most recent location of the device, which may be null in rare
          * cases when a location is not available.
          */
+        lastKnownLocation.setLatitude(45.76667);
+        lastKnownLocation.setLongitude(46.76667);
         getLocationPermission(context, activity);
         try {
 
@@ -72,11 +74,19 @@ public class GeoLocateRepository {
                     public void onComplete(@NonNull Task<Location> task) {
                         if (task.isSuccessful()) {
                             // Set the map's camera position to the current location of the device.
+                           // if(task.getResult() != null) {
                             lastKnownLocation = task.getResult();
-                            location = lastKnownLocation.getLatitude() + "," + lastKnownLocation.getLongitude();
-                            locationMutableLiveData.setValue(lastKnownLocation);
-                            //moveCamera();
-                            mainViewViewModel.loadRestaurantData(location);
+
+                            try {
+                                Thread.sleep(4500);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                           // }
+                                location = lastKnownLocation.getLatitude() + "," + lastKnownLocation.getLongitude();
+                                locationMutableLiveData.setValue(lastKnownLocation);
+                                //moveCamera();
+                                mainViewViewModel.loadRestaurantData(location);
                         } else {
                             Log.e("TAG", "Exception: %s MainActivity", task.getException());
                         }

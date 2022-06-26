@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -18,6 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.sitadigi.go4lunch.databinding.FragmentSettingsBinding;
+import com.sitadigi.go4lunch.utils.ShowSignOutDialogueAlertAndDetailActivity;
 
 public class SettingsFragment extends Fragment {
 
@@ -29,6 +31,7 @@ public class SettingsFragment extends Fragment {
     RadioButton btnRadioYes;
     RadioButton btnRadioNo;
     TextView textView;
+    Button btnDeleteAccount;
     String statusNotification = "";
     private FragmentSettingsBinding binding;
     private String decision = "";
@@ -43,6 +46,7 @@ public class SettingsFragment extends Fragment {
         mRadioGroup = binding.viewRadioGroup;
         btnRadioYes = binding.radioYes;
         btnRadioNo = binding.radioNo;
+        btnDeleteAccount = binding.btnDeleteAccount;
         statusNotification = getActivity().getSharedPreferences(SHARED_PREF_USER_INFO, MODE_PRIVATE).getString(SHARED_PREF_USER_INFO_NOTIFICATION, YES);
 
         if (statusNotification.equals(YES)) {
@@ -52,6 +56,14 @@ public class SettingsFragment extends Fragment {
             btnRadioNo.setChecked(true);
         }
         listenRadioButton();
+        btnDeleteAccount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ShowSignOutDialogueAlertAndDetailActivity showSignOutDialogueAlertAndDetailActivity
+                        = new ShowSignOutDialogueAlertAndDetailActivity();
+                showSignOutDialogueAlertAndDetailActivity.showAlertDialogDeleteAcount(view.getContext());
+            }
+        });
 
         return root;
     }

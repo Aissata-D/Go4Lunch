@@ -46,9 +46,9 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1'
     implementation 'androidx.navigation:navigation-fragment:2.4.2'
     implementation 'androidx.navigation:navigation-ui:2.4.2'
-    implementation 'com.google.firebase:firebase-firestore:24.1.2'
+    implementation 'com.google.firebase:firebase-firestore:24.2.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.test:monitor:1.4.0'
+    implementation 'androidx.test:monitor:1.5.0'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.4-alpha07'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0-alpha07'
@@ -59,6 +59,10 @@ dependencies {
     // When using the BoM, you don't specify versions in Firebase library dependencies
     implementation 'com.google.firebase:firebase-auth'
     implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-core:21.0.0'
+    //implementation 'com.google.firebase:firebase-admin:9.0.0'
+    implementation 'com.google.firebase:firebase-admin:6.5.0'
+    implementation 'com.google.firebase:firebase-auth:21.0.6'
     // FIREBASE UI
     implementation 'com.firebaseui:firebase-ui-auth:8.0.1'
     implementation 'com.facebook.android:facebook-android-sdk:12.3.0'
@@ -75,11 +79,11 @@ dependencies {
     // GOOGLE PLACE
     implementation 'com.google.android.libraries.places:places:2.6.0'
     //LOCATION GOOGLE
-    implementation "com.google.android.gms:play-services-location:19.0.1"
+    implementation "com.google.android.gms:play-services-location:20.0.0"
     //OKHTTP
    // implementation 'com.squareup.okio:okio:1.17.5'
     //GSON
-    implementation 'com.google.code.gson:gson:2.8.9'
+    implementation 'com.google.code.gson:gson:2.9.0'
     //RETROFIT
     implementation 'com.squareup.retrofit2:retrofit:2.3.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'

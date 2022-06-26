@@ -81,6 +81,37 @@ public class ShowSignOutDialogueAlertAndDetailActivity {
         alert.show();
     }
 
+    public void showAlertDialogDeleteAcount(Context mContext) {
+
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
+        alertDialog.setTitle("Delete Account")
+                .setMessage(mContext.getString(R.string.sign_out_message))
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        mUserViewModel.deleteUser(mContext)
+                                // after sign out is executed we are redirecting on LoginActivity
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        // below method is used after logout from device.
+                                        Toast.makeText(mContext, "Your Account is delete", Toast.LENGTH_SHORT).show();
+                                        // Return to LoginActivity via an intent.
+                                        Intent i = new Intent(mContext, LoginActivity.class);
+                                        mContext.startActivity(i);
+                                    }
+                                });
+                    }
+
+                })
+                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // do nothing
+                    }
+                });
+        AlertDialog alert = alertDialog.create();
+        alert.setCanceledOnTouchOutside(false);
+        alert.show();
+    }
+
     public void showDetailActivity(MainViewViewModel mainViewViewModel, Activity activity, LifecycleOwner lifecycleOwner) {
         Log.e("TAG", "showDetailActivity: ATTEINT");
         final String[] userLastRestaurantId = {""};

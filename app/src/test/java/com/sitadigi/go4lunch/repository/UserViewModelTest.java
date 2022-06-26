@@ -1,16 +1,14 @@
-package com.sitadigi.go4lunch.viewModel;
+package com.sitadigi.go4lunch.repository;
 
-import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
-import androidx.lifecycle.MutableLiveData;
-
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.sitadigi.go4lunch.models.User;
-import com.sitadigi.go4lunch.repository.FakeUserRepository;
-import com.sitadigi.go4lunch.repository.UserRepository;
+import com.sitadigi.go4lunch.viewModel.RxImmediateSchedulerRule;
+import com.sitadigi.go4lunch.viewModel.UserViewModel;
 
 import junit.framework.TestCase;
 
@@ -18,22 +16,30 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.Observable;
 import kotlin.jvm.JvmField;
-
+@RunWith(MockitoJUnitRunner.class)
 public class UserViewModelTest extends TestCase {
 
+    UserViewModel mUserViewModel;
     UserViewModel mockUserViewModel = org.mockito.Mockito.mock(UserViewModel.class);
-    UserRepository mockUserRepository = org.mockito.Mockito.mock(UserRepository.class);
-    FakeUserRepository mockFakeUserRepository = org.mockito.Mockito.mock(FakeUserRepository.class);
+    //FakeUserRepository mockFakeUserRepository = org.mockito.Mockito.mock(FakeUserRepository.class);
+   // @Mock
+   // FirebaseAuth mockFirebaseAuth;
+    FirebaseAuth mockFirebaseAuth = Mockito.mock(FirebaseAuth.class);
+    FakeUserRepository mFakeUserRepository = new FakeUserRepository(mockFirebaseAuth);
+    @Mock FirebaseUser mockFirebaseUser;
+    @Mock FakeUserRepository mockFakeUserRepository;
     @Mock
-    FirebaseAuth mockFirebaseAuth;
+    FirebaseFirestore mockFirebaseFirestore;
 
     @Rule
     public InstantTaskExecutorRule instantExecutorRule = new InstantTaskExecutorRule();
@@ -43,14 +49,13 @@ public class UserViewModelTest extends TestCase {
     public RxImmediateSchedulerRule testSchedulerRule = new RxImmediateSchedulerRule() ;//For Retrofit
 
     InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();//For LiveData
-    private UserViewModel mUserViewModel;
+    //private UserViewModel mUserViewModel;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        FakeGoogleMapApiCallsRepository fakeGoogleMapApiCallsRepository
-                =new FakeGoogleMapApiCallsRepository();
-        mUserViewModel = new UserViewModel(mockFakeUserRepository);
+        FakeUserRepository fakeUserRepository = new FakeUserRepository(mockFirebaseAuth);
+        mUserViewModel = new UserViewModel(fakeUserRepository);
     }
 
     @After
@@ -86,11 +91,20 @@ public class UserViewModelTest extends TestCase {
         User user2 = new User("uid2","user2","email2","urlPicture2",
                 "restaurantId2","restaurantName2","restaurantType2");
         users.add(user1);
+        users.add(user2);
         //Result wanted
-        when(mockFakeUserRepository.getCurrentUser()).thenReturn(
-                mockFirebaseAuth.getInstance().getCurrentUser());
+      //  when(mockFirebaseFirestore.collection("users")
+              //  .document("cpUJTULzkkhsNqwv4BfJJNoQMUS2").get()).thenReturn();
+       when(mockFirebaseAuth.getCurrentUser()).thenReturn(
+               mockFirebaseUser );
+ /*
+        when(mockFirebaseAuth.getCurrentUser()).thenReturn(
+                mockFirebaseAuth.getInstance().getCurrentUser());*/
+       // mockFirebaseUser = mockFirebaseAuth.getCurrentUser();
+        //assertNull(mockFirebaseUser);
         //assertion
-        assertEquals(mockFirebaseAuth.getInstance().getCurrentUser(),mockUserViewModel.getCurrentUser());
+       assertEquals(mFakeUserRepository.getCurrentUser()
+               ,mUserViewModel.getCurrentUser());
     }
 
     @Test
@@ -110,6 +124,16 @@ public class UserViewModelTest extends TestCase {
     }
 
     @Test
+    public void getCurrentUserUID() {
+        //  return (user != null) ? user.getUid() : null;
+        String currentUserId = "currentUserId";
+        String currentUserIdActual = mFakeUserRepository.getCurrentUserUID();
+        assertEquals(currentUserId,currentUserIdActual);
+
+
+    }
+
+    @Test
     public void updateUsername() {
     }
 
@@ -126,10 +150,9 @@ public class UserViewModelTest extends TestCase {
                 "restaurantId2","restaurantName2","restaurantType2");
         users.add(user1);
         users.add(user2);
-        MutableLiveData<List<User>> mutableLiveDataUsersExpected = new MutableLiveData<>();
-        mutableLiveDataUsersExpected.setValue(users);
-        when(mockUserRepository.getAllUser()).thenReturn(mutableLiveDataUsersExpected);
-        MutableLiveData<List<User>> mutableLiveDataUsersActual= mockUserRepository.getAllUser();
-        assertEquals(mutableLiveDataUsersExpected,mutableLiveDataUsersActual);
+        when( mockFakeUserRepository.getAllUserForNotificationPush()).thenReturn(users);
+       // assertion
+        assertEquals(users.get(0).getEmail(),mUserViewModel.getAllUserForNotificationPush().get(0).getEmail());
+        assertEquals(users.get(0).getUid(),mUserViewModel.getAllUserForNotificationPush().get(0).getUid());
     }
 }

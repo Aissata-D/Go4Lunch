@@ -25,11 +25,12 @@ import java.util.List;
 
 public class UserViewModel extends ViewModel {
     private static volatile UserViewModel instance;
-    private final UserRepository userRepository;
+    //private final UserRepository userRepository;
     private MutableLiveData<List<GoogleMapApiClass.Result>> listOfRestaurant;
+    UserRepositoryInterface mUserRepositoryInterface;
 
     public UserViewModel(UserRepositoryInterface userRepositoryInterface) {
-        userRepository = UserRepository.getInstance();
+        mUserRepositoryInterface = userRepositoryInterface;
     }
 
     /*public static UserViewModel getInstance() {
@@ -46,7 +47,7 @@ public class UserViewModel extends ViewModel {
     }*/
 
     public CollectionReference getUsersCollection() {
-        return userRepository.getUsersCollection();
+        return mUserRepositoryInterface.getUsersCollection();
 
     }
 
@@ -55,7 +56,7 @@ public class UserViewModel extends ViewModel {
     }*/
 
     public FirebaseUser getCurrentUser() {
-        return userRepository.getCurrentUser();
+        return mUserRepositoryInterface.getCurrentUser();
     }
 
     public Boolean isCurrentUserLogged() {
@@ -63,26 +64,26 @@ public class UserViewModel extends ViewModel {
     }
 
     public Task<Void> signOut(Context context) {
-        return userRepository.signOut(context);
+        return mUserRepositoryInterface.signOut(context);
     }
 
     public Task<Void> deleteUser(Context context) {
-
+        FirebaseAuth.getInstance().getCurrentUser().delete();
         // Delete the user account from the Auth
-        return userRepository.deleteUser(context).addOnCompleteListener(task -> {
+        return mUserRepositoryInterface.deleteUser(context).addOnCompleteListener(task -> {
             // Once done, delete the user data from Firestore
-            userRepository.deleteUserFromFirestore();
+            mUserRepositoryInterface.deleteUserFromFirestore();
         });
     }
 
 
     public void createUser() {
-        userRepository.createUser();
+        mUserRepositoryInterface.createUser();
     }
 
 
     public Task<Void> updateUsername(String username) {
-        return userRepository.updateUsername(username);
+        return mUserRepositoryInterface.updateUsername(username);
     }
 
     public void updateUIWithUserData(Context context, TextView userName,
@@ -106,12 +107,6 @@ public class UserViewModel extends ViewModel {
     }
 
     public List<User> getAllUserForNotificationPush() {
-        return userRepository.getAllUserForNotificationPush();
+        return mUserRepositoryInterface.getAllUserForNotificationPush();
     }
-
-    /*public MutableLiveData<List<GoogleMapApiClass.Result>> getRestaurant() {
-        Log.e("TAG", "getRestaurant: " + listOfRestaurant);
-        return listOfRestaurant;
-    }*/
-
 }

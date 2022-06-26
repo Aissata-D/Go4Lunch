@@ -70,6 +70,7 @@
     <string name="no_like_for_this_restaurant">Aucun like pour ce restaurent</string>
     <string name="no_phone_number">Pas de numéro de téléphone disponible</string>
     <string name="no_web_site_link">Pas de lien site web disponible</string>
+    <string name="delete_my_account">Supprimer mon compte</string>
 
 
 </resources>

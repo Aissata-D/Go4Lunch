@@ -1,4 +1,4 @@
-package com.sitadigi.go4lunch.repository;
+package com.sitadigi.go4lunch.viewModel;
 
 import static org.mockito.Mockito.when;
 
@@ -10,6 +10,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.sitadigi.go4lunch.models.User;
+import com.sitadigi.go4lunch.repository.FakeUserRepository;
 import com.sitadigi.go4lunch.viewModel.RxImmediateSchedulerRule;
 import com.sitadigi.go4lunch.viewModel.UserViewModel;
 

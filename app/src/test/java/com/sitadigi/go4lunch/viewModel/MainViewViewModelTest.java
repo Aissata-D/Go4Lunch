@@ -15,6 +15,7 @@ import androidx.lifecycle.Observer;
 import com.google.android.gms.maps.model.LatLng;
 import com.sitadigi.go4lunch.models.GoogleMapApiClass;
 import com.sitadigi.go4lunch.models.User;
+import com.sitadigi.go4lunch.repository.FakeGoogleMapApiCallsRepository;
 import com.sitadigi.go4lunch.repository.UserRepository;
 
 import org.junit.Before;

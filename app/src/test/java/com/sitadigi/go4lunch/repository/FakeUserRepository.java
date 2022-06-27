@@ -33,7 +33,7 @@ public class FakeUserRepository implements UserRepositoryInterface{
     String userRestaurantType = "restaurantTypeCreated";
     User userToCreate;
 
-    FakeUserRepository(FirebaseAuth firebaseAuth, FirebaseFirestore firebaseFirestore, AuthUI authUI ){
+    public FakeUserRepository(FirebaseAuth firebaseAuth, FirebaseFirestore firebaseFirestore, AuthUI authUI){
         mFirebaseAuth = firebaseAuth;
         mFirebaseFirestore = firebaseFirestore;
         mAuthUI = authUI;

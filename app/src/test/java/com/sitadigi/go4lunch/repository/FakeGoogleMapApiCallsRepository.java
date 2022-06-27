@@ -1,4 +1,4 @@
-package com.sitadigi.go4lunch.viewModel;
+package com.sitadigi.go4lunch.repository;
 
 import android.util.Log;
 

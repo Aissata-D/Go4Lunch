@@ -74,15 +74,14 @@ public class GeoLocateRepository {
                     public void onComplete(@NonNull Task<Location> task) {
                         if (task.isSuccessful()) {
                             // Set the map's camera position to the current location of the device.
-                            // if(task.getResult() != null) {
+                             if(task.getResult() != null) {
                             lastKnownLocation = task.getResult();
-
                             try {
                                 Thread.sleep(4500);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
-                            // }
+                             }
                             location = lastKnownLocation.getLatitude() + "," + lastKnownLocation.getLongitude();
                             locationMutableLiveData.setValue(lastKnownLocation);
                             //moveCamera();

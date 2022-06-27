@@ -150,7 +150,7 @@ public class DetailActivity extends AppCompatActivity {
                 }
             }
         });
-
+        getSupportActionBar().hide();
         getWindow().setStatusBarColor(Color.TRANSPARENT);
         configureDetailView();
         initRecyclerView();

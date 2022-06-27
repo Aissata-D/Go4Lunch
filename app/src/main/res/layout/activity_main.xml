@@ -39,13 +39,20 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+
         android:background="@color/menu_navigation_drawer_orange"
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header_main"
         app:itemIconTint="@color/white"
         app:itemTextColor="@color/white"
+        app:menu="@menu/activity_main_drawer" >
 
-        app:menu="@menu/activity_main_drawer" />
+        <ImageView
+            android:layout_width="243dp"
+            android:layout_height="165dp"
+            android:layout_gravity="bottom"
+            android:src="@drawable/icon2" />
+    </com.google.android.material.navigation.NavigationView>
 
 
 

@@ -24,7 +24,7 @@ import java.util.List;
 public class OpenDetailActivityUtils {
 
     public void clickOnOpenDetailActivityInLisViewAdapter(GoogleMapApiClass.Result restaurant, Context context
-            , MainViewViewModel mMainViewViewModel){
+            , MainViewViewModel mMainViewViewModel) {
         Intent intentDetail = new Intent(context, DetailActivity.class);
         intentDetail.putExtra(RESTAURANT_ID, restaurant.getPlaceId());
         intentDetail.putExtra(RESTAURANT_NAME, restaurant.getName());
@@ -64,13 +64,12 @@ public class OpenDetailActivityUtils {
             }
         } else {
             Log.e("DETAIL", "onMarkerClick: website size<1 ");
-
         }
         context.startActivity(intentDetail);
     }
 
     public void clickOnOpenDetailActivityInMapviewFragment(GoogleMapApiClass.Result restaurant, Context context
-            , MainViewViewModel mMainViewViewModel, String restaurantName){
+            , MainViewViewModel mMainViewViewModel, String restaurantName) {
         Intent intentDetail = new Intent(context, DetailActivity.class);
         intentDetail.putExtra(RESTAURANT_ID, restaurant.getPlaceId());
         intentDetail.putExtra(RESTAURANT_NAME, restaurantName);
@@ -117,8 +116,8 @@ public class OpenDetailActivityUtils {
     }
 
     public void clickOnOpenDetailActivityInWorkmateFragment(Context context, List<GoogleMapApiClass.Result> mRestaurants,
-                                                           List<User> mUsers, int mPosition,
-                                                           MainViewViewModel mMainViewViewModel){
+                                                            List<User> mUsers, int mPosition,
+                                                            MainViewViewModel mMainViewViewModel) {
         for (GoogleMapApiClass.Result result : mRestaurants) {
             if (result.getPlaceId().equals(mUsers.get(mPosition).getUserRestaurantId())
                     && result.getName().equals(mUsers.get(mPosition).getUserRestaurantName())) {
@@ -161,7 +160,6 @@ public class OpenDetailActivityUtils {
                     }
                 } else {
                     Log.e("DETAIL", "onMarkerClick: website size<1 ");
-
                 }
                 context.startActivity(intentDetail);
             }

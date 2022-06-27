@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.sitadigi.go4lunch.databinding.FragmentWorkmatersBinding;
-
 import com.sitadigi.go4lunch.factory.MainViewModelFactory;
 import com.sitadigi.go4lunch.models.GoogleMapApiClass;
 import com.sitadigi.go4lunch.models.User;
@@ -31,7 +30,7 @@ public class WorkmateFragment extends Fragment {
     private FragmentWorkmatersBinding binding;
     private RecyclerView mRecyclerView;
     private List<User> users;
-    private List<GoogleMapApiClass.Result> allRestaurant;
+    private List<GoogleMapApiClass.Result> allRestaurant = new ArrayList<>();
     private String placeNameSelected;
     private TextView tvNoWorkmate;
 

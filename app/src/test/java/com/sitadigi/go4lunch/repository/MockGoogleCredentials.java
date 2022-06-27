@@ -17,9 +17,9 @@ package com.sitadigi.go4lunch.repository;
  */
 
 
+//import com.google.auth.oauth2.AccessToken;
+//import com.google.auth.oauth2.GoogleCredentials;
 
-import com.google.auth.oauth2.AccessToken;
-import com.google.auth.oauth2.GoogleCredentials;
 import java.io.IOException;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * A flexible GoogleCredentials implementation fortesting purposes.
  */
-public class MockGoogleCredentials extends GoogleCredentials {
+/*public class MockGoogleCredentials extends GoogleCredentials {
 
     private String tokenValue;
     private long expiryTime;
@@ -53,4 +53,4 @@ public class MockGoogleCredentials extends GoogleCredentials {
     public void setExpiryTime(long expiryTime) {
         this.expiryTime = expiryTime;
     }
-}
+}*/

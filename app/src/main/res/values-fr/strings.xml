@@ -36,9 +36,9 @@
     <string name="hello_blank_fragment">Fragment vide</string>
     <string name="sign_out_message">Voulez-vous vraiment vous déconnecter ?</string>
     <string name="ok">OK</string>
-    <string name="resto_open_now">ouvert</string>
-    <string name="resto_close">fermé</string>
-    <string name="restoopening_hour_unknow">inconnu</string>
+    <string name="restaurant_open_now">ouvert</string>
+    <string name="restaurant_close">fermé</string>
+    <string name="restaurant_opening_hour_unknown">inconnu</string>
     <string name="is_joining"> va rejoindre </string>
     <string name="not_photo_url">pas de url photo</string>
     <string name="receive_notification" type="id">Vous avez choisit de recevoir les notifications</string>
@@ -50,20 +50,20 @@
     <string name="web_site">SITEWEB</string>
     <string name="like">LIKE</string>
     <string name="choice_restaurant">selectionné</string>
-    <string name="type_resto_adresse_resto">Type restaurent - adresse restaurent</string>
-    <string name="name_resto">NOM DU RESTAURENT</string>
+    <string name="type_restaurant_address_restaurant">Type restaurent - adresse restaurent</string>
+    <string name="name_restaurant">NOM DU RESTAURENT</string>
     <string name="img_restaurant">image restaurent</string>
     <string name="img_workmate">image collègue</string>
     <string name="mane_is_eating_french">Nom mange italien</string>
     <string name="user_name">nom utilisateur</string>
     <string name="img_search_bar">image search bar</string>
-    <string name="no_resto_found">AUCUN RESTAURANT TROUVÉ A PROXIMITÉ</string>
-    <string name="no_restaurant_choiced">Vous n\'avez choisit aucun restaurent</string>
+    <string name="no_restaurant_found">AUCUN RESTAURANT TROUVÉ A PROXIMITÉ</string>
+    <string name="no_restaurant_choice">Vous n\'avez choisit aucun restaurent</string>
     <string name="img_google_map">image google map</string>
     <string name="no_workmate_selected_this_restaurant">Aucun collegue n\'a selectionné ce restaurent</string>
     <string name="opening_hour">Heure ouverture</string>
     <string name="number_of_workmate">(0)</string>
-    <string name="type_adresse">Type - adresse</string>
+    <string name="type_address">Type - adresse</string>
     <string name="distance">Xm</string>
     <string name="name_firstname">Nom Premon</string>
     <string name="email_user">Email utilisateur</string>
@@ -71,6 +71,13 @@
     <string name="no_phone_number">Pas de numéro de téléphone disponible</string>
     <string name="no_web_site_link">Pas de lien site web disponible</string>
     <string name="delete_my_account">Supprimer mon compte</string>
+    <string name="update_name">Changer mon nom</string>
+    <string name="new_name">nouveau nom</string>
+    <string name="delete_message">Voulez-vous vraiment supprimer votre compte ?</string>
+    <string name="available_workmates">Collègues disponibles </string>
+    <string name="i_am_hungry">J\'ai faim !</string>
+    <string name="give_valid_name">Saisir un nom valide</string>
+
 
 
 </resources>

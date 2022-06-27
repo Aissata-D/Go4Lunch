@@ -17,6 +17,7 @@
         <entry key="app/src/main/res/drawable/ic_menu_slideshow.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/side_nav_bar.xml" value="0.1" />
         <entry key="app/src/main/res/layout-land/activity_detail.xml" value="0.25" />
+        <entry key="app/src/main/res/layout-land/fragment_settings.xml" value="0.18" />
         <entry key="app/src/main/res/layout-land/item_detail_restaurant.xml" value="0.1" />
         <entry key="app/src/main/res/layout-land/item_listview.xml" value="0.15" />
         <entry key="app/src/main/res/layout/activity_detail.xml" value="0.18" />

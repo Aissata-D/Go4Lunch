@@ -30,24 +30,32 @@ import java.util.List;
 public class ListViewFragment extends Fragment {
 
     List<GoogleMapApiClass.Result> listOfRestaurant = new ArrayList<>();
-    List<GoogleMapApiClass.Result> listOfRestaurantSort;
+    List<GoogleMapApiClass.Result> listOfRestaurantSort = new ArrayList<>();
     MainViewViewModel mainViewViewModel;
     String placeNameSelected;
     List<User> mUsers = new ArrayList<>();
     Location mLocation;
     String mOriginDistance;
+    String destination = "";
+    int restaurantDistance = 0;
+    Comparator<GoogleMapApiClass.Result> ComparatorRestaurantDistance
+            = new Comparator<GoogleMapApiClass.Result>() {
+
+        @Override
+        public int compare(GoogleMapApiClass.Result r1, GoogleMapApiClass.Result r2) {
+            return (int) (getRestaurantDistance(r1) - getRestaurantDistance(r2));
+        }
+    };
     private FragmentListViewBinding binding;
     private RecyclerView mRecyclerView;
     private TextView tvNoRestaurantFound;
-    String destination ="";
-    int restaurantDistance = 0;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
         GoogleMapApiCallsRepository googleMapApiCallsRepository = new GoogleMapApiCallsRepository();
-        mainViewViewModel = new ViewModelProvider(requireActivity(), new MainViewModelFactory(googleMapApiCallsRepository)).get(MainViewViewModel.class);
-
+        mainViewViewModel = new ViewModelProvider(requireActivity()
+                , new MainViewModelFactory(googleMapApiCallsRepository)).get(MainViewViewModel.class);
 
         binding = FragmentListViewBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
@@ -65,10 +73,10 @@ public class ListViewFragment extends Fragment {
         mainViewViewModel.getRestaurant().observe(getViewLifecycleOwner(), RestaurantResponse -> {
             listOfRestaurant.clear();
             listOfRestaurant.addAll(RestaurantResponse);
-            listOfRestaurantSort = new ArrayList<>();
+            listOfRestaurantSort.clear();
             listOfRestaurantSort.addAll(listOfRestaurant);
             Collections.sort(listOfRestaurantSort, ComparatorRestaurantDistance);
-            Log.e("NEW", "onCreateView: " +listOfRestaurantSort );
+            Log.e("NEW", "onCreateView: " + listOfRestaurantSort);
             initRecyclerView();
         });
 
@@ -85,21 +93,13 @@ public class ListViewFragment extends Fragment {
 
         return root;
     }
-    public int getRestaurantDistance(GoogleMapApiClass.Result restaurant){
+
+    public int getRestaurantDistance(GoogleMapApiClass.Result restaurant) {
         destination = restaurant.getGeometry().getLocation().getLat()
                 + "," + restaurant.getGeometry().getLocation().getLng();
         restaurantDistance = mainViewViewModel.getRestaurantDistance(mOriginDistance, destination);
         return restaurantDistance;
     }
-
-    Comparator<GoogleMapApiClass.Result> ComparatorRestaurantDistance
-            = new Comparator<GoogleMapApiClass.Result>() {
-
-        @Override
-        public int compare(GoogleMapApiClass.Result r1, GoogleMapApiClass.Result r2) {
-            return (int) (getRestaurantDistance(r1) - getRestaurantDistance(r2));
-        }
-    };
 
     public void initRecyclerView() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this.getActivity());
@@ -134,5 +134,4 @@ public class ListViewFragment extends Fragment {
         super.onDestroyView();
         binding = null;
     }
-
 }

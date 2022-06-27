@@ -8,19 +8,19 @@
     <fragment
         android:id="@+id/menu_map_view"
         android:name="com.sitadigi.go4lunch.ui.mapView.MapViewFragment"
-        android:label="@string/bottom_navigation_menu_map_view"
+        android:label="@string/i_am_hungry"
         tools:layout="@layout/fragment_map_view" />
 
     <fragment
         android:id="@+id/menu_list_view"
         android:name="com.sitadigi.go4lunch.ui.listView.ListViewFragment"
-        android:label="@string/bottom_navigation_menu_list_view"
+        android:label="@string/i_am_hungry"
         tools:layout="@layout/fragment_list_view" />
 
     <fragment
         android:id="@+id/menu_workmates"
         android:name="com.sitadigi.go4lunch.ui.workmaters.WorkmateFragment"
-        android:label="@string/bottom_navigation_menu_workmates"
+        android:label="@string/available_workmates"
         tools:layout="@layout/fragment_workmaters" />
 
     <fragment

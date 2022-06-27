@@ -7,7 +7,6 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.LifecycleOwner;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -16,8 +15,6 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.sitadigi.go4lunch.R;
 import com.sitadigi.go4lunch.models.RestaurantLike;
-import com.sitadigi.go4lunch.ui.workmaters.WorkmateViewModel;
-import com.sitadigi.go4lunch.viewModel.MainViewViewModel;
 import com.sitadigi.go4lunch.viewModel.UserViewModel;
 
 public class UtilsDetailActivity {
@@ -31,7 +28,6 @@ public class UtilsDetailActivity {
         mActivity = activity;
         this.restaurantId = restaurantId;
         mUserLastRestaurantId = userLastRestaurantId;
-
     }
 
     public void setRatingIcon(RatingBar restaurantRatingBar, float rating) {

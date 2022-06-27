@@ -12,19 +12,18 @@ import android.content.Intent;
 import android.media.RingtoneManager;
 import android.os.Build;
 
+import androidx.annotation.NonNull;
+import androidx.core.app.NotificationCompat;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.sitadigi.go4lunch.R;
-
-import androidx.annotation.NonNull;
-import androidx.core.app.NotificationCompat;
-
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.sitadigi.go4lunch.MainActivity;
-import com.sitadigi.go4lunch.factory.UserViewModelFactory;
+import com.sitadigi.go4lunch.R;
 import com.sitadigi.go4lunch.models.User;
 import com.sitadigi.go4lunch.repository.UserRepository;
 import com.sitadigi.go4lunch.viewModel.UserViewModel;
@@ -37,17 +36,19 @@ public class NotificationsService extends FirebaseMessagingService {
     UserRepository userRepository = new UserRepository();
     UserViewModel mUserViewModel = new UserViewModel(userRepository);
     String userRestaurantName;
+    String userRestaurantId;
     String workmateName = "";
 
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
 
         String statusNotification = getSharedPreferences(SHARED_PREF_USER_INFO, MODE_PRIVATE)
-                .getString(SHARED_PREF_USER_INFO_NOTIFICATION, null);
+                .getString(SHARED_PREF_USER_INFO_NOTIFICATION, "null");
         if (statusNotification.equals(NO)) {
-            //Do nothing
+            //Do not receive notification
+            FirebaseMessaging.getInstance().unsubscribeFromTopic("APP");
         } else {
-            mUserRepository = UserRepository.getInstance();
+            mUserRepository = new UserRepository();
             List<User> users = mUserRepository.getAllUserForNotificationPush();
             String userUid = mUserViewModel.getCurrentUser().getUid();
             // Get userRestaurantId on firebaseFirestore
@@ -58,16 +59,19 @@ public class NotificationsService extends FirebaseMessagingService {
                     if (task.isSuccessful()) {
                         DocumentSnapshot document = task.getResult();
                         if (document != null) {
-                            userRestaurantName = document.getString("userRestoName");
-                            for (User userWithSameRestaurantName : users) {
-                                if (userWithSameRestaurantName.getUserRestaurantName().equals(userRestaurantName)) {
-                                    workmateName = workmateName + " , " + userWithSameRestaurantName.getUsername();
+                            userRestaurantId = document.getString("userRestaurantId");
+                            userRestaurantName = document.getString("userRestaurantName");
+                            if (!userRestaurantId.equals("restaurantIdCreated")) {
+                                for (User userWithSameRestaurantName : users) {
+                                    if (userWithSameRestaurantName.getUserRestaurantName().equals(userRestaurantName)) {
+                                        workmateName = workmateName + " , " + userWithSameRestaurantName.getUsername();
+                                    }
                                 }
-                            }
-                            if (remoteMessage.getNotification() != null) {
-                                // Get message sent by Firebase
-                                RemoteMessage.Notification notification = remoteMessage.getNotification();
-                                sendVisualNotification(notification);
+                                if (remoteMessage.getNotification() != null) {
+                                    // Get message sent by Firebase
+                                    RemoteMessage.Notification notification = remoteMessage.getNotification();
+                                    sendVisualNotification(notification);
+                                }
                             }
                         }
                     }
@@ -77,7 +81,6 @@ public class NotificationsService extends FirebaseMessagingService {
     }
 
     private void sendVisualNotification(RemoteMessage.Notification notification) {
-
         // Create an Intent that will be shown when user will click on the Notification
         Intent intent = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);

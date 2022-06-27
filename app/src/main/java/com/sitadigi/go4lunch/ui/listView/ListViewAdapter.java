@@ -13,26 +13,19 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.sitadigi.go4lunch.models.GoogleMapApiClass;
-
-
-import java.util.ArrayList;
-import java.util.List;
-
 import com.sitadigi.go4lunch.R;
+import com.sitadigi.go4lunch.models.GoogleMapApiClass;
 import com.sitadigi.go4lunch.models.User;
 import com.sitadigi.go4lunch.utils.OpenDetailActivityUtils;
 import com.sitadigi.go4lunch.utils.UtilsDetailActivity;
 import com.sitadigi.go4lunch.viewModel.MainViewViewModel;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListViewHolder> {
 
-    /**
-     * The list of restaurant adapter
-     */
-    @NonNull
-    private final List<GoogleMapApiClass.Result> mRestaurants;
     /**
      * The list of All user using application
      */
@@ -43,6 +36,11 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
     String urlPart3 = "";
     String urlConcat = "";
     String mOriginDistance;
+    /**
+     * The list of restaurant adapter
+     */
+    @NonNull
+    private List<GoogleMapApiClass.Result> mRestaurants = new ArrayList<>();
     private MainViewViewModel mMainViewViewModel;
     private UtilsDetailActivity utilsDetailActivity;
 
@@ -82,7 +80,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
                 GoogleMapApiClass.Result restaurant = mRestaurants.get(mPosition);
                 OpenDetailActivityUtils openDetailActivityUtils = new OpenDetailActivityUtils();
                 openDetailActivityUtils.clickOnOpenDetailActivityInLisViewAdapter(restaurant,
-                        v.getContext(),mMainViewViewModel);
+                        v.getContext(), mMainViewViewModel);
             }
         });
     }
@@ -163,12 +161,12 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
             restaurantTypeAddress.setText(restaurantAddressAndType);
             if (restaurant.getOpeningHours() != null && restaurant.getOpeningHours().getOpenNow() != null) {
                 if (restaurant.getOpeningHours().getOpenNow()) {
-                    restaurantOpeningHour.setText(R.string.resto_open_now);
+                    restaurantOpeningHour.setText(R.string.restaurant_open_now);
                 } else {
-                    restaurantOpeningHour.setText(R.string.resto_close);
+                    restaurantOpeningHour.setText(R.string.restaurant_close);
                 }
             } else {
-                restaurantOpeningHour.setText(R.string.restoopening_hour_unknow);
+                restaurantOpeningHour.setText(R.string.restaurant_opening_hour_unknown);
             }
             if (restaurant.getRating() != null) {
                 double ratingOld = restaurant.getRating() * 0.6;
@@ -188,7 +186,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
             restaurantWorkmateNumber.setText(workmateNumber);
             String destination = restaurant.getGeometry().getLocation().getLat() + "," + restaurant.getGeometry().getLocation().getLng();
             int restaurantDistance = mMainViewViewModel.getRestaurantDistance(mOriginDistance, destination);
-            String restaurantDistanceText = (restaurantDistance)  +" m";
+            String restaurantDistanceText = (restaurantDistance) + " m";
             this.restaurantDistance.setText(restaurantDistanceText);
         }
     }

@@ -1,32 +1,9 @@
 package com.sitadigi.go4lunch.repository;
 
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import com.google.auth.oauth2.GoogleCredentials;
-import com.google.cloud.firestore.DocumentReference;
-import com.google.cloud.firestore.Firestore;
-import com.google.cloud.firestore.FirestoreOptions;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseOptions;
-import com.google.firebase.ImplFirebaseTrampolines;
-//import com.google.firebase.TestOnlyImplFirebaseTrampolines;
-//import com.google.firebase.auth.MockGoogleCredentials;
-import com.google.firebase.cloud.FirestoreClient;
-//import com.google.firebase.testing.ServiceAccount;
-import java.io.IOException;
-import java.io.InputStream;
-
-import org.junit.After;
-import org.junit.Test;
-
 public class TestCode {
 
-    private static final FirestoreOptions FIRESTORE_OPTIONS = FirestoreOptions.newBuilder()
+  /*  private static final FirestoreOptions FIRESTORE_OPTIONS = FirestoreOptions.newBuilder()
             // Setting credentials is not required (they get overridden by Admin SDK), but without
             // this Firestore logs an ugly warning during tests.
             .setCredentials(new MockGoogleCredentials("test-token"))
@@ -60,13 +37,16 @@ public class TestCode {
 
         firestore = FirestoreClient.getFirestore();
         assertEquals("explicit-project-id", firestore.getOptions().getProjectId());
-   */ }
+    }
 
-    @Test
+     */
+
+ /*   @Test
     public void testServiceAccountProjectId() throws IOException {
         FirebaseApp app = FirebaseApp.initializeApp(FirebaseOptions.builder()
                 .setCredentials(GoogleCredentials.getApplicationDefault()
-                        /*fromStream(ServiceAccount.EDITOR.asStream())*/)
+                        /*fromStream(ServiceAccount.EDITOR.asStream())*/
+/*)
                 .setFirestoreOptions(FIRESTORE_OPTIONS)
                 .build());
         Firestore firestore = FirestoreClient.getFirestore(app);
@@ -75,12 +55,14 @@ public class TestCode {
         firestore = FirestoreClient.getFirestore();
         assertEquals("mock-project-id", firestore.getOptions().getProjectId());
     }
+    */
 
-    @Test
+  /*  @Test
     public void testFirestoreOptions() throws IOException {
         FirebaseApp app = FirebaseApp.initializeApp(FirebaseOptions.builder()
                 .setCredentials(GoogleCredentials.getApplicationDefault()
-                        /*fromStream(ServiceAccount.EDITOR.asStream())*/)
+                        /*fromStream(ServiceAccount.EDITOR.asStream())*/
+/*)
                 .setProjectId("explicit-project-id")
                 .setFirestoreOptions(FIRESTORE_OPTIONS)
                 .build());
@@ -90,17 +72,19 @@ public class TestCode {
         firestore = FirestoreClient.getFirestore();
         assertEquals("explicit-project-id", firestore.getOptions().getProjectId());
     }
-
-    @Test
+*/
+ /*   @Test
     public void testFirestoreOptionsOverride() throws IOException {
         FirebaseApp app = FirebaseApp.initializeApp(FirebaseOptions.builder()
                 .setCredentials(GoogleCredentials.getApplicationDefault()
-                        /*fromStream(ServiceAccount.EDITOR.asStream())*/)
+                        /*fromStream(ServiceAccount.EDITOR.asStream())*/
+/*)
                 .setProjectId("explicit-project-id")
                 .setFirestoreOptions(FirestoreOptions.newBuilder()
                         .setProjectId("other-project-id")
                         .setCredentials(GoogleCredentials.getApplicationDefault()
-                                /*fromStream(ServiceAccount.EDITOR.asStream())*/)
+                                /*fromStream(ServiceAccount.EDITOR.asStream())*/
+/*)
                         .build())
                 .build());
         Firestore firestore = FirestoreClient.getFirestore(app);
@@ -113,12 +97,13 @@ public class TestCode {
         assertSame(ImplFirebaseTrampolines.getCredentials(app),
                 firestore.getOptions().getCredentialsProvider().getCredentials());
     }
-
-    @Test
+*/
+ /*   @Test
     public void testAppDelete() throws IOException {
         FirebaseApp app = FirebaseApp.initializeApp(FirebaseOptions.builder()
                 .setCredentials(GoogleCredentials.getApplicationDefault()
-                        /*fromStream(ServiceAccount.EDITOR.asStream())*/)
+                 //       /*fromStream(ServiceAccount.EDITOR.asStream())*/
+/*   )
                 .setProjectId("mock-project-id")
                 .setFirestoreOptions(FIRESTORE_OPTIONS)
                 .build());
@@ -148,4 +133,5 @@ public class TestCode {
             // ignore
         }
     }
+    */
 }

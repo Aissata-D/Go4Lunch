@@ -17,6 +17,7 @@ import com.sitadigi.go4lunch.models.User;
 import com.sitadigi.go4lunch.utils.OpenDetailActivityUtils;
 import com.sitadigi.go4lunch.viewModel.MainViewViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class WorkmateAdapter extends RecyclerView.Adapter<WorkmateAdapter.WorkmateViewHolder> {
@@ -24,10 +25,10 @@ public class WorkmateAdapter extends RecyclerView.Adapter<WorkmateAdapter.Workma
      * The list of user adapter
      */
     @NonNull
-    private final List<User> mUsers;
+    private List<User> mUsers = new ArrayList<>();
     public int mPosition;
     MainViewViewModel mMainViewViewModel;
-    List<GoogleMapApiClass.Result> mRestaurants;
+    List<GoogleMapApiClass.Result> mRestaurants = new ArrayList<>();
 
     /**
      * Instantiates a new userAdapter.
@@ -107,7 +108,7 @@ public class WorkmateAdapter extends RecyclerView.Adapter<WorkmateAdapter.Workma
             //GLIDE TO SHOW PHOTO
             Glide.with(imgUser.getContext())
                     .load(users.getUrlPicture())
-                    .apply(RequestOptions.noTransformation())
+                   // .apply(RequestOptions.noTransformation())
                     .circleCrop()
                     .placeholder(R.drawable.img_user_avatar)
                     .into(imgUser);

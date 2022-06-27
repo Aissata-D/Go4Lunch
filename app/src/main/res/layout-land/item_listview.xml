@@ -54,7 +54,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:padding="4dp"
-            android:text="@string/type_adresse"
+            android:text="@string/type_address"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/resto_name_item_listview" />
 
@@ -74,7 +74,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:padding="4dp"
-            android:text="@string/name_resto"
+            android:text="@string/name_restaurant"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

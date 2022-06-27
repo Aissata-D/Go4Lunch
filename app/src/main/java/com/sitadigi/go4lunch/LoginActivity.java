@@ -132,7 +132,7 @@ public class LoginActivity extends AppCompatActivity {
                         Log.e("TAG", "handleResponseAfterSignIn: not internet");
                     } else if (response.getError().getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
                         showToast(getString(R.string.error_unknown_error));
-                        Log.e("TAG", "handleResponseAfterSignIn: erreur unknow");
+                        Log.e("TAG", "handleResponseAfterSignIn: error unknown");
                     }
                 }
             }

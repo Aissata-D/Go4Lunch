@@ -1,0 +1,76 @@
+[debug] [2022-06-26T10:44:08.622Z] ----------------------------------------------------------------------
+[debug] [2022-06-26T10:44:08.625Z] Command:       /usr/local/bin/firebase /home/aissata/.cache/firebase/tools/lib/node_modules/firebase-tools/lib/bin/firebase emulators:start --debug
+[debug] [2022-06-26T10:44:08.626Z] CLI Version:   11.1.0
+[debug] [2022-06-26T10:44:08.626Z] Platform:      linux
+[debug] [2022-06-26T10:44:08.626Z] Node Version:  v16.15.0
+[debug] [2022-06-26T10:44:08.635Z] Time:          Sun Jun 26 2022 12:44:08 GMT+0200 (GMT+02:00)
+[debug] [2022-06-26T10:44:08.637Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2022-06-26T10:44:08.748Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2022-06-26T10:44:08.750Z] > authorizing via signed-in user (souarediaz@yahoo.fr)
+[debug] [2022-06-26T10:44:09.014Z] openjdk version "11.0.15" 2022-04-19
+
+[debug] [2022-06-26T10:44:09.016Z] OpenJDK Runtime Environment (build 11.0.15+10-Ubuntu-0ubuntu0.20.04.1)
+OpenJDK 64-Bit Server VM (build 11.0.15+10-Ubuntu-0ubuntu0.20.04.1, mixed mode, sharing)
+
+[debug] [2022-06-26T10:44:09.028Z] Parsed Java major version: 11
+[info] i  emulators: Starting emulators: functions, firestore {"metadata":{"emulator":{"name":"hub"},"message":"Starting emulators: functions, firestore"}}
+[debug] [2022-06-26T10:44:09.084Z] [hub] writing locator at /tmp/hub-go4lunchsitadigi.json
+[warn] ⚠  functions: The following emulators are not running, calls to these services from the Functions emulator will affect production: auth, database, hosting, pubsub, storage {"metadata":{"emulator":{"name":"functions"},"message":"The following emulators are not running, calls to these services from the Functions emulator will affect production: \u001b[1mauth, database, hosting, pubsub, storage\u001b[22m"}}
+[info] ✔  functions: Using node@16 from host. {"metadata":{"emulator":{"name":"functions"},"message":"Using node@16 from host."}}
+[debug] [2022-06-26T10:44:09.134Z] defaultcredentials: writing to file /home/aissata/.config/firebase/souarediaz_yahoo_fr_application_default_credentials.json
+[debug] [2022-06-26T10:44:09.153Z] Setting GAC to /home/aissata/.config/firebase/souarediaz_yahoo_fr_application_default_credentials.json {"metadata":{"emulator":{"name":"functions"},"message":"Setting GAC to /home/aissata/.config/firebase/souarediaz_yahoo_fr_application_default_credentials.json"}}
+[debug] [2022-06-26T10:44:09.158Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/go4lunchsitadigi/adminSdkConfig [none]
+[debug] [2022-06-26T10:44:09.420Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/go4lunchsitadigi/adminSdkConfig 200
+[debug] [2022-06-26T10:44:09.421Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/go4lunchsitadigi/adminSdkConfig {"projectId":"go4lunchsitadigi","databaseURL":"https://go4lunchsitadigi-default-rtdb.europe-west1.firebasedatabase.app","storageBucket":"go4lunchsitadigi.appspot.com","locationId":"europe-west"}
+[debug] [2022-06-26T10:44:09.447Z] Ignoring unsupported arg: projectId {"metadata":{"emulator":{"name":"firestore"},"message":"Ignoring unsupported arg: projectId"}}
+[debug] [2022-06-26T10:44:09.448Z] Ignoring unsupported arg: auto_download {"metadata":{"emulator":{"name":"firestore"},"message":"Ignoring unsupported arg: auto_download"}}
+[debug] [2022-06-26T10:44:09.448Z] Starting Firestore Emulator with command {"binary":"java","args":["-Dgoogle.cloud_firestore.debug_log_level=FINE","-Duser.language=en","-jar","/home/aissata/.cache/firebase/emulators/cloud-firestore-emulator-v1.14.3.jar","--host","localhost","--port",5000,"--rules","/home/aissata/AndroidStudioProjects/Go4Lunch/firestore.rules","--functions_emulator","localhost:5008"],"optionalArgs":["port","webchannel_port","host","rules","functions_emulator","seed_from_export"],"joinArgs":false} {"metadata":{"emulator":{"name":"firestore"},"message":"Starting Firestore Emulator with command {\"binary\":\"java\",\"args\":[\"-Dgoogle.cloud_firestore.debug_log_level=FINE\",\"-Duser.language=en\",\"-jar\",\"/home/aissata/.cache/firebase/emulators/cloud-firestore-emulator-v1.14.3.jar\",\"--host\",\"localhost\",\"--port\",5000,\"--rules\",\"/home/aissata/AndroidStudioProjects/Go4Lunch/firestore.rules\",\"--functions_emulator\",\"localhost:5008\"],\"optionalArgs\":[\"port\",\"webchannel_port\",\"host\",\"rules\",\"functions_emulator\",\"seed_from_export\"],\"joinArgs\":false}"}}
+[info] i  firestore: Firestore Emulator logging to firestore-debug.log {"metadata":{"emulator":{"name":"firestore"},"message":"Firestore Emulator logging to \u001b[1mfirestore-debug.log\u001b[22m"}}
+[debug] [2022-06-26T10:44:12.125Z] Jun 26, 2022 12:44:12 PM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketServer start
+INFO: Started WebSocket server on ws://localhost:40135
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Jun 26, 2022 12:44:12 PM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketServer start\nINFO: Started WebSocket server on ws://localhost:40135\n"}}
+[debug] [2022-06-26T10:44:12.186Z] API endpoint: http:// {"metadata":{"emulator":{"name":"firestore"},"message":"API endpoint: http://"}}
+[debug] [2022-06-26T10:44:12.187Z] localhost:5000
+If you are using a library that supports the FIRESTORE_EMULATOR_HOST environment variable, run:
+
+   export FIRESTORE_EMULATOR_HOST=localhost:5000
+
+ {"metadata":{"emulator":{"name":"firestore"},"message":"localhost:5000\nIf you are using a library that supports the FIRESTORE_EMULATOR_HOST environment variable, run:\n\n   export FIRESTORE_EMULATOR_HOST=localhost:5000\n\n"}}
+[debug] [2022-06-26T10:44:12.188Z] Dev App Server is now running.
+
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Dev App Server is now running.\n\n"}}
+[debug] [2022-06-26T10:44:12.300Z] Ignoring unsupported arg: auto_download {"metadata":{"emulator":{"name":"ui"},"message":"Ignoring unsupported arg: auto_download"}}
+[debug] [2022-06-26T10:44:12.300Z] Ignoring unsupported arg: port {"metadata":{"emulator":{"name":"ui"},"message":"Ignoring unsupported arg: port"}}
+[debug] [2022-06-26T10:44:12.301Z] Starting Emulator UI with command {"binary":"node","args":["--dns-result-order=ipv4first","/home/aissata/.cache/firebase/emulators/ui-v1.7.0/server.bundle.js"],"optionalArgs":[],"joinArgs":false} {"metadata":{"emulator":{"name":"ui"},"message":"Starting Emulator UI with command {\"binary\":\"node\",\"args\":[\"--dns-result-order=ipv4first\",\"/home/aissata/.cache/firebase/emulators/ui-v1.7.0/server.bundle.js\"],\"optionalArgs\":[],\"joinArgs\":false}"}}
+[info] i  ui: Emulator UI logging to ui-debug.log {"metadata":{"emulator":{"name":"ui"},"message":"Emulator UI logging to \u001b[1mui-debug.log\u001b[22m"}}
+[debug] [2022-06-26T10:44:12.756Z] node:internal/modules/cjs/loader:936
+  throw err;
+  ^
+
+Error: Cannot find module '/home/aissata/AndroidStudioProjects/Go4Lunch/--dns-result-order=ipv4first'
+    at Function.Module._resolveFilename (node:internal/modules/cjs/loader:933:15)
+    at Function._resolveFilename (pkg/prelude/bootstrap.js:1955:46)
+    at Function.Module._load (node:internal/modules/cjs/loader:778:27)
+    at Function.runMain (pkg/prelude/bootstrap.js:1983:12)
+    at node:internal/main/run_main_module:17:47 {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}
+ {"metadata":{"emulator":{"name":"ui"},"message":"node:internal/modules/cjs/loader:936\n  throw err;\n  ^\n\nError: Cannot find module '/home/aissata/AndroidStudioProjects/Go4Lunch/--dns-result-order=ipv4first'\n    at Function.Module._resolveFilename (node:internal/modules/cjs/loader:933:15)\n    at Function._resolveFilename (pkg/prelude/bootstrap.js:1955:46)\n    at Function.Module._load (node:internal/modules/cjs/loader:778:27)\n    at Function.runMain (pkg/prelude/bootstrap.js:1983:12)\n    at node:internal/main/run_main_module:17:47 {\n  code: 'MODULE_NOT_FOUND',\n  requireStack: []\n}\n"}}
+[warn] ⚠  ui: Fatal error occurred: 
+   Emulator UI has exited with code: 1, 
+   stopping all running emulators {"metadata":{"emulator":{"name":"ui"},"message":"Fatal error occurred: \n   Emulator UI has exited with code: 1, \n   stopping all running emulators"}}
+[info] i  ui: Stopping Emulator UI {"metadata":{"emulator":{"name":"ui"},"message":"Stopping Emulator UI"}}
+[debug] [2022-06-26T10:44:16.812Z] Emulator UI: Unable to terminate process (PID=30057) {"metadata":{"emulator":{"name":"ui"},"message":"Emulator UI: Unable to terminate process (PID=30057)"}}
+[warn] ⚠  ui: Error stopping Emulator UI {"metadata":{"emulator":{"name":"ui"},"message":"Error stopping Emulator UI"}}
+[info] i  functions: Stopping Functions Emulator {"metadata":{"emulator":{"name":"functions"},"message":"Stopping Functions Emulator"}}
+[info] i  firestore: Stopping Firestore Emulator {"metadata":{"emulator":{"name":"firestore"},"message":"Stopping Firestore Emulator"}}
+[debug] [2022-06-26T10:44:16.942Z] *** shutting down gRPC server since JVM is shutting down {"metadata":{"emulator":{"name":"firestore"},"message":"*** shutting down gRPC server since JVM is shutting down"}}
+[debug] [2022-06-26T10:44:16.943Z] 
+ {"metadata":{"emulator":{"name":"firestore"},"message":"\n"}}
+[debug] [2022-06-26T10:44:16.986Z] *** server shut down {"metadata":{"emulator":{"name":"firestore"},"message":"*** server shut down"}}
+[debug] [2022-06-26T10:44:16.987Z] 
+ {"metadata":{"emulator":{"name":"firestore"},"message":"\n"}}
+[info] i  hub: Stopping emulator hub {"metadata":{"emulator":{"name":"hub"},"message":"Stopping emulator hub"}}
+[info] i  logging: Stopping Logging Emulator {"metadata":{"emulator":{"name":"logging"},"message":"Stopping Logging Emulator"}}

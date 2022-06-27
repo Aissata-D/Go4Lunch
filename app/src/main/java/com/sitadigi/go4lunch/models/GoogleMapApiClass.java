@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-   // public static Object Result;
+
 //-----------------------------------com.example.GoogleMapApiClass.java-----------------------------------
 
 

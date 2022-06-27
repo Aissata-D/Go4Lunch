@@ -70,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
 
         mShowSignOutDialogueAlertAndDetailActivity = new ShowSignOutDialogueAlertAndDetailActivity();
         getWindow().setStatusBarColor(Color.TRANSPARENT);
+
         initViewModel();
         imgSearch.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,7 +79,6 @@ public class MainActivity extends AppCompatActivity {
                 imgSearch.setVisibility(View.GONE);
             }
         });
-
         // Manage Navigation menus
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
@@ -136,6 +136,8 @@ public class MainActivity extends AppCompatActivity {
                         imgSearch.setVisibility(View.VISIBLE);
                     }
                 });
+        //////////////////////////END OF API PLACE AUTOCOMPLETE //////////////////////////////////
+
         // Passing each menu ID as a set of Ids because each // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.nav_gallery,
@@ -188,5 +190,11 @@ public class MainActivity extends AppCompatActivity {
                 this.locationPermissionGranted, MainActivity.this);
         mMainViewViewModel.loadLocationMutableLiveData(getApplicationContext(), MainActivity.this, mMainViewViewModel);
         mMainViewViewModel.getLocationMutableLiveData();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mMainViewViewModel.disposeWhenDestroy();
     }
 }

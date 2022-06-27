@@ -1,29 +1,7 @@
 package com.sitadigi.go4lunch.ui.mapView;
 
-import static com.sitadigi.go4lunch.DetailActivity.RESTAURANT_ID;
-import static com.sitadigi.go4lunch.DetailActivity.RESTAURANT_NAME;
-import static com.sitadigi.go4lunch.DetailActivity.RESTAURANT_OPENINGHOURS;
-import static com.sitadigi.go4lunch.DetailActivity.RESTAURANT_PHONE_NUMBER;
-import static com.sitadigi.go4lunch.DetailActivity.RESTAURANT_PHOTO_URL;
-import static com.sitadigi.go4lunch.DetailActivity.RESTAURANT_RATING;
-import static com.sitadigi.go4lunch.DetailActivity.RESTAURANT_TYPE;
-import static com.sitadigi.go4lunch.DetailActivity.RESTAURANT_ADDRESS;
-import static com.sitadigi.go4lunch.DetailActivity.RESTAURANT_WEBSITE;
-
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.sitadigi.go4lunch.DetailActivity;
-import com.sitadigi.go4lunch.R;
-
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +11,15 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.sitadigi.go4lunch.R;
 import com.sitadigi.go4lunch.databinding.FragmentMapViewBinding;
 import com.sitadigi.go4lunch.factory.MainViewModelFactory;
 import com.sitadigi.go4lunch.models.GoogleMapApiClass;
@@ -60,7 +46,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
     private ImageView mapViewPlaceHolder;
     private List<User> mUsers = new ArrayList<>();
 
-
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         GoogleMapApiCallsRepository googleMapApiCallsRepository = new GoogleMapApiCallsRepository();
@@ -71,6 +56,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         View root = binding.getRoot();
         mapViewPlaceHolder = binding.mapViewPlaceholder;
         resultList = new ArrayList<>();
+
         googleMapView();
 
         return root;
@@ -143,7 +129,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
             if ((restaurantName.equals(markerName)) && (restaurantPosition.equals(markerPosition))) {
                 OpenDetailActivityUtils openDetailActivityUtils = new OpenDetailActivityUtils();
                 openDetailActivityUtils.clickOnOpenDetailActivityInMapviewFragment(restaurant,
-                        getContext(),mMainViewViewModel,restaurantName);
+                        getContext(), mMainViewViewModel, restaurantName);
             }
         }
         return true;
@@ -163,7 +149,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         }
         mUtilsMapView.updateLocationUI(this.googleMap);
     }
-
 
     @Override
     public void onResume() {

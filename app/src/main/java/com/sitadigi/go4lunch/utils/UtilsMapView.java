@@ -20,8 +20,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.sitadigi.go4lunch.R;
 import com.sitadigi.go4lunch.models.GoogleMapApiClass;
 import com.sitadigi.go4lunch.models.User;
-import com.sitadigi.go4lunch.viewModel.MainViewViewModel;
 import com.sitadigi.go4lunch.repository.GeoLocateRepository;
+import com.sitadigi.go4lunch.viewModel.MainViewViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,57 +95,54 @@ public class UtilsMapView {
         int height = 120;
         int width = 120;
         // Icon Green
-        BitmapDrawable bitMapMarkerGreen=(BitmapDrawable) mContext.getResources()
+        BitmapDrawable bitMapMarkerGreen = (BitmapDrawable) mContext.getResources()
                 .getDrawable(R.drawable.marker_restaurant_green);
         Bitmap b1 = bitMapMarkerGreen.getBitmap();
         Bitmap iconRestaurantGreen = Bitmap.createScaledBitmap(b1, width, height, false);
         //Icon Orange
-        BitmapDrawable bitMapMarkerOrange=(BitmapDrawable) mContext.getResources()
+        BitmapDrawable bitMapMarkerOrange = (BitmapDrawable) mContext.getResources()
                 .getDrawable(R.drawable.marker_restaurant_orange);
         Bitmap b2 = bitMapMarkerOrange.getBitmap();
         Bitmap iconRestaurantOrange = Bitmap.createScaledBitmap(b2, width, height, false);
         //moveCamera
-     //   if (mMainViewViewModel.getLocationMutableLiveData() != null) {
-            mMainViewViewModel.getLocationMutableLiveData()
-                    .observe(mLifecycleOwner,
-                            LocationResponse -> {
-                                lastKnownLocation = LocationResponse;
-                                mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                                        new LatLng(lastKnownLocation.getLatitude(),
-                                                lastKnownLocation.getLongitude()), DEFAULT_ZOOM));
-                            });
-            if (mMainViewViewModel.getRestaurant() != null) {
-                // Call list of restaurant
-                mMainViewViewModel.getRestaurant().observe(mLifecycleOwner, RestaurantResponse -> {
-                    listOfRestaurant.clear();
-                    listOfRestaurant.addAll(RestaurantResponse);
-                    //  When getting response, we update UI
-                    if (listOfRestaurant != null) {
-                        for (GoogleMapApiClass.Result restaurant : listOfRestaurant) {
-                            if (!resultList.contains(restaurant)) {
-                                resultList.add(restaurant);
-                                LatLng restaurantPosition = new LatLng(restaurant.getGeometry().getLocation().getLat()
-                                        , restaurant.getGeometry().getLocation().getLng());
-                                String restaurantNameForMarker = restaurant.getName();
-                                if(mMainViewViewModel.isRestaurantSelectedByOneWorkmate(restaurant.getPlaceId()
-                                        ,mUsers)) {
-                                    mGoogleMap.addMarker(new MarkerOptions()
-                                            .position(restaurantPosition)
-                                            .icon(BitmapDescriptorFactory.fromBitmap(iconRestaurantGreen))
-                                            .title(restaurantNameForMarker));
-                                }else {
-                                    mGoogleMap.addMarker(new MarkerOptions()
-                                            .position(restaurantPosition)
-                                            .icon(BitmapDescriptorFactory.fromBitmap(iconRestaurantOrange))
-                                            .title(restaurantNameForMarker));
-                                }
+        mMainViewViewModel.getLocationMutableLiveData()
+                .observe(mLifecycleOwner,
+                        LocationResponse -> {
+                            lastKnownLocation = LocationResponse;
+                            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                                    new LatLng(lastKnownLocation.getLatitude(),
+                                            lastKnownLocation.getLongitude()), DEFAULT_ZOOM));
+                        });
+        if (mMainViewViewModel.getRestaurant() != null) {
+            // Call list of restaurant
+            mMainViewViewModel.getRestaurant().observe(mLifecycleOwner, RestaurantResponse -> {
+                listOfRestaurant.clear();
+                listOfRestaurant.addAll(RestaurantResponse);
+                //  When getting response, we update UI
+                if (listOfRestaurant != null) {
+                    for (GoogleMapApiClass.Result restaurant : listOfRestaurant) {
+                        if (!resultList.contains(restaurant)) {
+                            resultList.add(restaurant);
+                            LatLng restaurantPosition = new LatLng(restaurant.getGeometry().getLocation().getLat()
+                                    , restaurant.getGeometry().getLocation().getLng());
+                            String restaurantNameForMarker = restaurant.getName();
+                            if (mMainViewViewModel.isRestaurantSelectedByOneWorkmate(restaurant.getPlaceId()
+                                    , mUsers)) {
+                                mGoogleMap.addMarker(new MarkerOptions()
+                                        .position(restaurantPosition)
+                                        .icon(BitmapDescriptorFactory.fromBitmap(iconRestaurantGreen))
+                                        .title(restaurantNameForMarker));
+                            } else {
+                                mGoogleMap.addMarker(new MarkerOptions()
+                                        .position(restaurantPosition)
+                                        .icon(BitmapDescriptorFactory.fromBitmap(iconRestaurantOrange))
+                                        .title(restaurantNameForMarker));
                             }
                         }
                     }
-                });
-            }
-        //}
-        else {
+                }
+            });
+        } else {
             mGoogleMap.moveCamera(CameraUpdateFactory
                     .newLatLngZoom(defaultLocation, DEFAULT_ZOOM));
             mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);

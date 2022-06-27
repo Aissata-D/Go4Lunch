@@ -14,10 +14,8 @@ public class MainViewModelFactory implements ViewModelProvider.Factory {
         mGoogleMapApiCallsInterface = googleMapApiCallsInterface;
     }
 
-
     @Override
     public <T extends ViewModel> T create(Class<T> modelClass) {
         return (T) new MainViewViewModel(mGoogleMapApiCallsInterface);
     }
-
 }

@@ -1,7 +1,9 @@
 package com.sitadigi.go4lunch.repository;
 
 import android.content.Context;
+
 import androidx.lifecycle.MutableLiveData;
+
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -9,6 +11,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.sitadigi.go4lunch.models.User;
 
 import org.jetbrains.annotations.Nullable;
+
 import java.util.List;
 
 public interface UserRepositoryInterface {
@@ -42,8 +45,7 @@ public interface UserRepositoryInterface {
     /*
      *getAllUser method return users using this app in real time
      */
-    public MutableLiveData<List<User>> getAllUser() ;
+    public MutableLiveData<List<User>> getAllUser();
 
-
-    public List<User> getAllUserForNotificationPush() ;
+    public List<User> getAllUserForNotificationPush();
 }

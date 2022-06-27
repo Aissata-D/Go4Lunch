@@ -35,7 +35,6 @@ import com.sitadigi.go4lunch.viewModel.UserViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class DetailActivity extends AppCompatActivity {
     public static final String RESTAURANT_NAME = "RESTAURANT_NAME";
@@ -69,7 +68,6 @@ public class DetailActivity extends AppCompatActivity {
     UtilsDetailActivity utilsDetailActivity;
     UserViewModel mUserViewModel;
     RecyclerView mRecyclerView;
-   // WorkmateViewModel mWorkmateViewModel;
     DetailActivityAdapter detailActivityAdapter;
     LinearLayoutManager linearLayoutManager;
     float restaurantRating;
@@ -80,7 +78,6 @@ public class DetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-        Objects.requireNonNull(this.getSupportActionBar()).hide();
         // Get uid of user on logged
         GoogleMapApiCallsRepository googleMapApiCallsRepository = new GoogleMapApiCallsRepository();
         mMainViewViewModel = new ViewModelProvider(this, new MainViewModelFactory(googleMapApiCallsRepository)).get(MainViewViewModel.class);
@@ -185,7 +182,7 @@ public class DetailActivity extends AppCompatActivity {
             mRecyclerView.setLayoutManager(null);
             List<User> usersInter = new ArrayList<>();
             for (User user : usersLiveData) {
-                if(user != null && user.getUserRestaurantId() != null) {
+                if (user != null && user.getUserRestaurantId() != null) {
                     if (user.getUserRestaurantId().equals(restaurantId)) {
                         if (!usersInter.contains(user)) {
                             usersInter.add(user);

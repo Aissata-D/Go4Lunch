@@ -6,7 +6,6 @@ import com.sitadigi.go4lunch.models.GoogleMapApiClass;
 import com.sitadigi.go4lunch.models.GooglePlaceDetailApiClass;
 
 import io.reactivex.Observable;
-import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -22,17 +21,11 @@ public interface GoogleMapApiService {
             .build();
 
     @GET("maps/api/place/nearbysearch/json")
-    Observable<GoogleMapApiClass> getRestaurent(@Query("location") String location,
+    Observable<GoogleMapApiClass> getRestaurant(@Query("location") String location,
                                                 @Query("radius") int radius,
                                                 @Query("type") String type,
                                                 @Query("key") String key,
-                                                @Query ("rankBy") String rankBy);
-
-    @GET("/maps/api/place/photo")
-    Call<GoogleMapApiClass> getRestaurentPhoto(@Query("photo_reference") String referencePhoto,
-                                               @Query("maxwidth") int maxWidth,
-                                               @Query("maxheight") int maxHeigth,
-                                               @Query("key") String key);
+                                                @Query("rankBy") String rankBy);
 
     @GET("/maps/api/distancematrix/json")
     Observable<GoogleDistanceMatrixClass> getRestaurantDistance(@Query("destinations") String destinations,
@@ -45,7 +38,6 @@ public interface GoogleMapApiService {
 
 
 }
-
 
 //requette google map
 //https://maps.googleapis.com/maps/api/place/nearbysearch/json?&location=45.76667%2C4.88333&radius=1500&type=restaurant&key=AIzaSyDsQUD7ukIhqdJYZIQxj535IvrDRrkrH08

@@ -14,10 +14,10 @@ import io.reactivex.schedulers.Schedulers;
 public class GoogleMapApiCallsRepository implements GoogleMapApiCallsInterface {
     @Override
     public Observable<GoogleMapApiClass> streamFetchListOfNearRestaurant(String location, int radius
-            , String type, String key,String rankBy) {
+            , String type, String key, String rankBy) {
         GoogleMapApiService googleMapApiService = GoogleMapApiService.retrofit
                 .create(GoogleMapApiService.class);
-        return googleMapApiService.getRestaurent(location, radius, type, key, rankBy)
+        return googleMapApiService.getRestaurant(location, radius, type, key, rankBy)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .timeout(10, TimeUnit.SECONDS);
@@ -27,7 +27,7 @@ public class GoogleMapApiCallsRepository implements GoogleMapApiCallsInterface {
     public Observable<GooglePlaceDetailApiClass> streamFetchRestaurantDetail(GoogleMapApiClass.Result restaurant, String apiKey) {
         GoogleMapApiService googleMapApiService = GoogleMapApiService.retrofit
                 .create(GoogleMapApiService.class);
-        return googleMapApiService.getRestaurantPhoneAndWebsite(restaurant.getPlaceId(),apiKey)
+        return googleMapApiService.getRestaurantPhoneAndWebsite(restaurant.getPlaceId(), apiKey)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .timeout(10, TimeUnit.SECONDS);
@@ -37,7 +37,7 @@ public class GoogleMapApiCallsRepository implements GoogleMapApiCallsInterface {
     public Observable<GoogleDistanceMatrixClass> streamFetchRestaurantDistance(String destinations, String origins, String apiKey) {
         GoogleMapApiService googleMapApiService = GoogleMapApiService.retrofit
                 .create(GoogleMapApiService.class);
-        return googleMapApiService.getRestaurantDistance(destinations,origins,apiKey)
+        return googleMapApiService.getRestaurantDistance(destinations, origins, apiKey)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .timeout(10, TimeUnit.SECONDS);

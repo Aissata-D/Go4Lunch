@@ -17,6 +17,8 @@ import com.google.firebase.auth.FirebaseUserMetadata;
 import com.google.firebase.auth.MultiFactor;
 import com.google.firebase.auth.UserInfo;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.sitadigi.go4lunch.models.User;
 
 import java.util.ArrayList;
@@ -24,9 +26,17 @@ import java.util.List;
 
 public class FakeUserRepository implements UserRepositoryInterface{
     FirebaseAuth mFirebaseAuth;
+    FirebaseFirestore mFirebaseFirestore;
+    AuthUI mAuthUI;
+    String userRestaurantId = "restaurantIdCreated";
+    String userRestaurantName = "restaurantNameCreated";
+    String userRestaurantType = "restaurantTypeCreated";
+    User userToCreate;
 
-    FakeUserRepository(FirebaseAuth firebaseAuth){
+    FakeUserRepository(FirebaseAuth firebaseAuth, FirebaseFirestore firebaseFirestore, AuthUI authUI ){
         mFirebaseAuth = firebaseAuth;
+        mFirebaseFirestore = firebaseFirestore;
+        mAuthUI = authUI;
 
     }
 
@@ -34,7 +44,7 @@ public class FakeUserRepository implements UserRepositoryInterface{
     @Nullable
     @Override
     public FirebaseAuth getCurrentInstance() {
-        return FirebaseAuth.getInstance();
+        return mFirebaseAuth ;
     }
 
     @Nullable
@@ -42,29 +52,46 @@ public class FakeUserRepository implements UserRepositoryInterface{
     public FirebaseUser getCurrentUser() {
         User user1 = new User("userid","username","usermail@mail.com","userPictureUrl");
         //return  user1;
-        return FirebaseAuth.getInstance().getCurrentUser();
+        return mFirebaseAuth.getCurrentUser();
     }
 
     @Override
     public Task<Void> signOut(Context context) {
-        return AuthUI.getInstance().signOut(context);
+        return mAuthUI.signOut(context);
     }
 
     @Override
     public Task<Void> deleteUser(Context context) {
-        return AuthUI.getInstance().delete(context);
+        return mAuthUI.delete(context);
     }
 
     @Override
     public CollectionReference getUsersCollection() {
 
-       // CollectionReference collectionReference = new CollectionReference();
-       // return FirebaseFirestore.getInstance().collection(COLLECTION_NAME);
-            return null;
+        return mFirebaseFirestore.collection("users");
+
     }
 
     @Override
     public void createUser() {
+        FirebaseUser user = mFirebaseAuth.getCurrentUser();
+        if (user != null) {
+            String urlPicture = (user.getPhotoUrl() != null) ? user.getPhotoUrl().toString() : null;
+            String username = user.getDisplayName();
+            String useremail = user.getEmail();
+            String uid = user.getUid();
+            userToCreate = new User(uid, username, useremail, urlPicture, userRestaurantId
+                    , userRestaurantName, userRestaurantType);
+            DocumentReference userDocumentRef = getUsersCollection().document(uid);
+            userDocumentRef.get().addOnSuccessListener(documentSnapshot -> {
+                if(!documentSnapshot.exists()){
+                    this.getUsersCollection().document(uid).set(userToCreate);
+                }
+            });
+
+        }
+        else {
+        }
 
     }
 
@@ -103,4 +130,5 @@ public class FakeUserRepository implements UserRepositoryInterface{
         users.add(user2);
         return users;
     }
+
 }

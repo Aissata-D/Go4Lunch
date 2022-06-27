@@ -7,10 +7,8 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.sitadigi.go4lunch.databinding.FragmentSignOutBinding;
-import com.sitadigi.go4lunch.viewModel.UserViewModel;
 
 public class SignOutFragment extends Fragment {
 
@@ -18,7 +16,6 @@ public class SignOutFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-
 
         binding = FragmentSignOutBinding.inflate(inflater, container, false);
         View root = binding.getRoot();

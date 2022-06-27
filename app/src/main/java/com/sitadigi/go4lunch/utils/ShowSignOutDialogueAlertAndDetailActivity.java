@@ -21,7 +21,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -30,7 +29,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.sitadigi.go4lunch.DetailActivity;
 import com.sitadigi.go4lunch.LoginActivity;
 import com.sitadigi.go4lunch.R;
-import com.sitadigi.go4lunch.factory.UserViewModelFactory;
 import com.sitadigi.go4lunch.models.GoogleMapApiClass;
 import com.sitadigi.go4lunch.repository.UserRepository;
 import com.sitadigi.go4lunch.viewModel.MainViewViewModel;
@@ -81,11 +79,11 @@ public class ShowSignOutDialogueAlertAndDetailActivity {
         alert.show();
     }
 
-    public void showAlertDialogDeleteAcount(Context mContext) {
+    public void showAlertDialogDeleteAccount(Context mContext) {
 
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
         alertDialog.setTitle("Delete Account")
-                .setMessage(mContext.getString(R.string.sign_out_message))
+                .setMessage(mContext.getString(R.string.delete_message))
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         mUserViewModel.deleteUser(mContext)
@@ -95,12 +93,12 @@ public class ShowSignOutDialogueAlertAndDetailActivity {
                                         // below method is used after logout from device.
                                         Toast.makeText(mContext, "Your Account is delete", Toast.LENGTH_SHORT).show();
                                         // Return to LoginActivity via an intent.
+                                        // mUserViewModel.signOut(mContext);
                                         Intent i = new Intent(mContext, LoginActivity.class);
                                         mContext.startActivity(i);
                                     }
                                 });
                     }
-
                 })
                 .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
@@ -193,7 +191,6 @@ public class ShowSignOutDialogueAlertAndDetailActivity {
                                     }
                                 }
                             } else {
-                                Log.e("TAG", "onComplete: Vous n'avez choisit aucun restaurant");
                                 Toast.makeText(activity.getApplicationContext(),
                                         "Vous n'avez choisit aucun restaurant", Toast.LENGTH_SHORT).show();
                             }
@@ -203,6 +200,4 @@ public class ShowSignOutDialogueAlertAndDetailActivity {
             });
         });
     }
-
-
 }

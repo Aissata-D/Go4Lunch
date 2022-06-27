@@ -35,9 +35,9 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="sign_out_message">Voulez-vous vraiment vous déconnecter ?</string>
     <string name="ok">OK</string>
-    <string name="resto_open_now">open now</string>
-    <string name="resto_close">close</string>
-    <string name="restoopening_hour_unknow">unknow</string>
+    <string name="restaurant_open_now">open now</string>
+    <string name="restaurant_close">close</string>
+    <string name="restaurant_opening_hour_unknown">unknown</string>
     <string name="is_joining">is joining </string>
     <string name="not_photo_url">pas de url photo</string>
 
@@ -50,26 +50,33 @@
     <string name="web_site">WEBSITE</string>
     <string name="like">LIKE</string>
     <string name="choice_restaurant">select</string>
-    <string name="type_resto_adresse_resto">Type resto - adresse resto</string>
-    <string name="name_resto">NAME RESTO</string>
+    <string name="type_restaurant_address_restaurant">Type restaurant - address restaurant</string>
+    <string name="name_restaurant">NAME RESTAURANT</string>
     <string name="img_restaurant">image restaurant</string>
     <string name="img_workmate">image workmate</string>
     <string name="mane_is_eating_french">Name is eating french</string>
     <string name="debug_long_string" translatable="false">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla odio diam, egestas eget quam in.</string>
     <string name="user_name">user name</string>
     <string name="img_search_bar">image search bar</string>
-    <string name="no_resto_found">NO RESTO FOUND</string>
-    <string name="no_restaurant_choiced">Vous n\'avez choisit aucun restaurent</string>
+    <string name="no_restaurant_found">NO RESTAURANT FOUND</string>
+    <string name="no_restaurant_choice">No restaurant selected</string>
     <string name="img_google_map">image google map</string>
     <string name="no_workmate_selected_this_restaurant">NO WORKMATE SELECTED THIS RESTAURANT</string>
     <string name="opening_hour">Opening hour</string>
     <string name="number_of_workmate">(0)</string>
-    <string name="type_adresse">Type - adresse</string>
+    <string name="type_address">Type - address</string>
     <string name="distance">Xm</string>
     <string name="name_firstname">Name FirstName</string>
     <string name="email_user">Email User</string>
-    <string name="no_like_for_this_restaurant">Aucun like pour ce restaurent</string>
+    <string name="no_like_for_this_restaurant">No like for this restaurant</string>
     <string name="no_phone_number">No Phone Number </string>
     <string name="no_web_site_link">No web site </string>
-    <string name="delete_my_account">Supprimer mon compte</string>
+    <string name="delete_my_account">Delete Account</string>
+    <string name="update_name">Change Name</string>
+    <string name="new_name">new name</string>
+    <string name="delete_message">Are you sure to delete your account?</string>
+    <string name="available_workmates">Available workmates</string>
+    <string name="i_am_hungry">I am Hungry !</string>
+    <string name="give_valid_name">Give a valid name</string>
+
 </resources>

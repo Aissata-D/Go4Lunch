@@ -15,8 +15,6 @@ import com.sitadigi.go4lunch.viewModel.MainViewViewModel;
 
 public class LunchFragment extends Fragment {
 
-    String userLastRestoId;
-    String userRestoName;
     TextView textView;
     private FragmentLunchBinding binding;
 

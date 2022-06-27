@@ -3,12 +3,15 @@ package com.sitadigi.go4lunch.repository;
 import android.content.Context;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
 import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -23,7 +26,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class UserRepository implements UserRepositoryInterface{
+public final class UserRepository implements UserRepositoryInterface {
 
     //----FIRESTORE FIELD-------------
     private static final String COLLECTION_NAME = "users";
@@ -49,20 +52,24 @@ public final class UserRepository implements UserRepositoryInterface{
             return instance;
         }
     }
+
     @Override
     @Nullable
     public FirebaseAuth getCurrentInstance() {
         return FirebaseAuth.getInstance();
     }
+
     @Override
     @Nullable
     public FirebaseUser getCurrentUser() {
         return FirebaseAuth.getInstance().getCurrentUser();
     }
+
     @Override
     public Task<Void> signOut(Context context) {
         return AuthUI.getInstance().signOut(context);
     }
+
     @Override
     public Task<Void> deleteUser(Context context) {
         return AuthUI.getInstance().delete(context);
@@ -89,14 +96,13 @@ public final class UserRepository implements UserRepositoryInterface{
                     , userRestaurantName, userRestaurantType);
             DocumentReference userDocumentRef = getUsersCollection().document(uid);
             userDocumentRef.get().addOnSuccessListener(documentSnapshot -> {
-                if(!documentSnapshot.exists()){
-                        this.getUsersCollection().document(uid).set(userToCreate);
-                    }
-                });
+                if (!documentSnapshot.exists()) {
+                    this.getUsersCollection().document(uid).set(userToCreate);
+                }
+            });
 
-        }
-        else {
-            // TODO Gerer les cas d'erreur
+        } else {
+            // --> (user == null) ==> do nothing
         }
     }
 
@@ -110,6 +116,20 @@ public final class UserRepository implements UserRepositoryInterface{
     // Update User Username
     @Override
     public Task<Void> updateUsername(String username) {
+        FirebaseUser user = getCurrentUser();
+        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                .setDisplayName(username)
+                .build();
+
+        user.updateProfile(profileUpdates)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d("TAG", "User profile updated.");
+                        }
+                    }
+                });
         String uid = this.getCurrentUserUID();
         if (uid != null) {
             return this.getUsersCollection().document(uid).update(USERNAME_FIELD, username);
@@ -128,7 +148,7 @@ public final class UserRepository implements UserRepositoryInterface{
     }
 
     /*
-     *getAllUser method return users using this app in real time
+     * get AllUser method return users using this app in real time
      */
     @Override
     public MutableLiveData<List<User>> getAllUser() {
@@ -147,7 +167,7 @@ public final class UserRepository implements UserRepositoryInterface{
                             return;
                         }
                         if (value != null) {
-                             usersUsingApp.clear();
+                            usersUsingApp.clear();
                             for (DocumentSnapshot document : value) {
                                 String username = document.getString("username");
                                 String email = document.getString("email");
@@ -165,14 +185,14 @@ public final class UserRepository implements UserRepositoryInterface{
                         }
                     }
                 });
-        Log.e("NEW", "getAllUser:dans repository "+listOfUserLiveData );
+        Log.e("NEW", "getAllUser:dans repository " + listOfUserLiveData);
         return listOfUserLiveData;
     }
 
     @Override
     public List<User> getAllUserForNotificationPush() {
 
-        List<User> usersUsingApp1 =new ArrayList<>();
+        List<User> usersUsingApp1 = new ArrayList<>();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("users").addSnapshotListener(
                 new EventListener<QuerySnapshot>() {
@@ -185,7 +205,7 @@ public final class UserRepository implements UserRepositoryInterface{
                             return;
                         }
                         if (value != null) {
-                            List<User>  usersUsingApp = new ArrayList<>();
+                            List<User> usersUsingApp = new ArrayList<>();
                             for (DocumentSnapshot document : value) {
                                 String username = document.getString("username");
                                 String email = document.getString("email");

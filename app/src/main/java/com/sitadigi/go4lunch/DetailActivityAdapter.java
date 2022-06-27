@@ -18,7 +18,7 @@ import java.util.List;
 public class DetailActivityAdapter extends RecyclerView.Adapter<DetailActivityAdapter.DetailActivityViewHolder> {
 
     /**
-     * The list of user in a same restaurent
+     * The list of user in a same restaurant
      */
     @NonNull
     private List<User> mUsers;
@@ -26,7 +26,7 @@ public class DetailActivityAdapter extends RecyclerView.Adapter<DetailActivityAd
     /**
      * Instantiates a new UserAdapter.
      *
-     * @param users the list of tasks the adapter deals with to set
+     * @param users the list of users
      */
 
     public DetailActivityAdapter(@NonNull List<User> users) {
@@ -62,7 +62,7 @@ public class DetailActivityAdapter extends RecyclerView.Adapter<DetailActivityAd
         /**
          * Instantiates a new  DetailActivityViewHolder.
          *
-         * @param itemView the view of the task item
+         * @param itemView the view of the restaurant item
          */
         DetailActivityViewHolder(@NonNull View itemView) {
             super(itemView);

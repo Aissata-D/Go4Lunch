@@ -24,6 +24,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.sitadigi.go4lunch.databinding.ActivityDetailBinding;
+import com.sitadigi.go4lunch.databinding.ActivityMainBinding;
 import com.sitadigi.go4lunch.factory.MainViewModelFactory;
 import com.sitadigi.go4lunch.factory.UserViewModelFactory;
 import com.sitadigi.go4lunch.models.User;
@@ -37,6 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DetailActivity extends AppCompatActivity {
+
     public static final String RESTAURANT_NAME = "RESTAURANT_NAME";
     public static final String RESTAURANT_PHOTO_URL = "RESTAURANT_PHOTO_URL";
     public static final String RESTAURANT_OPENINGHOURS = "RESTAURANT_OPENINGHOURS";
@@ -48,7 +51,6 @@ public class DetailActivity extends AppCompatActivity {
     public static final String RESTAURANT_WEBSITE = "RESTAURANT_WEBSITE";
     private static final int MY_PERMISSION_REQUEST_CODE_CALL_PHONE = 555;
 
-    String userUid;
     ImageView mImageViewRestaurant;
     TextView tvRestaurantName;
     TextView tvRestaurantTypeAndAddresses;
@@ -57,33 +59,35 @@ public class DetailActivity extends AppCompatActivity {
     TextView tvRestaurantPhoneNumber;
     RatingBar restaurantRatingBar;
     FloatingActionButton fbaRestaurantChoice;
+    String userUid="";
     String userLastRestaurantId = "";
-    String restaurantId;
-    String restaurantName;
-    String restaurantPhotoUrl;
-    String restaurantAddresses;
-    String restaurantWebSite;
-    String restaurantPhoneNumber;
-    String urlConcat;
+    String restaurantId="";
+    String restaurantName="";
+    String restaurantPhotoUrl="";
+    String restaurantAddresses="";
+    String restaurantWebSite="";
+    String restaurantPhoneNumber="";
+    String urlConcat="";
+    float restaurantRating;
+    String restaurantType="";
     UtilsDetailActivity utilsDetailActivity;
     UserViewModel mUserViewModel;
     RecyclerView mRecyclerView;
     DetailActivityAdapter detailActivityAdapter;
     LinearLayoutManager linearLayoutManager;
-    float restaurantRating;
-    private String restaurantType;
-    private MainViewViewModel mMainViewViewModel;
+    MainViewViewModel mMainViewViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_detail);
+        com.sitadigi.go4lunch.databinding.ActivityDetailBinding binding = ActivityDetailBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         // Get uid of user on logged
         GoogleMapApiCallsRepository googleMapApiCallsRepository = new GoogleMapApiCallsRepository();
         mMainViewViewModel = new ViewModelProvider(this, new MainViewModelFactory(googleMapApiCallsRepository)).get(MainViewViewModel.class);
         UserRepository userRepository = new UserRepository();
         mUserViewModel = new ViewModelProvider(this, new UserViewModelFactory(userRepository)).get(UserViewModel.class);
-
+        //Get restaurant information
         userUid = mUserViewModel.getCurrentUser().getUid();
         restaurantId = getIntent().getStringExtra(RESTAURANT_ID);
         restaurantName = getIntent().getStringExtra(RESTAURANT_NAME);
@@ -93,17 +97,20 @@ public class DetailActivity extends AppCompatActivity {
         restaurantRating = getIntent().getFloatExtra(RESTAURANT_RATING, 0);
         restaurantWebSite = getIntent().getStringExtra(RESTAURANT_WEBSITE);
         restaurantPhoneNumber = getIntent().getStringExtra(RESTAURANT_PHONE_NUMBER);
-        fbaRestaurantChoice = findViewById(R.id.fab_choice_resto);
-        tvRestaurantLike = (TextView) findViewById(R.id.restaurant_details_name_text_adresse);
-        restaurantRatingBar = (RatingBar) findViewById(R.id.rating_bar_star);
-        tvRestaurantWebsite = (TextView) findViewById(R.id.restaurant_website);
-        tvRestaurantPhoneNumber = (TextView) findViewById(R.id.restaurant_phone_number);
-        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_detail_activity);
+       // Binding views
+        fbaRestaurantChoice = binding.fabChoiceRestaurant;
+        tvRestaurantLike = binding.restaurantLike;
+        restaurantRatingBar = binding.ratingBarStar;
+        tvRestaurantWebsite = binding.restaurantWebsite;
+        tvRestaurantPhoneNumber = binding.restaurantPhoneNumber;
+        mImageViewRestaurant = binding.restoImg;
+        tvRestaurantName = binding.restoNameDetailActivity;
+        tvRestaurantTypeAndAddresses = binding.restoTypeDetailDetailActivity;
+        mRecyclerView = binding.recyclerviewDetailActivity;
+        // Decorate recyclerView
         linearLayoutManager = new LinearLayoutManager(DetailActivity.this);
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.VERTICAL));
-        mImageViewRestaurant = (ImageView) findViewById(R.id.resto_img);
-        tvRestaurantName = (TextView) findViewById(R.id.resto_name_detail_activity);
-        tvRestaurantTypeAndAddresses = (TextView) findViewById(R.id.resto_type_detail_detail_activity);
+       // Build part of url to get photo of restaurant
         String urlPart1 = getString(R.string.url_google_place_photo_part1);
         String urlPart2 = restaurantPhotoUrl;
         String urlPart3 = getString(R.string.url_google_place_photo_part3);
@@ -112,20 +119,22 @@ public class DetailActivity extends AppCompatActivity {
         utilsDetailActivity = new UtilsDetailActivity(this, restaurantId, userLastRestaurantId);
         utilsDetailActivity.setIconStarColor(tvRestaurantLike, mUserViewModel);
         utilsDetailActivity.setFabColor(fbaRestaurantChoice, mUserViewModel);
-        float i = restaurantRating;
         utilsDetailActivity.setRatingIcon(restaurantRatingBar, (float) restaurantRating);
+        // Manage clic on buttons
         tvRestaurantLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 utilsDetailActivity.clickOnButtonLike(userUid, tvRestaurantLike, restaurantName, mUserViewModel);
             }
         });
+
         fbaRestaurantChoice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 utilsDetailActivity.clickOnButtonFab(mUserViewModel, userUid, fbaRestaurantChoice, restaurantName, restaurantType);
             }
         });
+
         tvRestaurantPhoneNumber.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -137,6 +146,7 @@ public class DetailActivity extends AppCompatActivity {
                 }
             }
         });
+
         tvRestaurantWebsite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -150,6 +160,7 @@ public class DetailActivity extends AppCompatActivity {
                 }
             }
         });
+
         getSupportActionBar().hide();
         getWindow().setStatusBarColor(Color.TRANSPARENT);
         configureDetailView();
@@ -248,7 +259,6 @@ public class DetailActivity extends AppCompatActivity {
                 // Permissions granted (CALL_PHONE).
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
                     Log.i("LOG_TAG", "Permission granted!");
                     Toast.makeText(this, "Permission granted!", Toast.LENGTH_LONG).show();
                     this.callNow();

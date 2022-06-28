@@ -38,14 +38,6 @@ public class ListViewFragment extends Fragment {
     String mOriginDistance;
     String destination = "";
     int restaurantDistance = 0;
-    Comparator<GoogleMapApiClass.Result> ComparatorRestaurantDistance
-            = new Comparator<GoogleMapApiClass.Result>() {
-
-        @Override
-        public int compare(GoogleMapApiClass.Result r1, GoogleMapApiClass.Result r2) {
-            return (int) (getRestaurantDistance(r1) - getRestaurantDistance(r2));
-        }
-    };
     private FragmentListViewBinding binding;
     private RecyclerView mRecyclerView;
     private TextView tvNoRestaurantFound;
@@ -88,7 +80,6 @@ public class ListViewFragment extends Fragment {
             mUsers.clear();
             mUsers = AllUsers;
             initRecyclerView();
-
         });
 
         return root;
@@ -100,6 +91,15 @@ public class ListViewFragment extends Fragment {
         restaurantDistance = mainViewViewModel.getRestaurantDistance(mOriginDistance, destination);
         return restaurantDistance;
     }
+
+    Comparator<GoogleMapApiClass.Result> ComparatorRestaurantDistance
+            = new Comparator<GoogleMapApiClass.Result>() {
+
+        @Override
+        public int compare(GoogleMapApiClass.Result r1, GoogleMapApiClass.Result r2) {
+            return (int) (getRestaurantDistance(r1) - getRestaurantDistance(r2));
+        }
+    };
 
     public void initRecyclerView() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this.getActivity());

@@ -21,7 +21,6 @@ public class LunchFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-
         binding = FragmentLunchBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
         textView = binding.textHome;

@@ -90,7 +90,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:drawableTopCompat="@drawable/ic_baseline_sports_soccer_24" />
         <TextView
-            android:id="@+id/restaurant_details_name_text_adresse"
+            android:id="@+id/restaurant_like"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
@@ -103,7 +103,7 @@
             app:drawableTopCompat="@drawable/ic_baseline_star_rate_24" />
     </androidx.constraintlayout.widget.ConstraintLayout>
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_choice_resto"
+        android:id="@+id/fab_choice_restaurant"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"

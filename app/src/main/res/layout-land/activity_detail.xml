@@ -102,7 +102,7 @@
             app:drawableTopCompat="@drawable/ic_baseline_sports_soccer_24" />
 
         <TextView
-            android:id="@+id/restaurant_details_name_text_adresse"
+            android:id="@+id/restaurant_like"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
@@ -133,7 +133,7 @@
         app:layout_constraintGuide_begin="399dp" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_choice_resto"
+        android:id="@+id/fab_choice_restaurant"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:backgroundTint="#FFFFFF"

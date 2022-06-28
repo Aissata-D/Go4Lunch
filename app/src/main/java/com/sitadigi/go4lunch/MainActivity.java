@@ -1,9 +1,10 @@
 package com.sitadigi.go4lunch;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -64,14 +65,21 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(binding.appBarMain.toolbar);
         mCardViewAutocomplete = binding.appBarMain.autocompleteCardview;
         imgSearch = binding.appBarMain.toolbarSearchBar;
+        Window window = this.getWindow();
+        //clear FLAG_TRANSLUCENT_STATUS flag:
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        //add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        //finally change the statusBar color
+        window.setStatusBarColor(this.getResources().getColor(R.color.orange));
         mCardViewAutocomplete.setVisibility(View.GONE);
         UserRepository userRepository = new UserRepository();
-        mUserViewModel = new ViewModelProvider(this, new UserViewModelFactory(userRepository)).get(UserViewModel.class);
-
+        mUserViewModel = new ViewModelProvider(this, new UserViewModelFactory(userRepository))
+                .get(UserViewModel.class);
         mShowSignOutDialogueAlertAndDetailActivity = new ShowSignOutDialogueAlertAndDetailActivity();
-        getWindow().setStatusBarColor(Color.TRANSPARENT);
 
         initViewModel();
+
         imgSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -159,6 +167,12 @@ public class MainActivity extends AppCompatActivity {
         } else {
             header = navigationView.inflateHeaderView(R.layout.nav_header_main);
         }
+        //Instantiate views
+        userName = (TextView) header.findViewById(R.id.name_user);
+        userEmail = (TextView) header.findViewById(R.id.email_user);
+        userPhoto = (ImageView) header.findViewById(R.id.img_user);
+        mUserViewModel.updateUIWithUserData(this, userName, userEmail, userPhoto);
+
         navigationView.getMenu().findItem(R.id.nav_slideshow).setOnMenuItemClickListener(menuItem -> {
             mShowSignOutDialogueAlertAndDetailActivity.showAlertDialogSinOut(this);
             return true;
@@ -168,11 +182,6 @@ public class MainActivity extends AppCompatActivity {
             mShowSignOutDialogueAlertAndDetailActivity.showDetailActivity(mMainViewViewModel, this, this);
             return true;
         });
-        //Instantiate views
-        userName = (TextView) header.findViewById(R.id.name_user);
-        userEmail = (TextView) header.findViewById(R.id.email_user);
-        userPhoto = (ImageView) header.findViewById(R.id.img_user);
-        mUserViewModel.updateUIWithUserData(this, userName, userEmail, userPhoto);
     }
 
     @Override

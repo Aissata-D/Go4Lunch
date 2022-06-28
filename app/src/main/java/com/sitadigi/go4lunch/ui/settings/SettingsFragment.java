@@ -68,6 +68,7 @@ public class SettingsFragment extends Fragment {
             btnRadioNo.setChecked(true);
         }
         listenRadioButton();
+
         btnUpdateName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -80,6 +81,7 @@ public class SettingsFragment extends Fragment {
                 }
             }
         });
+
         btnDeleteAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

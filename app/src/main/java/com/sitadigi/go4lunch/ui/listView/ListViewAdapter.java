@@ -1,5 +1,6 @@
 package com.sitadigi.go4lunch.ui.listView;
 
+
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.gms.maps.model.LatLng;
 import com.sitadigi.go4lunch.R;
 import com.sitadigi.go4lunch.models.GoogleMapApiClass;
 import com.sitadigi.go4lunch.models.User;
@@ -26,16 +28,17 @@ import java.util.List;
 
 public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListViewHolder> {
 
-    /**
-     * The list of All user using application
-     */
-    private final List<User> mUsers;
+
     public int mPosition;
     String urlPart1 = "";
     String urlPart2 = "";
     String urlPart3 = "";
     String urlConcat = "";
-    String mOriginDistance;
+    LatLng mOriginDistance;
+    /**
+     * The list of All user using application
+     */
+    private final List<User> mUsers;
     /**
      * The list of restaurant adapter
      */
@@ -50,16 +53,12 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
      * @param restaurants the list of restaurant the adapter
      */
     public ListViewAdapter(@NonNull final List<GoogleMapApiClass.Result> restaurants,
-                           List<User> mUsers, MainViewViewModel mainViewViewModel, String mOriginsDistance) {
+                           List<User> mUsers, MainViewViewModel mainViewViewModel, LatLng originsDistance) {
         this.mRestaurants = restaurants;
         this.mUsers = mUsers;
         this.mMainViewViewModel = mainViewViewModel;
-        this.mOriginDistance = mOriginsDistance;
+        this.mOriginDistance = originsDistance;
     }
-
-    /**
-     * Updates the list of tasks the adapter deals with.
-     */
 
     @NonNull
     @Override
@@ -98,14 +97,14 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
     }
 
     /**
-     * <p>ViewHolder for task items in the tasks list</p>
+     * <p>ViewHolder for restaurant items </p>
      *
-     * @author Gaëtan HERFRAY
+     * @author Aissata Diassana
      */
     class ListViewHolder extends RecyclerView.ViewHolder {
 
         /**
-         * The TextView displaying the name of the restaurent
+         * The TextView displaying the name of the restaurant
          */
         private final TextView restaurantName;
         private final TextView restaurantTypeAddress;
@@ -118,7 +117,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
         /**
          * Instantiates a new ListViewHolder.
          *
-         * @param itemView the view of the task item
+         * @param itemView the view of the restaurant item
          */
         ListViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -135,7 +134,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
         /**
          * Binds a restaurant to the item view.
          *
-         * @param restaurant the task to bind in the item view
+         * @param restaurant  to bind in the item view
          */
         void bind(GoogleMapApiClass.Result restaurant) {
 
@@ -184,9 +183,11 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
             }
             String workmateNumber = "( " + workmateInSameRestaurant.size() + " )";
             restaurantWorkmateNumber.setText(workmateNumber);
-            String destination = restaurant.getGeometry().getLocation().getLat() + "," + restaurant.getGeometry().getLocation().getLng();
-            int restaurantDistance = mMainViewViewModel.getRestaurantDistance(mOriginDistance, destination);
-            String restaurantDistanceText = (restaurantDistance) + " m";
+            GoogleMapApiClass.Location destination = restaurant.getGeometry().getLocation();
+            double restaurantDistance = MainViewViewModel.getRestaurantDistance(mOriginDistance.latitude
+                    , destination.getLat(),mOriginDistance.longitude,destination.getLng(),0.0,0.0);
+            // Retrieve integer part of the double restaurantDistance with ==> Math.floor(restaurantDistance)
+            String restaurantDistanceText = (Math.floor(restaurantDistance)) + " m ";
             this.restaurantDistance.setText(restaurantDistanceText);
         }
     }

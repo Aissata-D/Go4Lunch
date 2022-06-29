@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.sitadigi.go4lunch.databinding.FragmentListViewBinding;
 import com.sitadigi.go4lunch.factory.MainViewModelFactory;
 import com.sitadigi.go4lunch.models.GoogleMapApiClass;
@@ -35,9 +36,9 @@ public class ListViewFragment extends Fragment {
     String placeNameSelected;
     List<User> mUsers = new ArrayList<>();
     Location mLocation;
-    String mOriginDistance;
-    String destination = "";
-    int restaurantDistance = 0;
+    LatLng mOriginDistance;
+    GoogleMapApiClass.Location destination;
+    double restaurantDistance = 0;
     private FragmentListViewBinding binding;
     private RecyclerView mRecyclerView;
     private TextView tvNoRestaurantFound;
@@ -58,7 +59,7 @@ public class ListViewFragment extends Fragment {
         mainViewViewModel.getLocationMutableLiveData().observe(getViewLifecycleOwner()
                 , LocationMutableLiveData -> {
                     mLocation = LocationMutableLiveData;
-                    mOriginDistance = mLocation.getLatitude() + "," + mLocation.getLongitude();
+                    mOriginDistance = new LatLng(mLocation.getLatitude(), mLocation.getLongitude());
                     initRecyclerView();
                 });
 
@@ -85,10 +86,10 @@ public class ListViewFragment extends Fragment {
         return root;
     }
 
-    public int getRestaurantDistance(GoogleMapApiClass.Result restaurant) {
-        destination = restaurant.getGeometry().getLocation().getLat()
-                + "," + restaurant.getGeometry().getLocation().getLng();
-        restaurantDistance = mainViewViewModel.getRestaurantDistance(mOriginDistance, destination);
+    public double getRestaurantDistance(GoogleMapApiClass.Result restaurant) {
+        destination = restaurant.getGeometry().getLocation();
+        restaurantDistance = MainViewViewModel.getRestaurantDistance(mOriginDistance.latitude
+                , destination.getLat(),mOriginDistance.longitude,destination.getLng(),0.0,0.0);
         return restaurantDistance;
     }
 

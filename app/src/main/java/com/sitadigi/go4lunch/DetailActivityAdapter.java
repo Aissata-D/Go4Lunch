@@ -18,7 +18,7 @@ import java.util.List;
 public class DetailActivityAdapter extends RecyclerView.Adapter<DetailActivityAdapter.DetailActivityViewHolder> {
 
     /**
-     * The list of user in a same restaurant
+     * The list of users in a same restaurant
      */
     @NonNull
     private List<User> mUsers;
@@ -26,7 +26,7 @@ public class DetailActivityAdapter extends RecyclerView.Adapter<DetailActivityAd
     /**
      * Instantiates a new UserAdapter.
      *
-     * @param users the list of users
+     * @param users the list of mUser
      */
 
     public DetailActivityAdapter(@NonNull List<User> users) {

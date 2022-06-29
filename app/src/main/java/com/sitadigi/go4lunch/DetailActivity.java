@@ -1,6 +1,5 @@
 package com.sitadigi.go4lunch;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -15,7 +14,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -25,7 +23,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.sitadigi.go4lunch.databinding.ActivityDetailBinding;
-import com.sitadigi.go4lunch.databinding.ActivityMainBinding;
 import com.sitadigi.go4lunch.factory.MainViewModelFactory;
 import com.sitadigi.go4lunch.factory.UserViewModelFactory;
 import com.sitadigi.go4lunch.models.User;
@@ -59,17 +56,17 @@ public class DetailActivity extends AppCompatActivity {
     TextView tvRestaurantPhoneNumber;
     RatingBar restaurantRatingBar;
     FloatingActionButton fbaRestaurantChoice;
-    String userUid="";
+    String userUid = "";
     String userLastRestaurantId = "";
-    String restaurantId="";
-    String restaurantName="";
-    String restaurantPhotoUrl="";
-    String restaurantAddresses="";
-    String restaurantWebSite="";
-    String restaurantPhoneNumber="";
-    String urlConcat="";
+    String restaurantId = "";
+    String restaurantName = "";
+    String restaurantPhotoUrl = "";
+    String restaurantAddresses = "";
+    String restaurantWebSite = "";
+    String restaurantPhoneNumber = "";
+    String urlConcat = "";
     float restaurantRating;
-    String restaurantType="";
+    String restaurantType = "";
     UtilsDetailActivity utilsDetailActivity;
     UserViewModel mUserViewModel;
     RecyclerView mRecyclerView;
@@ -97,7 +94,7 @@ public class DetailActivity extends AppCompatActivity {
         restaurantRating = getIntent().getFloatExtra(RESTAURANT_RATING, 0);
         restaurantWebSite = getIntent().getStringExtra(RESTAURANT_WEBSITE);
         restaurantPhoneNumber = getIntent().getStringExtra(RESTAURANT_PHONE_NUMBER);
-       // Binding views
+        // Binding views
         fbaRestaurantChoice = binding.fabChoiceRestaurant;
         tvRestaurantLike = binding.restaurantLike;
         restaurantRatingBar = binding.ratingBarStar;
@@ -110,7 +107,7 @@ public class DetailActivity extends AppCompatActivity {
         // Decorate recyclerView
         linearLayoutManager = new LinearLayoutManager(DetailActivity.this);
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.VERTICAL));
-       // Build part of url to get photo of restaurant
+        // Build part of url to get photo of restaurant
         String urlPart1 = getString(R.string.url_google_place_photo_part1);
         String urlPart2 = restaurantPhotoUrl;
         String urlPart3 = getString(R.string.url_google_place_photo_part3);
@@ -120,7 +117,7 @@ public class DetailActivity extends AppCompatActivity {
         utilsDetailActivity.setIconStarColor(tvRestaurantLike, mUserViewModel);
         utilsDetailActivity.setFabColor(fbaRestaurantChoice, mUserViewModel);
         utilsDetailActivity.setRatingIcon(restaurantRatingBar, (float) restaurantRating);
-        // Manage clic on buttons
+        // Manage click on buttons
         tvRestaurantLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -171,7 +168,7 @@ public class DetailActivity extends AppCompatActivity {
         String restaurantTypeAndAddresses = restaurantType + " - " + restaurantAddresses;
         tvRestaurantName.setText(restaurantName);
         tvRestaurantTypeAndAddresses.setText(restaurantTypeAndAddresses);
-        //GLIDE TO SHOW PHOTO
+        //GLIDE TO SHOW IMAGE OF THE RESTAURANT
         Glide.with(this)
                 .load(getUrl(urlConcat))
                 .apply(RequestOptions.noTransformation())
@@ -181,6 +178,7 @@ public class DetailActivity extends AppCompatActivity {
                 .into(mImageViewRestaurant);
     }
 
+    // Build a url to get restaurant image
     Uri getUrl(String base) {
         return Uri.parse(base);
     }
@@ -206,10 +204,10 @@ public class DetailActivity extends AppCompatActivity {
             List<User> userList = new ArrayList<>();
             detailActivityAdapter = new DetailActivityAdapter(userList);
             detailActivityAdapter = new DetailActivityAdapter(usersInter);
-            detailActivityAdapter.notifyDataSetChanged();
+            // detailActivityAdapter.notifyDataSetChanged();
             mRecyclerView.getRecycledViewPool().clear();
-            mRecyclerView.setAdapter(null);
-            mRecyclerView.setLayoutManager(null);
+            //mRecyclerView.setAdapter(null);
+            //mRecyclerView.setLayoutManager(null);
             mRecyclerView.setAdapter(detailActivityAdapter);
             mRecyclerView.setLayoutManager(linearLayoutManager);
         });
@@ -217,20 +215,10 @@ public class DetailActivity extends AppCompatActivity {
 
     private void askPermissionAndCall() {
         // With Android Level >= 23, you have to ask the user for permission to Call.
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) { // 23
-            // Check if we have Call permission
-            int sendSmsPermission = ActivityCompat.checkSelfPermission(this,
-                    Manifest.permission.CALL_PHONE);
-            if (sendSmsPermission != PackageManager.PERMISSION_GRANTED) {
-                // If don't have permission so prompt the user.
-                this.requestPermissions(
-                        new String[]{Manifest.permission.CALL_PHONE},
-                        MY_PERMISSION_REQUEST_CODE_CALL_PHONE
-                );
-                return;
-            }
+        boolean success = UtilsDetailActivity.askForSmsPermission(this);
+        if (success) {
+            this.callNow();
         }
-        this.callNow();
     }
 
     @SuppressLint("MissingPermission")
@@ -239,6 +227,7 @@ public class DetailActivity extends AppCompatActivity {
         Intent callIntent = new Intent(Intent.ACTION_CALL);
         callIntent.setData(Uri.parse("tel:" + restaurantPhoneNumber));
         try {
+            //callMobile(this, restaurantPhoneNumber){}
             this.startActivity(callIntent);
         } catch (Exception ex) {
             Toast.makeText(getApplicationContext(), "Your call failed... " + ex.getMessage(),

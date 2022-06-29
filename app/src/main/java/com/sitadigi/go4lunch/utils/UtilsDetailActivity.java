@@ -1,12 +1,15 @@
 package com.sitadigi.go4lunch.utils;
 
+import android.Manifest;
 import android.app.Activity;
+import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.util.Log;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -18,6 +21,7 @@ import com.sitadigi.go4lunch.models.RestaurantLike;
 import com.sitadigi.go4lunch.viewModel.UserViewModel;
 
 public class UtilsDetailActivity {
+    private static final int MY_PERMISSION_REQUEST_CODE_CALL_PHONE = 555;
 
     private static final String COLLECTION_RESTAURANT_LIKE_NAME = "restaurantLike";
     Activity mActivity;
@@ -150,5 +154,21 @@ public class UtilsDetailActivity {
                 }
             }
         });
+    }
+    public static boolean askForSmsPermission(Activity activity){
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) { // 23
+            // Check if we have Call permission
+            int sendSmsPermission = ActivityCompat.checkSelfPermission(activity,
+                    Manifest.permission.CALL_PHONE);
+            if (sendSmsPermission != PackageManager.PERMISSION_GRANTED) {
+                // If don't have permission so prompt the user.
+                activity.requestPermissions(
+                        new String[]{Manifest.permission.CALL_PHONE},
+                        MY_PERMISSION_REQUEST_CODE_CALL_PHONE
+                );
+                return false;
+            }
+        }
+        return true;
     }
 }

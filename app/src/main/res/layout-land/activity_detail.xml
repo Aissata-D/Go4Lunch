@@ -20,7 +20,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
         android:layout_width="390dp"
-        android:layout_height="80dp"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:background="@color/red_bottom_menu"
         app:layout_constraintEnd_toStartOf="@+id/guideline2"

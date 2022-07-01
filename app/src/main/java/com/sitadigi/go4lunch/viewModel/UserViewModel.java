@@ -21,9 +21,8 @@ import com.sitadigi.go4lunch.repository.UserRepositoryInterface;
 import java.util.List;
 
 public class UserViewModel extends ViewModel {
-    private static volatile UserViewModel instance;
+
     UserRepositoryInterface mUserRepositoryInterface;
-    //private final UserRepository userRepository;
     private MutableLiveData<List<GoogleMapApiClass.Result>> listOfRestaurant;
 
     public UserViewModel(UserRepositoryInterface userRepositoryInterface) {
@@ -78,6 +77,10 @@ public class UserViewModel extends ViewModel {
             userName.setText(username);
             userEmail.setText(email);
         }
+    }
+
+    public MutableLiveData<List<User>> getAllUser() {
+        return mUserRepositoryInterface.getAllUser();
     }
 
     public List<User> getAllUserForNotificationPush() {

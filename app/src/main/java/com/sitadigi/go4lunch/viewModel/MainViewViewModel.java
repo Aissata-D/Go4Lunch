@@ -10,7 +10,6 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.sitadigi.go4lunch.models.GoogleDistanceMatrixClass;
 import com.sitadigi.go4lunch.models.GoogleMapApiClass;
 import com.sitadigi.go4lunch.models.GooglePlaceDetailApiClass;
 import com.sitadigi.go4lunch.models.User;
@@ -28,6 +27,7 @@ public class MainViewViewModel extends ViewModel {
     private final String API_KEY = "AIzaSyDsQUD7ukIhqdJYZIQxj535IvrDRrkrH08";
     private final UserRepository userRepository;
     private final GeoLocateRepository mGeoLocateRepository;
+    MutableLiveData<GooglePlaceDetailApiClass> googlePlaceDetailApiClassToReturn ;
     private final MutableLiveData<List<GoogleMapApiClass.Result>> listOfRestaurant;
     private final MutableLiveData<LatLng> resultSearchLatLng;
     private final MutableLiveData<String> resultSearchPlaceName;
@@ -41,16 +41,11 @@ public class MainViewViewModel extends ViewModel {
     public MutableLiveData<Location> locationMutableLiveData;
     Disposable disposable;
     Disposable disposablePlaceDetail;
-    Disposable disposableDistance;
-    List<String> listOfPhoneAndWebSite = new ArrayList<>();
-    String distance;
-    int distanceValue = 0;
     MutableLiveData<GoogleMapApiClass> googleMapApiClassReturn;
     GoogleMapApiCallsInterface mGoogleMapApiCallsInterface;
     GoogleMapApiClass googleMapApiClass1 = new GoogleMapApiClass();
     private MutableLiveData<String> searchDataString = new MutableLiveData<>();
-    private String restaurantWebSiteUrl;
-    private String restaurantPhoneNumber;
+
 
     public MainViewViewModel(GoogleMapApiCallsInterface googleMapApiCallsInterface) {
         userRepository = UserRepository.getInstance();
@@ -61,9 +56,10 @@ public class MainViewViewModel extends ViewModel {
         resultSearchPlaceName = new MutableLiveData<>();
         listOfRestaurant = new MutableLiveData<>();
         googleMapApiClassReturn = new MutableLiveData<GoogleMapApiClass>();
+        googlePlaceDetailApiClassToReturn = new MutableLiveData<>();
     }
 
-    //////////////METHOD FOR UNIT TESTING //////////////////////////////
+    //////////////METHOD FOR UNIT TESTING //////////////////////////////////////////////////////////////////////
     LiveData<String> getSearchDataString() {
         return searchDataString;
     }
@@ -79,78 +75,21 @@ public class MainViewViewModel extends ViewModel {
     LiveData<Throwable> getErrorData() {
         return errorData;
     }
-    /////////////END //////////////////////////////////////////////
+    ///////////////////////////////////END ////////////////////////////////////////////////////////////////////
 
-    public int getRestaurantDistance1(String origins, String destinations) {
-        disposableDistance = mGoogleMapApiCallsInterface.streamFetchRestaurantDistance(origins,
-                destinations, API_KEY).subscribeWith(new DisposableObserver<GoogleDistanceMatrixClass>() {
 
-            @Override
-            public void onNext(GoogleDistanceMatrixClass googleDistanceMatrixClass) {
-                if (googleDistanceMatrixClass.getRows() == null) {
-                    distance = "Not Response";
-                }
-                if (googleDistanceMatrixClass.getRows().size() > 0) {
-                    distance = "Not Response1";
-                }
-                if (googleDistanceMatrixClass.getRows().get(0) == null) {
-                    distance = "Not Response2";
-                }
-                if (googleDistanceMatrixClass.getRows().get(0).getElements() == null) {
-                    distance = "Not Response3";
-                }
-                if (googleDistanceMatrixClass.getRows().get(0).getElements().size() == 0) {
-                    distance = "Not Response4";
-                }
-                if (googleDistanceMatrixClass.getRows().get(0).getElements().get(0) == null) {
-                    distance = "Not Response5";
-                }
-                if (googleDistanceMatrixClass.getRows().get(0).getElements().get(0).getDistance() == null) {
-                    distance = "Not Response6";
-                }
-
-                if (googleDistanceMatrixClass.getRows() != null && googleDistanceMatrixClass.getRows().size() > 0
-                        && googleDistanceMatrixClass.getRows()
-                        .get(0) != null && googleDistanceMatrixClass.getRows().get(0).getElements() != null
-                        && googleDistanceMatrixClass.getRows().get(0).getElements().size() > 0
-                        && googleDistanceMatrixClass.getRows().get(0).getElements().get(0).getDistance() != null
-                        && googleDistanceMatrixClass.getRows().get(0).getElements()
-                        .get(0).getDistance().getValue() != null) {
-                    distanceValue = googleDistanceMatrixClass.getRows().get(0).getElements()
-                            .get(0).getDistance().getValue();
-                } else {
-                    distanceValue = 0;
-                }
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                Log.e("TAG", "onError: " + e);
-            }
-
-            @Override
-            public void onComplete() {
-            }
-        });
-        return distanceValue;
-    }
-
-    public List<String> loadRestaurantPhoneNumberAndWebSite(GoogleMapApiClass.Result restaurant) {
+    public MutableLiveData<GooglePlaceDetailApiClass> loadRestaurantPhoneNumberAndWebSite(String restaurantId) {
 
         disposablePlaceDetail = mGoogleMapApiCallsInterface.streamFetchRestaurantDetail(
-                restaurant, API_KEY).subscribeWith(new DisposableObserver<GooglePlaceDetailApiClass>() {
+                restaurantId, API_KEY).subscribeWith(new DisposableObserver<GooglePlaceDetailApiClass>() {
 
             @Override
             public void onNext(GooglePlaceDetailApiClass googlePlaceDetailApiClass) {
-                restaurantPhoneNumber = googlePlaceDetailApiClass.getResult().getInternationalPhoneNumber();
-                restaurantWebSiteUrl = googlePlaceDetailApiClass.getResult().getWebsite();
-                listOfPhoneAndWebSite.add(0, restaurantPhoneNumber);
-                listOfPhoneAndWebSite.add(1, restaurantWebSiteUrl);
+                googlePlaceDetailApiClassToReturn.setValue(googlePlaceDetailApiClass);
             }
 
             @Override
             public void onError(Throwable e) {
-                listOfPhoneAndWebSite = new ArrayList<>();
                 Log.e("TAG", "On Error getRestaurantPhoneNumberAndWebSite" + Log.getStackTraceString(e));
             }
 
@@ -159,13 +98,13 @@ public class MainViewViewModel extends ViewModel {
                 Log.e("TAG", "On Complete !! getRestaurantPhoneNumberAndWebSite");
             }
         });
-        return listOfPhoneAndWebSite;
+        return googlePlaceDetailApiClassToReturn;
     }
 
     public void loadRestaurantData(String location) {
         //FOR DATA Disposable allow to avoid Memory Leaks
         this.disposable = mGoogleMapApiCallsInterface.streamFetchListOfNearRestaurant(
-                        location, 1500, "restaurant", API_KEY, "google.maps.places.RankBy.DISTANCE")
+                        location, 1500, "restaurant", API_KEY)
                 .subscribeWith(new DisposableObserver<GoogleMapApiClass>() {
                     @Override
                     public void onNext(GoogleMapApiClass googleMapApiClass) {
@@ -200,11 +139,6 @@ public class MainViewViewModel extends ViewModel {
         return listOfRestaurant;
     }
 
-    public void disposeWhenDestroy() {
-        if (this.disposable != null && !this.disposable.isDisposed()) this.disposable.dispose();
-    }
-
-
     public void loadLocationMutableLiveData(Context context, Activity activity, MainViewViewModel mainViewViewModel) {
 
         locationMutableLiveData = mGeoLocateRepository.getDeviceLocation(context, activity, mainViewViewModel);
@@ -232,10 +166,6 @@ public class MainViewViewModel extends ViewModel {
 
     public MutableLiveData<String> getResultSearchPlaceName() {
         return resultSearchPlaceName;
-    }
-
-    public MutableLiveData<List<User>> getAllUser() {
-        return userRepository.getAllUser();
     }
 
     public boolean isRestaurantSelectedByOneWorkmate(String restaurantId, List<User> users) {

@@ -67,7 +67,6 @@ public class ShowSignOutDialogueAlertAndDetailActivity {
                                     }
                                 });
                     }
-
                 })
                 .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
@@ -166,26 +165,8 @@ public class ShowSignOutDialogueAlertAndDetailActivity {
                                             float rating = restaurant.getRating().floatValue();
                                             intentDetail.putExtra(RESTAURANT_RATING, rating);
                                         }
-                                        List<String> restaurantNumberAndWebSite = mainViewViewModel
-                                                .loadRestaurantPhoneNumberAndWebSite(restaurant);
-                                        if (restaurantNumberAndWebSite.size() >= 1) {
-                                            if (restaurantNumberAndWebSite.get(0) != null) {
-                                                String restaurantPhoneNumber = restaurantNumberAndWebSite.get(0);
-                                                intentDetail.putExtra(RESTAURANT_PHONE_NUMBER, restaurantPhoneNumber);
-                                            }
-                                            if (restaurantNumberAndWebSite.size() >= 2) {
-                                                if (restaurantNumberAndWebSite.get(1) != null) {
-                                                    String restaurantWebSite = restaurantNumberAndWebSite.get(1);
-                                                    intentDetail.putExtra(RESTAURANT_WEBSITE, restaurantWebSite);
-                                                }
-                                            } else {
-                                                Log.e("DETAIL", "onMarkerClick: phone size<2 ");
-                                            }
-                                        } else {
-                                            Log.e("DETAIL", "onMarkerClick: website size<1 ");
-
-                                        }
-
+                                        //Load detail of restaurant with API call
+                                        mainViewViewModel.loadRestaurantPhoneNumberAndWebSite(restaurant.getPlaceId());
                                         intentDetail.putExtra(RESTAURANT_ID, restaurant.getPlaceId());
                                         activity.startActivity(intentDetail);
                                     }

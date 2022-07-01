@@ -17,6 +17,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.sitadigi.go4lunch.R;
 import com.sitadigi.go4lunch.models.GoogleMapApiClass;
+import com.sitadigi.go4lunch.models.GooglePlaceDetailApiClass;
 import com.sitadigi.go4lunch.models.User;
 import com.sitadigi.go4lunch.utils.OpenDetailActivityUtils;
 import com.sitadigi.go4lunch.utils.UtilsDetailActivity;
@@ -27,7 +28,6 @@ import java.util.List;
 
 
 public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListViewHolder> {
-
 
     public int mPosition;
     String urlPart1 = "";
@@ -45,7 +45,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
     @NonNull
     private List<GoogleMapApiClass.Result> mRestaurants = new ArrayList<>();
     private MainViewViewModel mMainViewViewModel;
-    private UtilsDetailActivity utilsDetailActivity;
+
 
     /**
      * Instantiates a new RestaurantAdapter.

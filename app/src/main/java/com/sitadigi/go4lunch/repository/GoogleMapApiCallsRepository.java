@@ -1,9 +1,8 @@
 package com.sitadigi.go4lunch.repository;
 
-import com.sitadigi.go4lunch.models.GoogleDistanceMatrixClass;
 import com.sitadigi.go4lunch.models.GoogleMapApiClass;
 import com.sitadigi.go4lunch.models.GooglePlaceDetailApiClass;
-import com.sitadigi.go4lunch.utils.GoogleMapApiService;
+import com.sitadigi.go4lunch.service.GoogleMapApiService;
 
 import java.util.concurrent.TimeUnit;
 
@@ -14,30 +13,20 @@ import io.reactivex.schedulers.Schedulers;
 public class GoogleMapApiCallsRepository implements GoogleMapApiCallsInterface {
     @Override
     public Observable<GoogleMapApiClass> streamFetchListOfNearRestaurant(String location, int radius
-            , String type, String key, String rankBy) {
+            , String type, String key) {
         GoogleMapApiService googleMapApiService = GoogleMapApiService.retrofit
                 .create(GoogleMapApiService.class);
-        return googleMapApiService.getRestaurant(location, radius, type, key, rankBy)
+        return googleMapApiService.getRestaurant(location, radius, type, key)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .timeout(10, TimeUnit.SECONDS);
     }
 
     @Override
-    public Observable<GooglePlaceDetailApiClass> streamFetchRestaurantDetail(GoogleMapApiClass.Result restaurant, String apiKey) {
+    public Observable<GooglePlaceDetailApiClass> streamFetchRestaurantDetail(String restaurantId, String apiKey) {
         GoogleMapApiService googleMapApiService = GoogleMapApiService.retrofit
                 .create(GoogleMapApiService.class);
-        return googleMapApiService.getRestaurantPhoneAndWebsite(restaurant.getPlaceId(), apiKey)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .timeout(10, TimeUnit.SECONDS);
-    }
-
-    @Override
-    public Observable<GoogleDistanceMatrixClass> streamFetchRestaurantDistance(String destinations, String origins, String apiKey) {
-        GoogleMapApiService googleMapApiService = GoogleMapApiService.retrofit
-                .create(GoogleMapApiService.class);
-        return googleMapApiService.getRestaurantDistance(destinations, origins, apiKey)
+        return googleMapApiService.getRestaurantPhoneAndWebsite(restaurantId, apiKey)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .timeout(10, TimeUnit.SECONDS);

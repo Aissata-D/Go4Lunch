@@ -370,7 +370,7 @@ public class GooglePlaceDetailApiClass {
     }
 //--------------Result.java-----------------------------------
 
-    public class Result {
+    public static class Result {
 
         @SerializedName("address_components")
         @Expose

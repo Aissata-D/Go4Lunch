@@ -204,6 +204,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mMainViewViewModel.disposeWhenDestroy();
+       // mMainViewViewModel.disposeWhenDestroy();
     }
+
 }

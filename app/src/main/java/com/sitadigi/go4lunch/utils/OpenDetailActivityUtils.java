@@ -23,8 +23,8 @@ import java.util.List;
 
 public class OpenDetailActivityUtils {
 
-    public void clickOnOpenDetailActivityInLisViewAdapter(GoogleMapApiClass.Result restaurant, Context context
-            , MainViewViewModel mMainViewViewModel) {
+    public void clickOnOpenDetailActivityInLisViewAdapter(GoogleMapApiClass.Result restaurant
+            , Context context, MainViewViewModel mMainViewViewModel) {
         Intent intentDetail = new Intent(context, DetailActivity.class);
         intentDetail.putExtra(RESTAURANT_ID, restaurant.getPlaceId());
         intentDetail.putExtra(RESTAURANT_NAME, restaurant.getName());
@@ -46,25 +46,8 @@ public class OpenDetailActivityUtils {
             float rating = restaurant.getRating().floatValue();
             intentDetail.putExtra(RESTAURANT_RATING, rating);
         }
-        List<String> restaurantNumberAndWebSite = mMainViewViewModel
-                .loadRestaurantPhoneNumberAndWebSite(restaurant);
-        if (restaurantNumberAndWebSite.size() >= 1) {
-            if (restaurantNumberAndWebSite.get(0) != null) {
-                String restaurantPhoneNumber = restaurantNumberAndWebSite.get(0);
-                intentDetail.putExtra(RESTAURANT_PHONE_NUMBER, restaurantPhoneNumber);
-                Log.e("DETAIL", "onMarkerClick: Phone " + restaurantPhoneNumber);
-            }
-            if (restaurantNumberAndWebSite.size() >= 2) {
-                if (restaurantNumberAndWebSite.get(1) != null) {
-                    String restaurantWebSite = restaurantNumberAndWebSite.get(1);
-                    intentDetail.putExtra(RESTAURANT_WEBSITE, restaurantWebSite);
-                }
-            } else {
-                Log.e("DETAIL", "onMarkerClick: phone size<2 ");
-            }
-        } else {
-            Log.e("DETAIL", "onMarkerClick: website size<1 ");
-        }
+        //Load detail of restaurant with API call
+        mMainViewViewModel.loadRestaurantPhoneNumberAndWebSite(restaurant.getPlaceId());
         context.startActivity(intentDetail);
     }
 
@@ -91,26 +74,8 @@ public class OpenDetailActivityUtils {
             float rating = restaurant.getRating().floatValue();
             intentDetail.putExtra(RESTAURANT_RATING, rating);
         }
-
-        List<String> restaurantNumberAndWebSite = mMainViewViewModel
-                .loadRestaurantPhoneNumberAndWebSite(restaurant);
-        if (restaurantNumberAndWebSite.size() >= 1) {
-            if (restaurantNumberAndWebSite.get(0) != null) {
-                String restaurantPhoneNumber = restaurantNumberAndWebSite.get(0);
-                intentDetail.putExtra(RESTAURANT_PHONE_NUMBER, restaurantPhoneNumber);
-            }
-            if (restaurantNumberAndWebSite.size() >= 2) {
-                if (restaurantNumberAndWebSite.get(1) != null) {
-                    String restaurantWebSite = restaurantNumberAndWebSite.get(1);
-                    intentDetail.putExtra(RESTAURANT_WEBSITE, restaurantWebSite);
-                }
-            } else {
-                Log.e("DETAIL", "onMarkerClick: phone size<2 ");
-            }
-        } else {
-            Log.e("DETAIL", "onMarkerClick: website size<1 ");
-
-        }
+        //Load detail of restaurant with API call
+        mMainViewViewModel.loadRestaurantPhoneNumberAndWebSite(restaurant.getPlaceId());
         intentDetail.putExtra(RESTAURANT_ID, restaurant.getPlaceId());
         context.startActivity(intentDetail);
     }
@@ -143,24 +108,8 @@ public class OpenDetailActivityUtils {
                     float rating = restaurant.getRating().floatValue();
                     intentDetail.putExtra(RESTAURANT_RATING, rating);
                 }
-                List<String> restaurantNumberAndWebSite = mMainViewViewModel
-                        .loadRestaurantPhoneNumberAndWebSite(restaurant);
-                if (restaurantNumberAndWebSite.size() >= 1) {
-                    if (restaurantNumberAndWebSite.get(0) != null) {
-                        String restaurantPhoneNumber = restaurantNumberAndWebSite.get(0);
-                        intentDetail.putExtra(RESTAURANT_PHONE_NUMBER, restaurantPhoneNumber);
-                    }
-                    if (restaurantNumberAndWebSite.size() >= 2) {
-                        if (restaurantNumberAndWebSite.get(1) != null) {
-                            String restaurantWebSite = restaurantNumberAndWebSite.get(1);
-                            intentDetail.putExtra(RESTAURANT_WEBSITE, restaurantWebSite);
-                        }
-                    } else {
-                        Log.e("DETAIL", "onMarkerClick: phone size<2 ");
-                    }
-                } else {
-                    Log.e("DETAIL", "onMarkerClick: website size<1 ");
-                }
+                //Load detail of restaurant with API call
+                mMainViewViewModel.loadRestaurantPhoneNumberAndWebSite(restaurant.getPlaceId());
                 context.startActivity(intentDetail);
             }
         }

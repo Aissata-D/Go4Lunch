@@ -22,12 +22,15 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.sitadigi.go4lunch.R;
 import com.sitadigi.go4lunch.databinding.FragmentMapViewBinding;
 import com.sitadigi.go4lunch.factory.MainViewModelFactory;
+import com.sitadigi.go4lunch.factory.UserViewModelFactory;
 import com.sitadigi.go4lunch.models.GoogleMapApiClass;
 import com.sitadigi.go4lunch.models.User;
 import com.sitadigi.go4lunch.repository.GoogleMapApiCallsRepository;
+import com.sitadigi.go4lunch.repository.UserRepository;
 import com.sitadigi.go4lunch.utils.OpenDetailActivityUtils;
 import com.sitadigi.go4lunch.utils.UtilsMapView;
 import com.sitadigi.go4lunch.viewModel.MainViewViewModel;
+import com.sitadigi.go4lunch.viewModel.UserViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +48,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
     private LatLng latLngPlaceSelected;
     private ImageView mapViewPlaceHolder;
     private List<User> mUsers = new ArrayList<>();
+    private UserViewModel mUserViewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -52,6 +56,9 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
 
         mMainViewViewModel = new ViewModelProvider(requireActivity()
                 , new MainViewModelFactory(googleMapApiCallsRepository)).get(MainViewViewModel.class);
+        UserRepository userRepository = new UserRepository();
+        mUserViewModel = new ViewModelProvider(this, new UserViewModelFactory(userRepository)).get(UserViewModel.class);
+
         binding = FragmentMapViewBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
         mapViewPlaceHolder = binding.mapViewPlaceholder;
@@ -86,7 +93,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
         // Turn on the My Location layer and the related control on the map.
         mUtilsMapView.updateLocationUI(this.googleMap);
         // Get the current location of the device and set the position of the map.
-        mMainViewViewModel.getAllUser().observe(getViewLifecycleOwner(), AllUsers -> {
+        mUserViewModel.getAllUser().observe(getViewLifecycleOwner(), AllUsers -> {
             mUsers.clear();
             mUsers = AllUsers;
             mUtilsMapView.GeolocationOfDeviceAndUpdateGoogleMapView(this.googleMap
@@ -105,7 +112,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback,
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
                 );
             } else {
-                mMainViewViewModel.getAllUser().observe(getViewLifecycleOwner(), AllUsers -> {
+                mUserViewModel.getAllUser().observe(getViewLifecycleOwner(), AllUsers -> {
                     mUsers.clear();
                     mUsers = AllUsers;
                     mUtilsMapView.GeolocationOfDeviceAndUpdateGoogleMapView(this.googleMap

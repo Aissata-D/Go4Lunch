@@ -2,6 +2,7 @@ package com.sitadigi.go4lunch.repository;
 
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,7 +19,11 @@ import com.google.firebase.auth.MultiFactor;
 import com.google.firebase.auth.UserInfo;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.sitadigi.go4lunch.models.User;
 
 import java.util.ArrayList;
@@ -37,9 +42,7 @@ public class FakeUserRepository implements UserRepositoryInterface{
         mFirebaseAuth = firebaseAuth;
         mFirebaseFirestore = firebaseFirestore;
         mAuthUI = authUI;
-
     }
-
 
     @Nullable
     @Override
@@ -50,8 +53,7 @@ public class FakeUserRepository implements UserRepositoryInterface{
     @Nullable
     @Override
     public FirebaseUser getCurrentUser() {
-        User user1 = new User("userid","username","usermail@mail.com","userPictureUrl");
-        //return  user1;
+
         return mFirebaseAuth.getCurrentUser();
     }
 
@@ -69,7 +71,6 @@ public class FakeUserRepository implements UserRepositoryInterface{
     public CollectionReference getUsersCollection() {
 
         return mFirebaseFirestore.collection("users");
-
     }
 
     @Override
@@ -88,11 +89,10 @@ public class FakeUserRepository implements UserRepositoryInterface{
                     this.getUsersCollection().document(uid).set(userToCreate);
                 }
             });
-
         }
         else {
+            //DO NOTHING
         }
-
     }
 
     @Override
@@ -104,19 +104,49 @@ public class FakeUserRepository implements UserRepositoryInterface{
 
     @Override
     public Task<Void> updateUsername(String username) {
-       // return this.getUsersCollection().document(uid).update(USERNAME_FIELD, username);
         return null;
-
     }
 
     @Override
     public void deleteUserFromFirestore() {
-
     }
 
     @Override
     public MutableLiveData<List<User>> getAllUser() {
-        return null;
+
+        MutableLiveData<List<User>> listOfUserLiveData = new MutableLiveData<>();
+        List<User> usersUsingApp = new ArrayList<>();
+        FirebaseFirestore db = mFirebaseFirestore;
+        db.collection("users").addSnapshotListener(
+                new EventListener<QuerySnapshot>() {
+
+                    @Override
+                    public void onEvent(
+                            @androidx.annotation.Nullable QuerySnapshot value, @androidx.annotation.Nullable FirebaseFirestoreException error) {
+                        if (error != null) {
+                            System.err.println("Listen failed:" + error);
+                            return;
+                        }
+                        if (value != null) {
+                            usersUsingApp.clear();
+                            for (DocumentSnapshot document : value) {
+                                String username = document.getString("username");
+                                String email = document.getString("email");
+                                String urlPicture = document.getString("urlPicture");
+                                String uid = document.getId();
+                                String restaurantId = document.getString("userRestaurantId");
+                                String restaurantName = document.getString("userRestaurantName");
+                                String restaurantType = document.getString("userRestaurantType");
+                                // Get user
+                                User userToGet = new User(uid, username, email, urlPicture, restaurantId, restaurantName, restaurantType);
+                                usersUsingApp.add(userToGet);
+                                listOfUserLiveData.postValue(usersUsingApp);
+
+                            }
+                        }
+                    }
+                });
+        return listOfUserLiveData;
     }
 
     @Override
@@ -130,5 +160,4 @@ public class FakeUserRepository implements UserRepositoryInterface{
         users.add(user2);
         return users;
     }
-
 }

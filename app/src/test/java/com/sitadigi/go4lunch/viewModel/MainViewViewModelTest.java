@@ -14,9 +14,9 @@ import androidx.lifecycle.Observer;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.sitadigi.go4lunch.models.GoogleMapApiClass;
+import com.sitadigi.go4lunch.models.GooglePlaceDetailApiClass;
 import com.sitadigi.go4lunch.models.User;
 import com.sitadigi.go4lunch.repository.FakeGoogleMapApiCallsRepository;
-import com.sitadigi.go4lunch.repository.UserRepository;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -49,10 +49,8 @@ public class MainViewViewModelTest {
     Observer<Throwable> throwableObserver;
     @Mock
     Observer<String> dataObserverString;
-    @Mock
-    FakeGoogleMapApiCallsRepository fakeMock;
+
     MainViewViewModel mockViewModel = org.mockito.Mockito.mock(MainViewViewModel.class);
-    UserRepository mockUserRepository = org.mockito.Mockito.mock(UserRepository.class);
     MainViewViewModel mMainViewViewModel;
     String location;
     String location1;
@@ -71,38 +69,45 @@ public class MainViewViewModelTest {
         origins = "47.76667,6.88333";
     }
 
-    public void tearDown() throws Exception {
-    }
-
     @Test
     public void testGetRestaurantDistance() {
-    /*
-        int restaurantDistance = 123;
-        //Result wanted
-        when(mockViewModel.getRestaurantDistance(origins, destinations))
-                .thenReturn(restaurantDistance);
-        //assertion
-        assertEquals(restaurantDistance, mockViewModel.getRestaurantDistance(origins, destinations));
-        */
+
+        double restaurantDistance = 0.0;
+        double distanceBetweenTwoDifferentPlace = 366098;
+        double deltaForTheSamePlace = 0.0;
+        double deltaForTwoDifferentPlace = 0.9;
+        //assertion for the same place
+        assertEquals(restaurantDistance, MainViewViewModel.getRestaurantDistance(45.76667
+                , 45.76667, 4.88333, 4.88333
+                , 0.0, 0.0), deltaForTheSamePlace);
+        //assertion for two different place
+        assertEquals(distanceBetweenTwoDifferentPlace, MainViewViewModel.getRestaurantDistance(
+                45.76667, 48.76667, 4.88333, 6.88333
+                , 0.0, 0.0), deltaForTwoDifferentPlace);
     }
 
     @Test
     public void testLoadRestaurantPhoneNumberAndWebSite() {
 
-        GoogleMapApiClass.Result result1 = new GoogleMapApiClass.Result();
+        GooglePlaceDetailApiClass.Result result1 = new GooglePlaceDetailApiClass.Result();
+        String restaurantId = "restaurantId";
+        String restaurantWebSite = "www.website.fr";
+        String restaurantPhoneNumber = "0606060606";
         result1.setName("nameOfResult1");
-        List<String> phoneAndWebSite = new ArrayList<>();
-        phoneAndWebSite.add("0606060606");
-        phoneAndWebSite.add("www.website.fr");
+        result1.setInternationalPhoneNumber(restaurantPhoneNumber);
+        result1.setWebsite(restaurantWebSite);
+        GooglePlaceDetailApiClass googlePlaceDetailApiClass = new GooglePlaceDetailApiClass();
+        googlePlaceDetailApiClass.setResult(result1);
+        MutableLiveData<GooglePlaceDetailApiClass> googlePlaceDetailApiClassMutableLiveData = new MutableLiveData<>();
+        googlePlaceDetailApiClassMutableLiveData.setValue(googlePlaceDetailApiClass);
         //Result wanted
-        when(mockViewModel.loadRestaurantPhoneNumberAndWebSite(result1))
-                .thenReturn(phoneAndWebSite);
+        when(mockViewModel.loadRestaurantPhoneNumberAndWebSite(restaurantId))
+                .thenReturn(googlePlaceDetailApiClassMutableLiveData);
         //assertion
-        assertEquals(phoneAndWebSite, mockViewModel.loadRestaurantPhoneNumberAndWebSite(result1));
-        assertEquals(phoneAndWebSite.get(0), mockViewModel.loadRestaurantPhoneNumberAndWebSite(result1)
-                .get(0));
-        assertEquals(phoneAndWebSite.get(1), mockViewModel.loadRestaurantPhoneNumberAndWebSite(result1)
-                .get(1));
+        assertEquals(restaurantWebSite, mockViewModel.loadRestaurantPhoneNumberAndWebSite(restaurantId)
+                .getValue().getResult().getWebsite());
+        assertEquals(restaurantWebSite, mockViewModel.loadRestaurantPhoneNumberAndWebSite(restaurantId)
+                .getValue().getResult().getWebsite());
     }
 
     @Test
@@ -178,25 +183,6 @@ public class MainViewViewModelTest {
     }
 
     @Test
-    public void testGetAllUser() {
-
-        List<User> users = new ArrayList<User>();
-        User user1 = new User("uid1", "user1", "email1", "urlPicture1",
-                "restaurantId1", "restaurantName1", "restaurantType1");
-        User user2 = new User("uid2", "user2", "email2", "urlPicture2",
-                "restaurantId2", "restaurantName2", "restaurantType2");
-        users.add(user1);
-        users.add(user2);
-        MutableLiveData<List<User>> mutableLiveDataUsersExpected = new MutableLiveData<>();
-        mutableLiveDataUsersExpected.setValue(users);
-        //Mocking
-        when(mockUserRepository.getAllUser()).thenReturn(mutableLiveDataUsersExpected);
-        MutableLiveData<List<User>> mutableLiveDataUsersActual = mockUserRepository.getAllUser();
-        //assertion
-        assertEquals(mutableLiveDataUsersExpected, mutableLiveDataUsersActual);
-    }
-
-    @Test
     public void testIsRestaurantSelectedByOneWorkmate() {
         List<User> users = new ArrayList<User>();
         User user1 = new User("uid1", "user1", "email1", "urlPicture1",
@@ -212,9 +198,7 @@ public class MainViewViewModelTest {
         assertTrue(result2);
         assertFalse(resultNotSelected);
     }
-
-
 }
 
-//Total methode 13
-//Test 9 ==> 70%
+//Total methode 12
+//Test 8 ==> 66%

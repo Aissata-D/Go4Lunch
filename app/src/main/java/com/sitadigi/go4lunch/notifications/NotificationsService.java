@@ -107,7 +107,7 @@ public class NotificationsService extends FirebaseMessagingService {
         }
         // Show notification
         int NOTIFICATION_ID = 007;
-        String NOTIFICATION_TAG = "FIREBASEOC";
+        String NOTIFICATION_TAG = "FIREBASE";
         notificationManager.notify(NOTIFICATION_TAG, NOTIFICATION_ID, notificationBuilder.build());
     }
 }

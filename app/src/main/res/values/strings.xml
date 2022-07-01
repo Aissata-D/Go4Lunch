@@ -76,7 +76,7 @@
     <string name="new_name">new name</string>
     <string name="delete_message">Are you sure to delete your account?</string>
     <string name="available_workmates">Available workmates</string>
-    <string name="i_am_hungry">I am Hungry !</string>
+    <string name="i_am_hungry">I\'m Hungry !</string>
     <string name="give_valid_name">Give a valid name</string>
 
 </resources>

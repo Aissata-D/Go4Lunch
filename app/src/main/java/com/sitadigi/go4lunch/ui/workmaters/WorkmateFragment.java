@@ -16,10 +16,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.sitadigi.go4lunch.databinding.FragmentWorkmatersBinding;
 import com.sitadigi.go4lunch.factory.MainViewModelFactory;
+import com.sitadigi.go4lunch.factory.UserViewModelFactory;
 import com.sitadigi.go4lunch.models.GoogleMapApiClass;
 import com.sitadigi.go4lunch.models.User;
 import com.sitadigi.go4lunch.repository.GoogleMapApiCallsRepository;
+import com.sitadigi.go4lunch.repository.UserRepository;
 import com.sitadigi.go4lunch.viewModel.MainViewViewModel;
+import com.sitadigi.go4lunch.viewModel.UserViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +36,7 @@ public class WorkmateFragment extends Fragment {
     private List<GoogleMapApiClass.Result> allRestaurant = new ArrayList<>();
     private String placeNameSelected;
     private TextView tvNoWorkmate;
+    private UserViewModel mUserViewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -40,6 +44,9 @@ public class WorkmateFragment extends Fragment {
         GoogleMapApiCallsRepository googleMapApiCallsRepository = new GoogleMapApiCallsRepository();
         mainViewViewModel = new ViewModelProvider(requireActivity(), new MainViewModelFactory(
                 googleMapApiCallsRepository)).get(MainViewViewModel.class);
+        UserRepository userRepository = new UserRepository();
+        mUserViewModel = new ViewModelProvider(this, new UserViewModelFactory(userRepository)).get(UserViewModel.class);
+
         binding = FragmentWorkmatersBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
@@ -49,7 +56,7 @@ public class WorkmateFragment extends Fragment {
         tvNoWorkmate = binding.noWorkmateFound;
         tvNoWorkmate.setVisibility(View.GONE);
 
-        mainViewViewModel.getAllUser().observe(getViewLifecycleOwner(), usersLiveData -> {
+        mUserViewModel.getAllUser().observe(getViewLifecycleOwner(), usersLiveData -> {
             users.clear();
             users.addAll(usersLiveData);
             initRecyclerView();

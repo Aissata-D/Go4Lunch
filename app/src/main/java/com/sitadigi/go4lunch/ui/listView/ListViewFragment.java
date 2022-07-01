@@ -18,10 +18,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.gms.maps.model.LatLng;
 import com.sitadigi.go4lunch.databinding.FragmentListViewBinding;
 import com.sitadigi.go4lunch.factory.MainViewModelFactory;
+import com.sitadigi.go4lunch.factory.UserViewModelFactory;
 import com.sitadigi.go4lunch.models.GoogleMapApiClass;
 import com.sitadigi.go4lunch.models.User;
 import com.sitadigi.go4lunch.repository.GoogleMapApiCallsRepository;
+import com.sitadigi.go4lunch.repository.UserRepository;
 import com.sitadigi.go4lunch.viewModel.MainViewViewModel;
+import com.sitadigi.go4lunch.viewModel.UserViewModel;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,6 +36,7 @@ public class ListViewFragment extends Fragment {
     List<GoogleMapApiClass.Result> listOfRestaurant = new ArrayList<>();
     List<GoogleMapApiClass.Result> listOfRestaurantSort = new ArrayList<>();
     MainViewViewModel mainViewViewModel;
+    UserViewModel mUserViewModel;
     String placeNameSelected;
     List<User> mUsers = new ArrayList<>();
     Location mLocation;
@@ -49,6 +53,8 @@ public class ListViewFragment extends Fragment {
         GoogleMapApiCallsRepository googleMapApiCallsRepository = new GoogleMapApiCallsRepository();
         mainViewViewModel = new ViewModelProvider(requireActivity()
                 , new MainViewModelFactory(googleMapApiCallsRepository)).get(MainViewViewModel.class);
+        UserRepository userRepository = new UserRepository();
+        mUserViewModel = new ViewModelProvider(this, new UserViewModelFactory(userRepository)).get(UserViewModel.class);
 
         binding = FragmentListViewBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
@@ -77,7 +83,7 @@ public class ListViewFragment extends Fragment {
             placeNameSelected = PlaceNameResponse;
             initRecyclerView();
         });
-        mainViewViewModel.getAllUser().observe(getViewLifecycleOwner(), AllUsers -> {
+        mUserViewModel.getAllUser().observe(getViewLifecycleOwner(), AllUsers -> {
             mUsers.clear();
             mUsers = AllUsers;
             initRecyclerView();

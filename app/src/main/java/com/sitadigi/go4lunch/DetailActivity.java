@@ -14,6 +14,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -21,10 +23,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.sitadigi.go4lunch.databinding.ActivityDetailBinding;
 import com.sitadigi.go4lunch.factory.MainViewModelFactory;
 import com.sitadigi.go4lunch.factory.UserViewModelFactory;
+import com.sitadigi.go4lunch.models.GooglePlaceDetailApiClass;
 import com.sitadigi.go4lunch.models.User;
 import com.sitadigi.go4lunch.repository.GoogleMapApiCallsRepository;
 import com.sitadigi.go4lunch.repository.UserRepository;
@@ -73,6 +77,7 @@ public class DetailActivity extends AppCompatActivity {
     DetailActivityAdapter detailActivityAdapter;
     LinearLayoutManager linearLayoutManager;
     MainViewViewModel mMainViewViewModel;
+    GooglePlaceDetailApiClass restaurantDetail = new GooglePlaceDetailApiClass();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,6 +118,11 @@ public class DetailActivity extends AppCompatActivity {
         String urlPart3 = getString(R.string.url_google_place_photo_part3);
         urlConcat = urlPart1 + urlPart2 + urlPart3;
 
+        mMainViewViewModel.loadRestaurantPhoneNumberAndWebSite(restaurantId)
+                .observe(this, RestaurantDetailMutableLiveData -> {
+                   restaurantDetail = RestaurantDetailMutableLiveData;
+                });
+
         utilsDetailActivity = new UtilsDetailActivity(this, restaurantId, userLastRestaurantId);
         utilsDetailActivity.setIconStarColor(tvRestaurantLike, mUserViewModel);
         utilsDetailActivity.setFabColor(fbaRestaurantChoice, mUserViewModel);
@@ -135,9 +145,10 @@ public class DetailActivity extends AppCompatActivity {
         tvRestaurantPhoneNumber.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (restaurantPhoneNumber != null) {
+                if (restaurantDetail !=null && restaurantDetail.getResult()!=null
+                        && restaurantDetail.getResult().getInternationalPhoneNumber() !=null) {
+                    restaurantPhoneNumber = restaurantDetail.getResult().getInternationalPhoneNumber();
                     askPermissionAndCall();
-                    Toast.makeText(DetailActivity.this, restaurantPhoneNumber, Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(DetailActivity.this, getString(R.string.no_phone_number), Toast.LENGTH_SHORT).show();
                 }
@@ -147,11 +158,11 @@ public class DetailActivity extends AppCompatActivity {
         tvRestaurantWebsite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (restaurantWebSite != null) {
-                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(restaurantWebSite));
+                if (restaurantDetail != null && restaurantDetail.getResult()!=null
+                && restaurantDetail.getResult().getWebsite() !=null) {
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW
+                            , Uri.parse(restaurantDetail.getResult().getWebsite()));
                     startActivity(browserIntent);
-                    Toast.makeText(DetailActivity.this, restaurantWebSite, Toast.LENGTH_SHORT).show();
-
                 } else {
                     Toast.makeText(DetailActivity.this, getString(R.string.no_web_site_link), Toast.LENGTH_SHORT).show();
                 }
@@ -185,7 +196,7 @@ public class DetailActivity extends AppCompatActivity {
 
     public void initRecyclerView() {
 
-        mMainViewViewModel.getAllUser().observe(this, usersLiveData -> {
+        mUserViewModel.getAllUser().observe(this, usersLiveData -> {
             mRecyclerView.getRecycledViewPool().clear();
             mRecyclerView.setAdapter(null);
             mRecyclerView.setLayoutManager(null);
@@ -204,10 +215,7 @@ public class DetailActivity extends AppCompatActivity {
             List<User> userList = new ArrayList<>();
             detailActivityAdapter = new DetailActivityAdapter(userList);
             detailActivityAdapter = new DetailActivityAdapter(usersInter);
-            // detailActivityAdapter.notifyDataSetChanged();
             mRecyclerView.getRecycledViewPool().clear();
-            //mRecyclerView.setAdapter(null);
-            //mRecyclerView.setLayoutManager(null);
             mRecyclerView.setAdapter(detailActivityAdapter);
             mRecyclerView.setLayoutManager(linearLayoutManager);
         });

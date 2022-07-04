@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
     private MainViewViewModel mMainViewViewModel;
     private boolean locationPermissionGranted;
     private String restaurantName;
+    private final String API_KEY = BuildConfig.GOOGLE_MAPS_API_KEY;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
                 new LatLng(45.7714678, 4.8901636),
                 new LatLng(45.7714678, 4.8901636));
         if (!Places.isInitialized()) {
-            Places.initialize(getApplicationContext(), getString(R.string.google_map_api_key));
+            Places.initialize(getApplicationContext(), API_KEY);
         }
         // Initialize the AutocompleteSupportFragment.
         AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
@@ -204,7 +205,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-       // mMainViewViewModel.disposeWhenDestroy();
     }
 
 }

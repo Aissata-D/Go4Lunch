@@ -10,6 +10,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.sitadigi.go4lunch.BuildConfig;
 import com.sitadigi.go4lunch.models.GoogleMapApiClass;
 import com.sitadigi.go4lunch.models.GooglePlaceDetailApiClass;
 import com.sitadigi.go4lunch.models.User;
@@ -24,7 +25,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableObserver;
 
 public class MainViewViewModel extends ViewModel {
-    private final String API_KEY = "AIzaSyDsQUD7ukIhqdJYZIQxj535IvrDRrkrH08";
+    private final String API_KEY = BuildConfig.GOOGLE_MAPS_API_KEY;
     private final UserRepository userRepository;
     private final GeoLocateRepository mGeoLocateRepository;
     MutableLiveData<GooglePlaceDetailApiClass> googlePlaceDetailApiClassToReturn ;
@@ -113,7 +114,7 @@ public class MainViewViewModel extends ViewModel {
                         //For Unit testing
                         isLoadingData.postValue(true);
                         searchData.setValue(googleMapApiClass);
-                        searchDataString.setValue(googleMapApiClass.getResults().get(0).getName());
+                       // searchDataString.setValue(googleMapApiClass.getResults().get(0).getName());
                         googleMapApiClass1 = googleMapApiClass;
                         Log.e("TAG", "onNext: " + googleMapApiClass.getResults());
                     }

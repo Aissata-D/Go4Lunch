@@ -19,11 +19,20 @@ android {
     }
 
     buildTypes {
+        debug {
+            Properties localProperties = new Properties()
+            localProperties.load(project.rootProject.file('local.properties').newDataInputStream())
+            buildConfigField("String", "GOOGLE_MAPS_API_KEY", "\"" + localProperties['GOOGLE_MAPS_API_KEY'] + "\"")
+        }
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
         }
     }
+    def localProperties = new Properties()
+    localProperties.load(new FileInputStream(rootProject.file("local.properties")))
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -35,7 +44,9 @@ android {
     buildFeatures {
         viewBinding true
     }
+
 }
+
 
 dependencies {
 

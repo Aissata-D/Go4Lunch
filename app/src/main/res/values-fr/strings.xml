@@ -3,8 +3,6 @@
     <string name="default_notification_channel_id">com.mycompany.myapp.urgent</string>
     <string name="url_google_place_photo_part1">"https://maps.googleapis.com/maps/api/place/photo?maxheigth=500&amp;maxwidth=800&amp;photo_reference="</string>
     <string name="url_google_place_photo_part3">"&amp;key=AIzaSyDsQUD7ukIhqdJYZIQxj535IvrDRrkrH08"</string>
-    <string name="Api_key_google_map">"AIzaSyDsQUD7ukIhqdJYZIQxj535IvrDRrkrH08"</string>
-    <string name="google_map_api_key">AIzaSyDsQUD7ukIhqdJYZIQxj535IvrDRrkrH08</string>
     <string name="facebook_app_id">989231408442739</string>
     <string name="facebook_application_id">989231408442739</string>
     <string name="fb_login_protocol_scheme">fb989231408442739</string>
